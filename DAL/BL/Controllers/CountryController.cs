@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CountryController(ApplicationContext context, ILogger<AdminController> logger) : ControllerBase
+public class CountryController(ApplicationContext context, ILogger<CountryController> logger) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllCountries()

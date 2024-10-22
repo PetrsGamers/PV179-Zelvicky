@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController(ApplicationContext context, ILogger<AdminController> logger) : ControllerBase
+public class UsersController(ApplicationContext context, ILogger<UsersController> logger) : ControllerBase
 {
     [HttpGet]
     public IActionResult GetUsers()

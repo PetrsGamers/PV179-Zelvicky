@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProducerController(ApplicationContext context, ILogger<AdminController> logger) : ControllerBase
+public class ProducerController(ApplicationContext context, ILogger<ProducerController> logger) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllProducers()
