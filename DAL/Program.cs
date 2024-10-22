@@ -1,4 +1,5 @@
 ﻿using DAL;
+using DAL.BL.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,6 +45,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseMiddleware<LoggerMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ColorController(ApplicationContext context, ILogger<AdminController> logger) : ControllerBase
+public class ColorController(ApplicationContext context, ILogger<ColorController> logger) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllColors()
