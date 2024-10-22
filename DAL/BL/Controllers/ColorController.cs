@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DAL.BL.Controllers;
 
 using DTOs;
+using Entities;
 using Microsoft.Extensions.Logging;
 
 [ApiController]
@@ -44,6 +45,81 @@ public class ColorController(ApplicationContext context, ILogger<AdminController
             }
 
             return this.Ok(color);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return this.StatusCode(500, "Internal server error.");
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateColor([FromBody] ColorDto colorDto)
+    {
+        try
+        {
+            var color = new Color()
+            {
+                Id = Guid.NewGuid(),
+                Name = colorDto.Name,
+                HexCode = colorDto.HexValue
+            };
+
+            await context.Colors.AddAsync(color);
+            await context.SaveChangesAsync();
+
+            return this.Ok(color);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return this.StatusCode(500, "Internal server error.");
+        }
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateColor(Guid id, [FromBody] ColorDto colorDto)
+    {
+        try
+        {
+            var color = await context.Colors.FindAsync(id);
+
+            if (color == null)
+            {
+                return this.NotFound($"Color with ID {id} not found.");
+            }
+
+            color.Name = colorDto.Name;
+            color.HexCode = colorDto.HexValue;
+
+            context.Colors.Update(color);
+            await context.SaveChangesAsync();
+
+            return this.Ok(color);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return this.StatusCode(500, "Internal server error.");
+        }
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteColor(Guid id)
+    {
+        try
+        {
+            var color = await context.Colors.FindAsync(id);
+
+            if (color == null)
+            {
+                return this.NotFound($"Color with ID {id} not found.");
+            }
+
+            context.Colors.Remove(color);
+            await context.SaveChangesAsync();
+
+            return this.Ok("Color has been deleted.");
         }
         catch (Exception ex)
         {

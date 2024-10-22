@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DAL.BL.Controllers;
 
 using DTOs;
+using Entities;
 using Microsoft.Extensions.Logging;
 
 [ApiController]
@@ -164,4 +165,69 @@ public class CapController(ApplicationContext context, ILogger<CapController> lo
             return this.StatusCode(500, "Internal server error.");
         }
     }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateCap([FromBody] CapDto capDto)
+    {
+        try
+        {
+            var cap = new Cap()
+            {
+                Id = Guid.NewGuid(),
+                TextOnCap = capDto.TextOnCap,
+                Description = capDto.Description,
+                CapPicture = capDto.CapPicture,
+                TextColors = capDto.TextColors.Select(id => new Color { Id = id }).ToList(),
+                BgColors = capDto.BgColors.Select(id => new Color { Id = id }).ToList(),
+                Bottles = capDto.Bottles.Select(id => new Bottle { Id = id }).ToList(),
+                IsEditForId = capDto.IsEditFor
+            };
+
+            await context.Caps.AddAsync(cap);
+            await context.SaveChangesAsync();
+
+            return this.Ok(cap);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return this.StatusCode(500, "Internal server error.");
+        }
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateCap(Guid id, [FromBody] CapDto capDto)
+    {
+        try
+        {
+            var cap = await context.Caps.Include(c => c.TextColors)
+                .Include(c => c.BgColors)
+                .Include(c => c.Bottles)
+                .FirstOrDefaultAsync(c => c.Id == id);
+            if (cap == null)
+            {
+                return this.NotFound($"Cap with ID {id} not found.");
+            }
+
+            cap.TextOnCap = capDto.TextOnCap;
+            cap.Description = capDto.Description;
+            cap.CapPicture = capDto.CapPicture;
+            cap.TextColors = capDto.TextColors.Select(id => new Color { Id = id }).ToList();
+            cap.BgColors = capDto.BgColors.Select(id => new Color { Id = id }).ToList();
+            cap.Bottles = capDto.Bottles.Select(id => new Bottle { Id = id }).ToList();
+            cap.IsEditForId = capDto.IsEditFor;
+
+            context.Caps.Update(cap);
+            await context.SaveChangesAsync();
+
+            return this.Ok(cap);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return this.StatusCode(500, "Internal server error.");
+        }
+    }
+
+
 }

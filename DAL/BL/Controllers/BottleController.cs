@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.BL.Controllers;
 
+using Constants;
 using DTOs;
+using Entities;
 using Microsoft.Extensions.Logging;
 
 [ApiController]
@@ -90,7 +92,69 @@ public class BottleController(ApplicationContext context, ILogger<BottleControll
 
             context.Bottles.Remove(bottle);
             await context.SaveChangesAsync();
-            return this.NoContent();
+            return this.Ok("Bottle deleted.");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return this.StatusCode(500, "Internal server error.");
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateBottle([FromBody] BottleDto bottleDto)
+    {
+        try
+        {
+            var bottle = new Bottle()
+            {
+                Id = Guid.NewGuid(),
+                Name = bottleDto.Name,
+                Description = bottleDto.Description,
+                Voltage = bottleDto.Voltage,
+                BottlePicture = bottleDto.BottlePicture,
+                DrinkType = Enum.Parse<DrinkType>(bottleDto.DrinkType),
+                ProducerId = bottleDto.Producer,
+                IsEditForId = bottleDto.IsEditFor,
+                Caps = bottleDto.Caps.Select(id => new Cap { Id = id }).ToList()
+            };
+
+            await context.Bottles.AddAsync(bottle);
+            await context.SaveChangesAsync();
+
+            return this.Ok(bottle);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return this.StatusCode(500, "Internal server error.");
+        }
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateBottle(Guid id, [FromBody] BottleDto bottleDto)
+    {
+        try
+        {
+            var bottle = await context.Bottles.FindAsync(id);
+            if (bottle == null)
+            {
+                return this.NotFound($"Bottle with ID {id} not found.");
+            }
+
+            bottle.Name = bottleDto.Name;
+            bottle.Description = bottleDto.Description;
+            bottle.Voltage = bottleDto.Voltage;
+            bottle.BottlePicture = bottleDto.BottlePicture;
+            bottle.DrinkType = Enum.Parse<DrinkType>(bottleDto.DrinkType);
+            bottle.ProducerId = bottleDto.Producer;
+            bottle.IsEditForId = bottleDto.IsEditFor;
+            bottle.Caps = bottleDto.Caps.Select(cId => new Cap { Id = cId }).ToList();
+
+            context.Bottles.Update(bottle);
+            await context.SaveChangesAsync();
+
+            return this.Ok(bottle);
         }
         catch (Exception ex)
         {
