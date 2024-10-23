@@ -51,23 +51,4 @@ public class CountryController(ApplicationContext context, ILogger<CountryContro
             return this.StatusCode(500, "Internal server error.");
         }
     }
-[HttpGet("search")]
-    public async Task<IActionResult> SearchCountriesByName(string substring)
-    {
-
-        try
-        {
-            var countries = await context.Countries
-    .Where(c => c.Name.ToLower().Contains(substring.ToLower()))
-    .Select(c => new CountryDto { Id = c.Id, Name = c.Name })
-    .ToListAsync();
-
-            return this.Ok(countries);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
-        }
-    }
 }
