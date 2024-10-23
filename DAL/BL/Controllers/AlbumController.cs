@@ -1,7 +1,6 @@
+namespace DAL.BL.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
-namespace DAL.BL.Controllers;
 
 using DTOs;
 using Entities;
@@ -86,7 +85,7 @@ public class AlbumController(ApplicationContext context, ILogger<AlbumController
                 Description = albumInsertDto.Description,
                 Public = albumInsertDto.Public,
                 UserId = albumInsertDto.User,
-                Caps = new List<Cap>()
+                Caps = []
             };
 
             await context.Albums.AddAsync(album);

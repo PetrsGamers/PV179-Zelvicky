@@ -60,7 +60,8 @@ public static class CapSeed
                     AlbumsId = album.Id,
                     CapsId = cap.Id
                 }));
-        }    }
+        }
+    }
 
     private static void AddTextColorsToCap(ModelBuilder modelBuilder, List<Color> textColors, Cap cap)
     {
@@ -89,7 +90,8 @@ public static class CapSeed
                     CapBackgroundsId = cap.Id,
                     BgColorsId = color.Id
                 }));
-        }    }
+        }
+    }
 
     private static void AddBottlesToCap(ModelBuilder modelBuilder, List<Bottle> bottles, Cap cap)
     {

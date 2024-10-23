@@ -1,7 +1,6 @@
+namespace DAL.BL.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
-namespace DAL.BL.Controllers;
 
 using DTOs;
 using Entities;
@@ -11,7 +10,7 @@ using Microsoft.Extensions.Logging;
 [Route("api/[controller]")]
 public class CapController(ApplicationContext context, ILogger<CapController> logger) : ControllerBase
 {
-  [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetCapById(Guid id)
     {
         try
@@ -101,13 +100,13 @@ public class CapController(ApplicationContext context, ILogger<CapController> lo
         }
     }
 
-     [HttpGet]
+    [HttpGet]
     public async Task<IActionResult> GetAllCapsFiltered(
-        [FromQuery] string? textSubstring = null,
-        [FromQuery] List<Guid>? textColorIds = null,
-        [FromQuery] List<Guid>? bgColorIds = null,
-        [FromQuery] List<Guid>? producerIds = null,
-        [FromQuery] List<Guid>? countryIds = null)
+       [FromQuery] string? textSubstring = null,
+       [FromQuery] List<Guid>? textColorIds = null,
+       [FromQuery] List<Guid>? bgColorIds = null,
+       [FromQuery] List<Guid>? producerIds = null,
+       [FromQuery] List<Guid>? countryIds = null)
     {
         try
         {

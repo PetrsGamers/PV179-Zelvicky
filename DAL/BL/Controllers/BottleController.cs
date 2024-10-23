@@ -1,7 +1,6 @@
+namespace DAL.BL.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
-namespace DAL.BL.Controllers;
 
 using Constants;
 using DTOs;
@@ -47,28 +46,28 @@ public class BottleController(ApplicationContext context, ILogger<BottleControll
     {
         try
         {
-        var bottle = await context.Bottles
-            .Where(b => b.Id == id)
-            .Select(b => new BottleDto
+            var bottle = await context.Bottles
+                .Where(b => b.Id == id)
+                .Select(b => new BottleDto
+                {
+                    Id = b.Id,
+                    Name = b.Name,
+                    Description = b.Description,
+                    Voltage = b.Voltage,
+                    BottlePicture = b.BottlePicture,
+                    DrinkType = b.DrinkType.ToString(),
+                    Producer = b.ProducerId,
+                    Caps = b.Caps.Select(c => c.Id).ToList(),
+                    IsEditFor = b.IsEditForId
+                })
+                .FirstOrDefaultAsync();
+
+            if (bottle == null)
             {
-                Id = b.Id,
-                Name = b.Name,
-                Description = b.Description,
-                Voltage = b.Voltage,
-                BottlePicture = b.BottlePicture,
-                DrinkType = b.DrinkType.ToString(),
-                Producer = b.ProducerId,
-                Caps = b.Caps.Select(c => c.Id).ToList(),
-                IsEditFor = b.IsEditForId
-            })
-            .FirstOrDefaultAsync();
+                return this.NotFound($"Bottle with ID {id} not found.");
+            }
 
-        if (bottle == null)
-        {
-            return this.NotFound($"Bottle with ID {id} not found.");
-        }
-
-        return this.Ok(bottle);
+            return this.Ok(bottle);
 
         }
         catch (Exception ex)

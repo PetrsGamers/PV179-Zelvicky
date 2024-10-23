@@ -1,7 +1,6 @@
+namespace DAL.BL.Middleware;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-
-namespace DAL.BL.Middleware;
 
 public class LoggerMiddleware(RequestDelegate next, ILogger<LoggerMiddleware> logger)
 {

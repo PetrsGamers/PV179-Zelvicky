@@ -4,11 +4,8 @@ using DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Seeds;
 
-public class ApplicationContext : DbContext
+public class ApplicationContext(DbContextOptions<ApplicationContext> options) : DbContext(options)
 {
-    public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
-    {
-    }
     public DbSet<User> Users { get; set; }
     public DbSet<Album> Albums { get; set; }
     public DbSet<Cap> Caps { get; set; }

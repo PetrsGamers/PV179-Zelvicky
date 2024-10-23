@@ -1,10 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
 namespace DAL.BL.Controllers;
+using Microsoft.AspNetCore.Mvc;
 using DTOs;
 using Entities;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -27,30 +25,30 @@ public class UsersController(ApplicationContext context, ILogger<UsersController
 
     [HttpPost]
     public async Task<IActionResult> CreateUser([FromBody] UserDetailDto userDto)
-{
-    try
     {
-        if (string.IsNullOrEmpty(userDto.Username) || string.IsNullOrEmpty(userDto.Email) || string.IsNullOrEmpty(userDto.Password))
+        try
         {
-            logger.LogError("Username, Email, and Password are required.");
-            return this.BadRequest("Username, Email, and Password are required.");
+            if (string.IsNullOrEmpty(userDto.Username) || string.IsNullOrEmpty(userDto.Email) || string.IsNullOrEmpty(userDto.Password))
+            {
+                logger.LogError("Username, Email, and Password are required.");
+                return this.BadRequest("Username, Email, and Password are required.");
+            }
+
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                Username = userDto.Username,
+                Email = userDto.Email,
+                Password = userDto.Password,
+            };
+
+            context.Users.Add(user);
+            await context.SaveChangesAsync();
+
+            return this.CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
         }
-
-        var user = new User
+        catch (Exception ex)
         {
-            Id = Guid.NewGuid(),
-            Username = userDto.Username,
-            Email = userDto.Email,
-            Password = userDto.Password,
-        };
-
-        context.Users.Add(user);
-        await context.SaveChangesAsync();
-
-        return this.CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
-    }
-    catch (Exception ex)
-    {
             logger.LogError(ex.Message);
             return this.StatusCode(500, "Internal server error.");
         }
@@ -68,11 +66,11 @@ public class UsersController(ApplicationContext context, ILogger<UsersController
             }
 
 
-                user.Username = userDto.Username;
+            user.Username = userDto.Username;
 
-                user.Email = userDto.Email;
+            user.Email = userDto.Email;
 
-                user.Password = userDto.Password;
+            user.Password = userDto.Password;
 
             context.Users.Update(user);
             await context.SaveChangesAsync();

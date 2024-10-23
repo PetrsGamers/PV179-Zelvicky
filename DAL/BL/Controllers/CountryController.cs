@@ -1,7 +1,6 @@
+namespace DAL.BL.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
-namespace DAL.BL.Controllers;
 
 using DTOs;
 using Microsoft.Extensions.Logging;

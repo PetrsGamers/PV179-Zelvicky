@@ -1,11 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
-using DAL.BL.DTOs;
-
 namespace DAL.BL.Controllers;
+using DAL.BL.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
+using System.Collections.Generic;
 using Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 
 [ApiController]

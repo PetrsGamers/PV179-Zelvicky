@@ -1,7 +1,7 @@
 namespace DAL.BL.Middleware;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 public class AuthenticationMiddleware(RequestDelegate next, ILogger<AuthenticationMiddleware> logger)
 {

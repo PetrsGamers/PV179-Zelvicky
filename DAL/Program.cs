@@ -1,4 +1,4 @@
-﻿using DAL;
+using DAL;
 using DAL.BL.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
