@@ -1,9 +1,8 @@
 namespace DAL.BL.Controllers;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
 using DTOs;
 using Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 [ApiController]
@@ -95,6 +94,23 @@ public class ProducerController(ApplicationContext context, ILogger<ProducerCont
     {
         try
         {
+            if (producerDto.Name.Length < 1 && producerDto.City.Length < 1)
+            {
+                return this.BadRequest($"Name and city must be non-empty string.");
+            }
+            var country = await context.Countries.FindAsync(producerDto.Country);
+            if (country == null)
+            {
+                return this.NotFound($"Country with ID {producerDto.Country} not found.");
+            }
+            if (producerDto.IsEditFor != null)
+            {
+                var isEditFor = await context.Producers.FindAsync(producerDto.IsEditFor);
+                if (isEditFor == null)
+                {
+                    return this.NotFound($"Producer with ID {producerDto.Country} not found.");
+                }
+            }
             var producer = new Producer
             {
                 Id = Guid.NewGuid(),
@@ -122,10 +138,27 @@ public class ProducerController(ApplicationContext context, ILogger<ProducerCont
     {
         try
         {
+            if (producerDto.Name.Length < 1 && producerDto.City.Length < 1)
+            {
+                return this.BadRequest($"Name and city must be non-empty string.");
+            }
             var producer = await context.Producers.FindAsync(id);
             if (producer == null)
             {
                 return this.NotFound($"Producer with ID {id} not found.");
+            }
+            var country = await context.Countries.FindAsync(producerDto.Country);
+            if (country == null)
+            {
+                return this.NotFound($"Country with ID {producerDto.Country} not found.");
+            }
+            if (producerDto.IsEditFor != null)
+            {
+                var isEditFor = await context.Producers.FindAsync(producerDto.IsEditFor);
+                if (isEditFor == null)
+                {
+                    return this.NotFound($"Producer with ID {producerDto.Country} not found.");
+                }
             }
 
             producer.Name = producerDto.Name;
