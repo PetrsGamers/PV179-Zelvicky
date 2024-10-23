@@ -10,7 +10,7 @@ public class UserDto
 
     public string Email { get; set; }
 
-    public List<AlbumDto> Albums { get; set; }
+    public List<AlbumDTO> Albums { get; set; }
 
     public string Role { get; set; }
 }
