@@ -1,8 +1,7 @@
 namespace DAL.BL.DTOs;
 
-public class AlbumDto
+public class AlbumInsertDto
 {
-    public Guid Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public bool Public { get; set; }

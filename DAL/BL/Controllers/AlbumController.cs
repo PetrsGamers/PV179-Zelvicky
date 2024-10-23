@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DAL.BL.Controllers;
 
 using DTOs;
+using Entities;
 using Microsoft.Extensions.Logging;
 
 [ApiController]
@@ -16,7 +17,7 @@ public class AlbumController(ApplicationContext context, ILogger<AlbumController
         try
         {
             var albums = await context.Albums
-                .Select(a => new AlbumDto
+                .Select(a => new AlbumDTO()
                 {
                     Id = a.Id,
                     Name = a.Name,
@@ -43,7 +44,7 @@ public class AlbumController(ApplicationContext context, ILogger<AlbumController
         {
             var album = await context.Albums
                 .Where(a => a.Id == id)
-                .Select(a => new AlbumDto
+                .Select(a => new AlbumDTO()
                 {
                     Id = a.Id,
                     Name = a.Name,
@@ -67,6 +68,72 @@ public class AlbumController(ApplicationContext context, ILogger<AlbumController
             return this.StatusCode(500, "Internal server error.");
         }
     }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateAlbum([FromBody] AlbumInsertDto albumInsertDto)
+    {
+        try
+        {
+            if (albumInsertDto == null)
+            {
+                return this.BadRequest("Album data is null.");
+            }
+
+            var album = new Album()
+            {
+                Id = Guid.NewGuid(),
+                Name = albumInsertDto.Name,
+                Description = albumInsertDto.Description,
+                Public = albumInsertDto.Public,
+                UserId = albumInsertDto.User,
+                Caps = new List<Cap>()
+            };
+
+            await context.Albums.AddAsync(album);
+            await context.SaveChangesAsync();
+
+            return this.Ok(album);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return this.StatusCode(500, "Internal server error.");
+        }
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateAlbum(Guid id, [FromBody] AlbumDTO albumDto)
+    {
+        try
+        {
+            if (albumDto == null)
+            {
+                return this.BadRequest("Album data is null.");
+            }
+
+            var existingAlbum = await context.Albums.FindAsync(id);
+            if (existingAlbum == null)
+            {
+                return this.NotFound($"Album with ID {id} not found.");
+            }
+
+            existingAlbum.Name = albumDto.Name;
+            existingAlbum.Description = albumDto.Description;
+            existingAlbum.Public = albumDto.Public;
+            existingAlbum.UserId = albumDto.User;
+
+            context.Albums.Update(existingAlbum);
+            await context.SaveChangesAsync();
+
+            return this.Ok(existingAlbum);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return this.StatusCode(500, "Internal server error.");
+        }
+    }
+
 
 
     [HttpDelete("{id:guid}")]
