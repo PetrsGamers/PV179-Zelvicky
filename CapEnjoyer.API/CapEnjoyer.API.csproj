@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>CapEnjoyer.API</AssemblyName>
+    <RootNamespace>CapEnjoyer.API</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapEnjoyer.DAL", "CapEnjoye
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapEnjoyer.BL", "CapEnjoyer.BL\CapEnjoyer.BL.csproj", "{196A3678-A6D1-4439-8333-0A45A70399B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapEnjoyer.App", "CapEnjoyer.App\CapEnjoyer.App.csproj", "{A3CCBEEB-774A-4924-AC52-DF3625922E21}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapEnjoyer.API", "CapEnjoyer.API\CapEnjoyer.API.csproj", "{A3CCBEEB-774A-4924-AC52-DF3625922E21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
