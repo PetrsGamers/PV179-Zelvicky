@@ -1,6 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{CC14A2B2-E0CB-40AF-8876-385305DAB0C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapEnjoyer.DAL", "CapEnjoyer.DAL\CapEnjoyer.DAL.csproj", "{CC14A2B2-E0CB-40AF-8876-385305DAB0C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapEnjoyer.BL", "CapEnjoyer.BL\CapEnjoyer.BL.csproj", "{196A3678-A6D1-4439-8333-0A45A70399B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapEnjoyer.App", "CapEnjoyer.App\CapEnjoyer.App.csproj", "{A3CCBEEB-774A-4924-AC52-DF3625922E21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +16,13 @@ Global
 		{CC14A2B2-E0CB-40AF-8876-385305DAB0C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC14A2B2-E0CB-40AF-8876-385305DAB0C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC14A2B2-E0CB-40AF-8876-385305DAB0C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{196A3678-A6D1-4439-8333-0A45A70399B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{196A3678-A6D1-4439-8333-0A45A70399B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{196A3678-A6D1-4439-8333-0A45A70399B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{196A3678-A6D1-4439-8333-0A45A70399B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3CCBEEB-774A-4924-AC52-DF3625922E21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3CCBEEB-774A-4924-AC52-DF3625922E21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3CCBEEB-774A-4924-AC52-DF3625922E21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3CCBEEB-774A-4924-AC52-DF3625922E21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
