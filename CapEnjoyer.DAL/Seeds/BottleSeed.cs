@@ -30,7 +30,9 @@ public static class BottleSeed
 
     private static Bottle GenerateBottle(List<Producer> producers, HashSet<string> uniqueNames)
     {
-        string[] firstProperties = ["Small",
+        string[] firstProperties =
+        [
+            "Small",
             "Large",
             "Beautiful",
             "Elegant",
@@ -58,9 +60,12 @@ public static class BottleSeed
             "Amber",
             "Ceramic",
             "Glass",
-            "Wooden"];
+            "Wooden"
+        ];
 
-        string[] secondProperties = ["Baroque",
+        string[] secondProperties =
+        [
+            "Baroque",
             "Pirate",
             "Vintage",
             "Royal",
@@ -89,7 +94,8 @@ public static class BottleSeed
             "Daring",
             "Nautical",
             "Rugged",
-            "Sophisticated"];
+            "Sophisticated"
+        ];
 
         string name;
         do
@@ -97,8 +103,7 @@ public static class BottleSeed
             var first = firstProperties[Random.Next(firstProperties.Length)];
             var second = secondProperties[Random.Next(secondProperties.Length)];
             name = $"{first} {second} bottle";
-        }
-        while (uniqueNames.Contains(name));
+        } while (uniqueNames.Contains(name));
 
         uniqueNames.Add(name);
 
@@ -113,7 +118,6 @@ public static class BottleSeed
             ProducerId = producers[Random.Next(producers.Count)].Id,
         };
     }
-
 
 
     private static DrinkType GetRandomDrinkType()

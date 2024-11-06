@@ -26,8 +26,8 @@ public static class CapSeed
                 CapPicture = "default_cap_picture_url.jpg",
             };
             caps.Add(cap);
-
         }
+
         foreach (var cap in caps)
         {
             modelBuilder.Entity<Cap>().HasData(cap);
@@ -56,11 +56,7 @@ public static class CapSeed
             modelBuilder.Entity<Album>()
                 .HasMany(a => a.Caps)
                 .WithMany(c => c.Albums)
-                .UsingEntity(j => j.HasData(new
-                {
-                    AlbumsId = album.Id,
-                    CapsId = cap.Id
-                }));
+                .UsingEntity(j => j.HasData(new { AlbumsId = album.Id, CapsId = cap.Id }));
         }
     }
 
@@ -71,11 +67,7 @@ public static class CapSeed
             modelBuilder.Entity<Cap>()
                 .HasMany(c => c.TextColors)
                 .WithMany(c => c.CapTexts)
-                .UsingEntity(j => j.HasData(new
-                {
-                    CapTextsId = cap.Id,
-                    TextColorsId = color.Id
-                }));
+                .UsingEntity(j => j.HasData(new { CapTextsId = cap.Id, TextColorsId = color.Id }));
         }
     }
 
@@ -86,11 +78,7 @@ public static class CapSeed
             modelBuilder.Entity<Cap>()
                 .HasMany(c => c.BgColors)
                 .WithMany(c => c.CapBackgrounds)
-                .UsingEntity(j => j.HasData(new
-                {
-                    CapBackgroundsId = cap.Id,
-                    BgColorsId = color.Id
-                }));
+                .UsingEntity(j => j.HasData(new { CapBackgroundsId = cap.Id, BgColorsId = color.Id }));
         }
     }
 
@@ -101,11 +89,7 @@ public static class CapSeed
             modelBuilder.Entity<Cap>()
                 .HasMany(c => c.Bottles)
                 .WithMany(b => b.Caps)
-                .UsingEntity(j => j.HasData(new
-                {
-                    BottlesId = bottle.Id,
-                    CapsId = cap.Id
-                }));
+                .UsingEntity(j => j.HasData(new { BottlesId = bottle.Id, CapsId = cap.Id }));
         }
     }
 
@@ -113,8 +97,10 @@ public static class CapSeed
     {
         if (min <= 0 || min > max)
         {
-            throw new ArgumentOutOfRangeException(nameof(min), "Minimum must be greater than zero and less than or equal to maximum.");
+            throw new ArgumentOutOfRangeException(nameof(min),
+                "Minimum must be greater than zero and less than or equal to maximum.");
         }
+
         max = Math.Min(max, colors.Count);
         var count = Random.Next(min, max + 1);
 
@@ -125,8 +111,17 @@ public static class CapSeed
 
     private static string GenerateUniqueCapName(HashSet<string> uniqueNames)
     {
-        string[] aestheticAdjectives = ["Colorful", "Glossy", "Sleek", "Sparkling", "Textured", "Vibrant", "Elegant", "Modern", "Retro", "Artistic", "Minimalistic", "Shiny", "Festive", "Chic", "Rustic", "Unique", "Classic", "Fancy", "Bold", "Whimsical"];
-        string[] functionalAdjectives = ["Sturdy", "Durable", "Lightweight", "Versatile", "Custom", "Secure", "Innovative", "Practical", "Premium", "Reliable", "Eco-friendly", "Functional", "Heat-resistant", "Waterproof", "Leak-proof", "Tamper-evident", "Insulated", "Safe", "Convenient", "Flexible"];
+        string[] aestheticAdjectives =
+        [
+            "Colorful", "Glossy", "Sleek", "Sparkling", "Textured", "Vibrant", "Elegant", "Modern", "Retro", "Artistic",
+            "Minimalistic", "Shiny", "Festive", "Chic", "Rustic", "Unique", "Classic", "Fancy", "Bold", "Whimsical"
+        ];
+        string[] functionalAdjectives =
+        [
+            "Sturdy", "Durable", "Lightweight", "Versatile", "Custom", "Secure", "Innovative", "Practical", "Premium",
+            "Reliable", "Eco-friendly", "Functional", "Heat-resistant", "Waterproof", "Leak-proof", "Tamper-evident",
+            "Insulated", "Safe", "Convenient", "Flexible"
+        ];
 
         string name;
         do
@@ -134,12 +129,9 @@ public static class CapSeed
             var aestheticAdjective = aestheticAdjectives[Random.Next(aestheticAdjectives.Length)];
             var functionalAdjective = functionalAdjectives[Random.Next(functionalAdjectives.Length)];
             name = $"{aestheticAdjective} {functionalAdjective} cap";
-        }
-        while (uniqueNames.Contains(name));
+        } while (uniqueNames.Contains(name));
 
         uniqueNames.Add(name);
         return name;
     }
-
-
 }
