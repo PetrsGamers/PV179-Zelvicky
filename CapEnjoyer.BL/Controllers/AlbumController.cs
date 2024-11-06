@@ -16,7 +16,7 @@ public class AlbumController(CapEnjoyerDbContext context, ILogger<AlbumControlle
         try
         {
             var albums = await context.Albums
-                .Select(a => new AlbumDTO
+                .Select(a => new AlbumDto
                 {
                     Id = a.Id,
                     Name = a.Name,
@@ -43,7 +43,7 @@ public class AlbumController(CapEnjoyerDbContext context, ILogger<AlbumControlle
         {
             var album = await context.Albums
                 .Where(a => a.Id == id)
-                .Select(a => new AlbumDTO
+                .Select(a => new AlbumDto
                 {
                     Id = a.Id,
                     Name = a.Name,
@@ -73,11 +73,6 @@ public class AlbumController(CapEnjoyerDbContext context, ILogger<AlbumControlle
     {
         try
         {
-            if (albumInsertDto == null)
-            {
-                return this.BadRequest("Album data is null.");
-            }
-
             var album = new Album
             {
                 Id = Guid.NewGuid(),
@@ -101,15 +96,10 @@ public class AlbumController(CapEnjoyerDbContext context, ILogger<AlbumControlle
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateAlbum(Guid id, [FromBody] AlbumDTO albumDto)
+    public async Task<IActionResult> UpdateAlbum(Guid id, [FromBody] AlbumDto albumDto)
     {
         try
         {
-            if (albumDto == null)
-            {
-                return this.BadRequest("Album data is null.");
-            }
-
             var existingAlbum = await context.Albums.FindAsync(id);
             if (existingAlbum == null)
             {
