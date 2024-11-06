@@ -6,9 +6,6 @@ using Seeds;
 
 public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) : DbContext(options)
 {
-    private const string ConnectionString =
-        "Host=localhost;Port=5432;Username=postgres;Password=password;Database=postgres";
-
     public DbSet<User> Users { get; set; }
     public DbSet<Album> Albums { get; set; }
     public DbSet<Cap> Caps { get; set; }
@@ -16,9 +13,6 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
     public DbSet<Bottle> Bottles { get; set; }
     public DbSet<Producer> Producers { get; set; }
     public DbSet<Country> Countries { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql(ConnectionString);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
