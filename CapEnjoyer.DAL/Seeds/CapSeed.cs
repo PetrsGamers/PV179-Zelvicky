@@ -1,6 +1,6 @@
 namespace CapEnjoyer.DAL.Seeds;
 
-using CapEnjoyer.DAL.Entities;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 
 public static class CapSeed
@@ -23,7 +23,7 @@ public static class CapSeed
                 Id = Guid.NewGuid(),
                 TextOnCap = capName,
                 Description = $"This is a unique cap named '{capName}'.",
-                CapPicture = "default_cap_picture_url.jpg",
+                CapPicture = "default_cap_picture_url.jpg"
             };
             caps.Add(cap);
         }

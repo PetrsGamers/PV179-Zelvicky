@@ -1,9 +1,7 @@
 namespace CapEnjoyer.DAL.Seeds;
 
-using System;
-using System.Collections.Generic;
-using CapEnjoyer.DAL.Constants;
-using CapEnjoyer.DAL.Entities;
+using Constants;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 
 public static class BottleSeed
@@ -115,7 +113,7 @@ public static class BottleSeed
             Voltage = Math.Round(Random.NextDouble() * 12, 2),
             BottlePicture = "default_picture_url.jpg",
             DrinkType = GetRandomDrinkType(),
-            ProducerId = producers[Random.Next(producers.Count)].Id,
+            ProducerId = producers[Random.Next(producers.Count)].Id
         };
     }
 

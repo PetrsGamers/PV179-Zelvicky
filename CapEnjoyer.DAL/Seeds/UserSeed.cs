@@ -1,7 +1,7 @@
 namespace CapEnjoyer.DAL.Seeds;
 
-using CapEnjoyer.DAL.Constants;
-using CapEnjoyer.DAL.Entities;
+using Constants;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 
 public static class UserSeed
