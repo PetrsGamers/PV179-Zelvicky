@@ -11,18 +11,18 @@ using Microsoft.EntityFrameworkCore;
 public class LeaderboardController(CapEnjoyerDbContext context, ILogger<LeaderboardController> logger) : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetLeaderboard()
+    public async Task<IActionResult> GetLeaderboard()
     {
         try
         {
-            var userIds = context.Users.Select(u => u.Id).ToList();
+            var userIds = await context.Users.Select(u => u.Id).ToListAsync();
             List<LeaderboardDto> leaderboard = [];
             foreach (var userId in userIds)
             {
-                var user = context.Users
+                var user = await context.Users
                     .Include(u => u.Albums)
                     .ThenInclude(a => a.Caps)
-                    .FirstOrDefault(u => u.Id == userId);
+                    .FirstOrDefaultAsync(u => u.Id == userId);
 
                 if (user == null)
                 {

@@ -4,17 +4,18 @@ using DAL;
 using DAL.Entities;
 using DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
 public class UsersController(CapEnjoyerDbContext context, ILogger<UsersController> logger) : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetUsers()
+    public async Task<IActionResult> GetUsers()
     {
         try
         {
-            var users = context.Users.ToList();
+            var users = await context.Users.ToListAsync();
             return this.Ok(users);
         }
         catch (Exception ex)
