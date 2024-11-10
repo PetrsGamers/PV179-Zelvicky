@@ -1,6 +1,6 @@
 namespace CapEnjoyer.DAL.Entities;
 
-public class Color
+public record Color
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

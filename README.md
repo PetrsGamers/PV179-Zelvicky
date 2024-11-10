@@ -23,7 +23,7 @@ Tento projekt pomáhá sběratelům udržet přehled o jejich sbírce a zefektiv
 ### Setup DB
 Spuštění databáze
 ```
-docker compose up
+docker compose up -d
 ```
 
 Vytvoření migrace, spuštění migrace

@@ -1,6 +1,6 @@
 namespace CapEnjoyer.DAL.Entities;
 
-public class Country
+public record Country
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

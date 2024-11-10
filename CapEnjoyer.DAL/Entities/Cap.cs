@@ -1,6 +1,6 @@
 namespace CapEnjoyer.DAL.Entities;
 
-public class Cap
+public record Cap
 {
     public Guid Id { get; set; }
     public string TextOnCap { get; set; }

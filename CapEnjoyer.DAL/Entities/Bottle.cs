@@ -2,7 +2,7 @@ namespace CapEnjoyer.DAL.Entities;
 
 using Constants;
 
-public class Bottle
+public record Bottle
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

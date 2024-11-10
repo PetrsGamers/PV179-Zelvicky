@@ -1,6 +1,6 @@
 namespace CapEnjoyer.DAL.Entities;
 
-public class Producer
+public record Producer
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

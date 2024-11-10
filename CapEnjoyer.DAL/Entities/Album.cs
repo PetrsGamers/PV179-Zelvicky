@@ -1,6 +1,6 @@
 namespace CapEnjoyer.DAL.Entities;
 
-public class Album
+public record Album
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

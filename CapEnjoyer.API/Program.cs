@@ -1,17 +1,21 @@
 using CapEnjoyer.BL.Middleware;
 using CapEnjoyer.DAL;
+using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-const string ConnectionString = "Host=localhost;Port=5432;Username=postgres;Password=password;Database=postgres";
+Env.Load();
+var connectionString = $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
+                       $"Port={Environment.GetEnvironmentVariable("DB_PORT")};" +
+                       $"Username={Environment.GetEnvironmentVariable("DB_USERNAME")};" +
+                       $"Password={Environment.GetEnvironmentVariable("DB_PASSWORD")};" +
+                       $"Database={Environment.GetEnvironmentVariable("DB_NAME")}";
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<CapEnjoyerDbContext>(options =>
-    options.UseNpgsql(ConnectionString));
-
-
+builder.Services.AddDbContextFactory<CapEnjoyerDbContext>(
+    options => options.UseNpgsql(connectionString));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -28,6 +32,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         {
             new OpenApiSecurityScheme
+
             {
                 Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
             },

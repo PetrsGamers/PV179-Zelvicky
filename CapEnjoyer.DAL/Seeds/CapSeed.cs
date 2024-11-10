@@ -1,48 +1,78 @@
 namespace CapEnjoyer.DAL.Seeds;
 
+using Bogus;
+using Constants;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 
 public static class CapSeed
 {
-    private static readonly Random Random = new();
+    private const string CapSeedString = "default_cap_seed";
+
+    private static readonly List<string> AestheticProperties =
+    [
+        "Colorful", "Glossy", "Sleek", "Sparkling", "Textured", "Vibrant", "Elegant", "Modern", "Retro", "Artistic",
+        "Minimalistic", "Shiny", "Festive", "Chic", "Rustic", "Unique", "Classic", "Fancy", "Bold", "Whimsical"
+    ];
+    private static readonly List<string> FunctionalProperties =
+    [
+        "Sturdy", "Durable", "Lightweight", "Versatile", "Custom", "Secure", "Innovative", "Practical", "Premium",
+        "Reliable", "Eco-friendly", "Functional", "Heat-resistant", "Waterproof", "Leak-proof", "Tamper-evident",
+        "Insulated", "Safe", "Convenient", "Flexible"
+    ];
+
+    private static readonly List<string> CapSynonyms =
+        [
+            "cap",
+            "lid",
+            "seal",
+            "stopper",
+            "top",
+            "crown seal",
+            "crown cap",
+            "crown cork",
+        ];
+
+
 
     public static List<Cap> Seed(ModelBuilder modelBuilder, List<Color> colors, List<Album> albums,
         List<Bottle> bottles)
     {
         var caps = new List<Cap>();
-        var uniqueNames = new HashSet<string>();
+        Randomizer.Seed = SeedUtils.GetRandom(CapSeedString);
+        var capFaker = new Faker<Cap>()
+            .RuleFor(c => c.Id, f => f.Random.Guid())
+            .RuleFor(c => c.TextOnCap, f => f.PickRandom(AestheticProperties) + " " + f.PickRandom(FunctionalProperties) + " " + f.PickRandom(CapSynonyms))
+            .RuleFor(c => c.CapPicture, f => "default_cap_picture_url.jpg");
 
         for (var i = 0; i < 150; i++)
         {
-            var capName = GenerateUniqueCapName(uniqueNames);
+            var cap = capFaker.Generate();
+            cap.Description = $"This is a unique cap named '{cap.TextOnCap}'.";
 
-
-            var cap = new Cap
+            if (caps.Any(c => c.TextOnCap == cap.TextOnCap))
             {
-                Id = Guid.NewGuid(),
-                TextOnCap = capName,
-                Description = $"This is a unique cap named '{capName}'.",
-                CapPicture = "default_cap_picture_url.jpg"
-            };
+                i--;
+                continue;
+            }
             caps.Add(cap);
         }
+        modelBuilder.Entity<Cap>().HasData(caps);
 
+
+        var faker = new Faker();
         foreach (var cap in caps)
         {
-            modelBuilder.Entity<Cap>().HasData(cap);
-
-            List<Bottle> chosenBottles = [bottles[Random.Next(bottles.Count)]];
+            var chosenBottles = faker.Random.ListItems(bottles, faker.Random.Number(1, 3)).ToList();
             AddBottlesToCap(modelBuilder, chosenBottles, cap);
 
-            var chosenAlbums =
-                albums.OrderBy(a => Random.Next()).Take(Random.Next(0, albums.Count + 1)).ToList();
+            var chosenAlbums = faker.Random.ListItems(albums, faker.Random.Number(0, albums.Count / 2)).ToList();
             AddAlbumsToCap(modelBuilder, chosenAlbums, cap);
 
-            var chosenTextColors = GetRandomColors(colors, 1, 2);
+            var chosenTextColors = faker.Random.ListItems(colors, faker.Random.Number(1, 2)).ToList();
             AddTextColorsToCap(modelBuilder, chosenTextColors, cap);
 
-            var chosenBackgroundColors = GetRandomColors(colors, 1, 3);
+            var chosenBackgroundColors = faker.Random.ListItems(colors, faker.Random.Number(1, 3)).ToList();
             AddBackgroundColorsToCap(modelBuilder, chosenBackgroundColors, cap);
         }
 
@@ -91,47 +121,5 @@ public static class CapSeed
                 .WithMany(b => b.Caps)
                 .UsingEntity(j => j.HasData(new { BottlesId = bottle.Id, CapsId = cap.Id }));
         }
-    }
-
-    private static List<Color> GetRandomColors(List<Color> colors, int min, int max)
-    {
-        if (min <= 0 || min > max)
-        {
-            throw new ArgumentOutOfRangeException(nameof(min),
-                "Minimum must be greater than zero and less than or equal to maximum.");
-        }
-
-        max = Math.Min(max, colors.Count);
-        var count = Random.Next(min, max + 1);
-
-        var shuffledColors = colors.OrderBy(c => Random.Next()).ToList();
-
-        return shuffledColors.Take(count).ToList();
-    }
-
-    private static string GenerateUniqueCapName(HashSet<string> uniqueNames)
-    {
-        string[] aestheticAdjectives =
-        [
-            "Colorful", "Glossy", "Sleek", "Sparkling", "Textured", "Vibrant", "Elegant", "Modern", "Retro", "Artistic",
-            "Minimalistic", "Shiny", "Festive", "Chic", "Rustic", "Unique", "Classic", "Fancy", "Bold", "Whimsical"
-        ];
-        string[] functionalAdjectives =
-        [
-            "Sturdy", "Durable", "Lightweight", "Versatile", "Custom", "Secure", "Innovative", "Practical", "Premium",
-            "Reliable", "Eco-friendly", "Functional", "Heat-resistant", "Waterproof", "Leak-proof", "Tamper-evident",
-            "Insulated", "Safe", "Convenient", "Flexible"
-        ];
-
-        string name;
-        do
-        {
-            var aestheticAdjective = aestheticAdjectives[Random.Next(aestheticAdjectives.Length)];
-            var functionalAdjective = functionalAdjectives[Random.Next(functionalAdjectives.Length)];
-            name = $"{aestheticAdjective} {functionalAdjective} cap";
-        } while (uniqueNames.Contains(name));
-
-        uniqueNames.Add(name);
-        return name;
     }
 }
