@@ -3,7 +3,6 @@ namespace CapEnjoyer.DAL.Seeds;
 using Bogus;
 using Constants;
 using Entities;
-using Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 public static class AlbumSeed
@@ -18,7 +17,7 @@ public static class AlbumSeed
     [
         ("Czech caps", "A collection of czech beer caps."),
         ("Foreign caps", "A collection of foreign caps."),
-        ("Soft drinks", "It's miracle, but sometimes i drink even some non-alcoholic drinks."),
+        ("Soft drinks", "It's miracle, but sometimes i drink even some non-alcoholic drinks.")
     ];
 
     private static readonly List<(string Name, string Description)> SenatorAlbums =
@@ -31,7 +30,7 @@ public static class AlbumSeed
     [
         ("Norge caps", "Private norge bottle cap collection."),
         ("GORE-TEX collection", "Caps with waterproof goretex™ membrate."),
-        ("Ove's album", "My host's collection."),
+        ("Ove's album", "My host's collection.")
     ];
 
     private static readonly List<(string Name, string Description)> TedAlbums =

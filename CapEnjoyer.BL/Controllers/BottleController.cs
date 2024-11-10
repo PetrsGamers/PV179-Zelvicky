@@ -5,7 +5,6 @@ using DAL.Constants;
 using DAL.Entities;
 using DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]

@@ -3,7 +3,6 @@ namespace CapEnjoyer.DAL.Seeds;
 using Bogus;
 using Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 public static class CountrySeed
 {

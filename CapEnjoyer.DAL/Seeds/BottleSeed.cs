@@ -34,11 +34,11 @@ public static class BottleSeed
             .RuleFor(b => b.Name, f => f.PickRandom(FirstProperties) + " " + f.PickRandom(SecondProperties) + " bottle")
             .RuleFor(b => b.BottlePicture, f => "default_picture_url.jpg")
             .RuleFor(b => b.Description, (f, b) => $"A {b.Name} for various beverages.")
-            .RuleFor(b => b.DrinkType, (f) => f.PickRandom<DrinkType>())
-            .RuleFor(b => b.ProducerId, (f) => f.PickRandom(producers).Id);
+            .RuleFor(b => b.DrinkType, f => f.PickRandom<DrinkType>())
+            .RuleFor(b => b.ProducerId, f => f.PickRandom(producers).Id);
 
 
-        for (var i = 0; i < 150; i++)
+        for (var i = 0; i < 50; i++)
         {
             var bottle = bottleFaker.Generate();
             if (bottles.Any(b => b.Name == bottle.Name))
@@ -46,6 +46,7 @@ public static class BottleSeed
                 i--;
                 continue;
             }
+
             bottles.Add(bottle);
         }
 

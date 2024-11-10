@@ -3,11 +3,11 @@ namespace CapEnjoyer.DAL.Seeds;
 using Bogus;
 using Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 public static class ColorSeed
 {
     private const string ColorsSeedString = "basic_color_seed";
+
     private static readonly List<(string Name, string HexCode)> DefaultColors =
     [
         ("Black", "#141519"),

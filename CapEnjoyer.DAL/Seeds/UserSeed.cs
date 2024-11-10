@@ -17,8 +17,8 @@ public static class UserSeed
 
         var userFaker = new Faker<User>()
             .RuleFor(u => u.Id, f => f.Random.Guid())
-            .RuleFor(u => u.Username, (f) => f.Name.FirstName())
-            .RuleFor(u => u.Email, (f) => f.Internet.Email())
+            .RuleFor(u => u.Username, f => f.Name.FirstName())
+            .RuleFor(u => u.Email, f => f.Internet.Email())
             .RuleFor(u => u.Password, "password")
             .RuleFor(u => u.Role, (f, u) => u.Username == "admin" ? Role.Admin : Role.User);
 
