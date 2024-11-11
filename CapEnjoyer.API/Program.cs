@@ -46,7 +46,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseMiddleware<LoggerMiddleware>();
-
+app.UseMiddleware<ErrorLoggingMiddleware>();
 app.UseMiddleware<AuthenticationMiddleware>();
 
 app.UseHttpsRedirection();
