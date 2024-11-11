@@ -5,6 +5,7 @@ public class CapToAlbum
     public CapToAlbum()
     {
     }
+
     public CapToAlbum(Guid capId, Cap cap, Guid albumId, Album album)
     {
         this.CapId = capId;
@@ -12,6 +13,7 @@ public class CapToAlbum
         this.AlbumId = albumId;
         this.Album = album;
     }
+
     public Guid CapId { get; set; }
     public Cap Cap { get; set; }
 

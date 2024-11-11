@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore;
 public static class AlbumSeed
 {
     private const string DavidAlbumSeedString = "david_album_seed";
-    private const string SenatorAlbumSeedString = "david_album_seed";
-    private const string GoretexakAlbumSeedString = "david_album_seed";
-    private const string TedAlbumSeedString = "david_album_seed";
-    private const string MonkeSeedString = "david_album_seed";
+    private const string SenatorAlbumSeedString = "senator_album_seed";
+    private const string GoretexakAlbumSeedString = "goretexak_album_seed";
+    private const string TedAlbumSeedString = "ted_album_seed";
+    private const string MonkeSeedString = "monke_album_seed";
 
     private static readonly List<(string Name, string Description)> BivaDAlbums =
     [

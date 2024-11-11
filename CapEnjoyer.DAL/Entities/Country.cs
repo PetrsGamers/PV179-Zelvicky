@@ -6,9 +6,9 @@ public class Country
 
     public Country(Guid? id, string name, List<Producer> producers)
     {
-        Id = id ?? Guid.NewGuid();
-        Name = name;
-        Producers = producers;
+        this.Id = id ?? Guid.NewGuid();
+        this.Name = name;
+        this.Producers = producers;
     }
 
     public Guid Id { get; set; }

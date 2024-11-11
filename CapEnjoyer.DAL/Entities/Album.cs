@@ -4,7 +4,8 @@ public class Album
 {
     public Album() { }
 
-    public Album(Guid? id, string name, string description, bool @public, Guid userId, User user, List<CapToAlbum>? capLinks = null)
+    public Album(Guid? id, string name, string description, bool @public, Guid userId, User user,
+        List<CapToAlbum>? capLinks = null)
     {
         this.Id = id ?? Guid.NewGuid();
         this.Name = name;

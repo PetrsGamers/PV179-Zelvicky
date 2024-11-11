@@ -1,5 +1,6 @@
 namespace CapEnjoyer.DAL.Seeds;
 
+using System.Globalization;
 using Bogus;
 using Constants;
 using Entities;
@@ -8,6 +9,9 @@ using Microsoft.EntityFrameworkCore;
 public static class BottleSeed
 {
     private const string BottleSeedString = "default_bottle_seed";
+    private const string DefaultBottlePicture = "default_picture_url.jpg";
+    private const string DescriptionTemplate = "A {0} for various beverages.";
+
 
     private static readonly List<string> FirstProperties =
     [
@@ -32,8 +36,9 @@ public static class BottleSeed
             .RuleFor(b => b.Id, f => f.Random.Guid())
             .RuleFor(b => b.Voltage, f => Math.Round(f.Random.Float(3, 8), 2))
             .RuleFor(b => b.Name, f => f.PickRandom(FirstProperties) + " " + f.PickRandom(SecondProperties) + " bottle")
-            .RuleFor(b => b.BottlePicture, f => "default_picture_url.jpg")
-            .RuleFor(b => b.Description, (f, b) => $"A {b.Name} for various beverages.")
+            .RuleFor(b => b.BottlePicture, _ => DefaultBottlePicture)
+            .RuleFor(b => b.Description,
+                (f, b) => string.Format(CultureInfo.InvariantCulture, DescriptionTemplate, b.Name))
             .RuleFor(b => b.DrinkType, f => f.PickRandom<DrinkType>())
             .RuleFor(b => b.ProducerId, f => f.PickRandom(producers).Id);
 
@@ -48,6 +53,12 @@ public static class BottleSeed
             }
 
             bottles.Add(bottle);
+        }
+
+        for (var i = 10; i < 14; i++)
+        {
+            bottles[i].Description = $"Updated description {i}";
+            bottles[i].IsEditForId = bottles[1].Id;
         }
 
         modelBuilder.Entity<Bottle>().HasData(bottles);

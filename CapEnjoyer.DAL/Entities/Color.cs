@@ -4,13 +4,14 @@ public class Color
 {
     public Color() { }
 
-    public Color(Guid? id, string name, string hexCode, List<CapToTextColor>? capTextLinks = null, List<CapToBackgroundColor>? capBackgroundLinks = null)
+    public Color(Guid? id, string name, string hexCode, List<CapToTextColor>? capTextLinks = null,
+        List<CapToBackgroundColor>? capBackgroundLinks = null)
     {
-        Id = id ?? Guid.NewGuid();
-        Name = name;
-        HexCode = hexCode;
-        CapTextLinks = capTextLinks ?? new List<CapToTextColor>();
-        CapBackgroundLinks = capBackgroundLinks ?? new List<CapToBackgroundColor>();
+        this.Id = id ?? Guid.NewGuid();
+        this.Name = name;
+        this.HexCode = hexCode;
+        this.CapTextLinks = capTextLinks ?? new List<CapToTextColor>();
+        this.CapBackgroundLinks = capBackgroundLinks ?? new List<CapToBackgroundColor>();
     }
 
     public Guid Id { get; set; }

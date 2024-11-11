@@ -236,6 +236,10 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
         var producers = ProducerSeed.Seed(modelBuilder, countries);
         var bottles = BottleSeed.Seed(modelBuilder, producers);
 
-        var caps = CapSeed.Seed(modelBuilder, colors, albums, bottles);
+        var caps = CapSeed.Seed(modelBuilder);
+        var capTextColors = CapToTextColorSeed.Seed(modelBuilder, caps, colors);
+        var capBackgroundColors = CapToBackgroundColorSeed.Seed(modelBuilder, caps, colors);
+        var capAlbums = CapToAlbumSeed.Seed(modelBuilder, caps, albums);
+        var capBottles = CapToBottleSeed.Seed(modelBuilder, caps, bottles);
     }
 }

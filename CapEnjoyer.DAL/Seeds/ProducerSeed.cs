@@ -65,6 +65,12 @@ public static class ProducerSeed
             producers.AddRange(GenerateProducersForCountry(seedString, country.Id, producerInfo, producerFaker));
         }
 
+        for (var i = 10; i < 13; i++)
+        {
+            producers[i].Description = $"Updated description {i}";
+            producers[i].IsEditForId = producers[1].Id;
+        }
+
         modelBuilder.Entity<Producer>().HasData(producers);
         return producers;
     }

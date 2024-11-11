@@ -2,19 +2,18 @@ namespace CapEnjoyer.DAL.Entities;
 
 using Constants;
 
-
 public class User
 {
     public User() { }
 
     public User(Guid? id, string username, string email, string password, List<Album> albums, Role role)
     {
-        Id = id ?? Guid.NewGuid();
-        Username = username;
-        Email = email;
-        Password = password;
-        Albums = albums ?? new List<Album>();  // Default empty list if null
-        Role = role;
+        this.Id = id ?? Guid.NewGuid();
+        this.Username = username;
+        this.Email = email;
+        this.Password = password;
+        this.Albums = albums ?? new List<Album>(); // Default empty list if null
+        this.Role = role;
     }
 
     public Guid Id { get; set; }
