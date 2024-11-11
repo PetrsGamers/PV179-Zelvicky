@@ -1,0 +1,35 @@
+image: mcr.microsoft.com/dotnet/sdk:8.0
+
+stages:
+  - build
+  - test
+
+variables:
+  ASPNETCORE_ENVIRONMENT: "Test"
+
+before_script:
+  - apt-get update -qq
+
+build-job:
+  tags:
+    - shared-fi
+  stage: build
+  script:
+    - dotnet restore
+    - dotnet build
+
+test-job:
+  tags:
+    - shared-fi
+  stage: test
+  script:
+    - dotnet test Tests --collect="XPlat Code Coverage" --logger:"junit;LogFilePath=testresult.xml" --results-directory:./Coverage
+  artifacts:
+    reports:
+      junit:
+        - "*/testresult.xml"
+      coverage_report:
+        coverage_format: cobertura
+        path: "./Coverage/*/coverage.cobertura.xml"
+    paths:
+      - "./Coverage/*.*" # collect coverage HTMls
