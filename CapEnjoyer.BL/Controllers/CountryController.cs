@@ -12,42 +12,26 @@ public class CountryController(CapEnjoyerDbContext context, ILogger<CountryContr
     [HttpGet]
     public async Task<IActionResult> GetAllCountries()
     {
-        try
-        {
-            var countries = await context.Countries
-                .Select(c => new CountryDto { Id = c.Id, Name = c.Name })
-                .ToListAsync();
+        var countries = await context.Countries
+            .Select(c => new CountryDto { Id = c.Id, Name = c.Name })
+            .ToListAsync();
 
-            return this.Ok(countries);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
-        }
+        return this.Ok(countries);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetCountryById(Guid id)
     {
-        try
-        {
-            var country = await context.Countries
-                .Where(c => c.Id == id)
-                .Select(c => new CountryDto { Id = c.Id, Name = c.Name })
-                .FirstOrDefaultAsync();
+        var country = await context.Countries
+            .Where(c => c.Id == id)
+            .Select(c => new CountryDto { Id = c.Id, Name = c.Name })
+            .FirstOrDefaultAsync();
 
-            if (country == null)
-            {
-                return this.NotFound($"Country with ID {id} not found.");
-            }
-
-            return this.Ok(country);
-        }
-        catch (Exception ex)
+        if (country == null)
         {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
+            return this.NotFound($"Country with ID {id} not found.");
         }
+
+        return this.Ok(country);
     }
 }
