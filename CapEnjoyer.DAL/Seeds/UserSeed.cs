@@ -21,7 +21,7 @@ public static class UserSeed
             .RuleFor(u => u.Username, f => f.Name.FirstName())
             .RuleFor(u => u.Email, f => f.Internet.Email())
             .RuleFor(u => u.Password, Password)
-            .RuleFor(u => u.Role, (f, u) => u.Username == "admin" ? Role.Admin : Role.User);
+            .RuleFor(u => u.Role, (_, u) => u.Username == "admin" ? Role.Admin : Role.User);
 
         List<User> users = [];
         foreach (var userName in DefaultUsers)

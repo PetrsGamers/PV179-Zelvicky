@@ -41,7 +41,7 @@ public static class CapSeed
                      f.PickRandom(CapSynonyms))
             .RuleFor(c => c.CapPicture, _ => DefaultCapPicture)
             .RuleFor(c => c.Description,
-                (f, u) => string.Format(CultureInfo.InvariantCulture, DescriptionTemplate, u.TextOnCap));
+                (_, u) => string.Format(CultureInfo.InvariantCulture, DescriptionTemplate, u.TextOnCap));
 
         for (var i = 0; i < 150; i++)
         {

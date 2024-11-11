@@ -16,7 +16,7 @@ public class ErrorLoggingMiddleware(RequestDelegate next, ILogger<ErrorLoggingMi
 
         if (context.Response.StatusCode == StatusCodes.Status500InternalServerError && !context.Response.HasStarted)
         {
-            logger.LogError("A 500 status code was encountered without an exception.");
+            logger.LogError("A 500 status code was encountered without an exception");
             await HandleExceptionAsync(context);
         }
     }

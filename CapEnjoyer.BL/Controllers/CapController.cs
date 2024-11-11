@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CapController(CapEnjoyerDbContext context, ILogger<CapController> logger) : ControllerBase
+public class CapController(CapEnjoyerDbContext context) : ControllerBase
 {
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetCapById(Guid id)

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
-public class LeaderboardController(CapEnjoyerDbContext context, ILogger<LeaderboardController> logger) : ControllerBase
+public class LeaderboardController(CapEnjoyerDbContext context) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetLeaderboard()

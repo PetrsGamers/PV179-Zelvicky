@@ -6,13 +6,13 @@ public class User
 {
     public User() { }
 
-    public User(Guid? id, string username, string email, string password, List<Album> albums, Role role)
+    public User(Guid? id, string username, string email, string password, Role role, List<Album>? albums = null)
     {
         this.Id = id ?? Guid.NewGuid();
         this.Username = username;
         this.Email = email;
         this.Password = password;
-        this.Albums = albums ?? new List<Album>(); // Default empty list if null
+        this.Albums = albums ?? [];
         this.Role = role;
     }
 

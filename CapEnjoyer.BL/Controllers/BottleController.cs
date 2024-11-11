@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BottleController(CapEnjoyerDbContext context, ILogger<BottleController> logger) : ControllerBase
+public class BottleController(CapEnjoyerDbContext context) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllBottles()

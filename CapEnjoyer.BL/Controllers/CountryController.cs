@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CountryController(CapEnjoyerDbContext context, ILogger<CountryController> logger) : ControllerBase
+public class CountryController(CapEnjoyerDbContext context) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllCountries()

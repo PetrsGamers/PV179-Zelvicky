@@ -10,12 +10,12 @@ public class AuthenticationMiddleware(RequestDelegate next, ILogger<Authenticati
         var isTokenValueCorrect = isAuthorizationHeaderPresent && token == HardCodedToken;
         if (isAuthorizationHeaderPresent && isTokenValueCorrect)
         {
-            logger.LogInformation("User authenticated successfully.");
+            logger.LogInformation("User authenticated successfully");
             await next(context);
         }
         else
         {
-            logger.LogWarning("Unauthorized access attempt.");
+            logger.LogWarning("Unauthorized access attempt");
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             await context.Response.WriteAsync("Unauthorized");
         }

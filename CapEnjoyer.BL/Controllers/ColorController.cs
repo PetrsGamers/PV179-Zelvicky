@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ColorController(CapEnjoyerDbContext context, ILogger<ColorController> logger) : ControllerBase
+public class ColorController(CapEnjoyerDbContext context) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllColors()

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController(CapEnjoyerDbContext context, ILogger<UsersController> logger) : ControllerBase
+public class UsersController(CapEnjoyerDbContext context) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetUsers()

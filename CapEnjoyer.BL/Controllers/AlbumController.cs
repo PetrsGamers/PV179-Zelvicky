@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AlbumController(CapEnjoyerDbContext context, ILogger<AlbumController> logger) : ControllerBase
+public class AlbumController(CapEnjoyerDbContext context) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllAlbums()

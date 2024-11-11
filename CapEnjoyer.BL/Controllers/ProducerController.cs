@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProducerController(CapEnjoyerDbContext context, ILogger<ProducerController> logger) : ControllerBase
+public class ProducerController(CapEnjoyerDbContext context) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllProducers()

@@ -38,7 +38,7 @@ public static class BottleSeed
             .RuleFor(b => b.Name, f => f.PickRandom(FirstProperties) + " " + f.PickRandom(SecondProperties) + " bottle")
             .RuleFor(b => b.BottlePicture, _ => DefaultBottlePicture)
             .RuleFor(b => b.Description,
-                (f, b) => string.Format(CultureInfo.InvariantCulture, DescriptionTemplate, b.Name))
+                (_, b) => string.Format(CultureInfo.InvariantCulture, DescriptionTemplate, b.Name))
             .RuleFor(b => b.DrinkType, f => f.PickRandom<DrinkType>())
             .RuleFor(b => b.ProducerId, f => f.PickRandom(producers).Id);
 
