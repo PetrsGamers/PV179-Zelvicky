@@ -1,9 +1,7 @@
 namespace CapEnjoyer.DAL.Seeds;
 
-using System;
-using System.Collections.Generic;
-using CapEnjoyer.DAL.Constants;
-using CapEnjoyer.DAL.Entities;
+using Constants;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 
 public static class BottleSeed
@@ -30,7 +28,9 @@ public static class BottleSeed
 
     private static Bottle GenerateBottle(List<Producer> producers, HashSet<string> uniqueNames)
     {
-        string[] firstProperties = ["Small",
+        string[] firstProperties =
+        [
+            "Small",
             "Large",
             "Beautiful",
             "Elegant",
@@ -58,9 +58,12 @@ public static class BottleSeed
             "Amber",
             "Ceramic",
             "Glass",
-            "Wooden"];
+            "Wooden"
+        ];
 
-        string[] secondProperties = ["Baroque",
+        string[] secondProperties =
+        [
+            "Baroque",
             "Pirate",
             "Vintage",
             "Royal",
@@ -89,7 +92,8 @@ public static class BottleSeed
             "Daring",
             "Nautical",
             "Rugged",
-            "Sophisticated"];
+            "Sophisticated"
+        ];
 
         string name;
         do
@@ -97,8 +101,7 @@ public static class BottleSeed
             var first = firstProperties[Random.Next(firstProperties.Length)];
             var second = secondProperties[Random.Next(secondProperties.Length)];
             name = $"{first} {second} bottle";
-        }
-        while (uniqueNames.Contains(name));
+        } while (uniqueNames.Contains(name));
 
         uniqueNames.Add(name);
 
@@ -110,10 +113,9 @@ public static class BottleSeed
             Voltage = Math.Round(Random.NextDouble() * 12, 2),
             BottlePicture = "default_picture_url.jpg",
             DrinkType = GetRandomDrinkType(),
-            ProducerId = producers[Random.Next(producers.Count)].Id,
+            ProducerId = producers[Random.Next(producers.Count)].Id
         };
     }
-
 
 
     private static DrinkType GetRandomDrinkType()

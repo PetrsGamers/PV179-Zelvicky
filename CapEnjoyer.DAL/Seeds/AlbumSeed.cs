@@ -1,18 +1,22 @@
 namespace CapEnjoyer.DAL.Seeds;
 
-using CapEnjoyer.DAL.Entities;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 
 public static class AlbumSeed
 {
     public static List<Album> Seed(ModelBuilder modelBuilder, List<User> users)
     {
-        var bivadId = users.Find(user => user.Username == "bivaD")?.Id ?? throw new Exception("User 'bivaD' not found.");
-        var goretexakId = users.Find(user => user.Username == "goretexák")?.Id ?? throw new Exception("User 'bivvaD' not found.");
-        var tedId = users.Find(user => user.Username == "ucitelkaLover69")?.Id ?? throw new Exception("User 'bivvvaD' not found.");
-        var petaId = users.Find(user => user.Username == "koviďák")?.Id ?? throw new Exception("User 'bivaD' vnot found.");
-        var monkeId = users.Find(user => user.Username == "Igorko")?.Id ?? throw new Exception("User 'bivaD' vvnot found.");
-
+        var bivadId = users.Find(user => user.Username == "bivaD")?.Id ??
+                      throw new Exception("User 'bivaD' not found.");
+        var goretexakId = users.Find(user => user.Username == "goretexák")?.Id ??
+                          throw new Exception("User 'goretexák' not found.");
+        var tedId = users.Find(user => user.Username == "ucitelkaLover69")?.Id ??
+                    throw new Exception("User 'ucitelkaLover69' not found.");
+        var petaId = users.Find(user => user.Username == "koviďák")?.Id ??
+                     throw new Exception("User 'koviďák' not found.");
+        var monkeId = users.Find(user => user.Username == "Igorko")?.Id ??
+                      throw new Exception("User 'Igorko' not found.");
 
 
         var albums = new List<Album>([

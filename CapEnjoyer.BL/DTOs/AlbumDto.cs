@@ -1,6 +1,6 @@
 namespace CapEnjoyer.BL.DTOs;
 
-public class AlbumDTO : AlbumInsertDto
+public class AlbumDto : AlbumInsertDto
 {
     public Guid Id { get; set; }
 }

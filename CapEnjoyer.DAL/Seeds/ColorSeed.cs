@@ -1,6 +1,6 @@
 namespace CapEnjoyer.DAL.Seeds;
 
-using CapEnjoyer.DAL.Entities;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 
 public static class ColorSeed
