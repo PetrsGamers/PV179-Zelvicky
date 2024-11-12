@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapEnjoyer.BL", "CapEnjoyer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapEnjoyer.API", "CapEnjoyer.API\CapEnjoyer.API.csproj", "{A3CCBEEB-774A-4924-AC52-DF3625922E21}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{02D6F3B9-B9CA-46FD-823B-58B7D940A491}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{A3CCBEEB-774A-4924-AC52-DF3625922E21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3CCBEEB-774A-4924-AC52-DF3625922E21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3CCBEEB-774A-4924-AC52-DF3625922E21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02D6F3B9-B9CA-46FD-823B-58B7D940A491}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02D6F3B9-B9CA-46FD-823B-58B7D940A491}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02D6F3B9-B9CA-46FD-823B-58B7D940A491}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02D6F3B9-B9CA-46FD-823B-58B7D940A491}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
