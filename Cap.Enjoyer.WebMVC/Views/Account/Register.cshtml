@@ -1,0 +1,40 @@
+@model RegisterViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>title</title>
+</head>
+<body>
+<div>
+    <h2>Register</h2>
+
+    <form asp-action="Register" method="post">
+        <div>
+            <label asp-for="Email"></label>
+            <input asp-for="Email" />
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div>
+            <label asp-for="Password"></label>
+            <input asp-for="Password" type="password" />
+            <span asp-validation-for="Password"></span>
+        </div>
+        <div>
+            <label asp-for="ConfirmPassword"></label>
+            <input asp-for="ConfirmPassword" type="password" />
+            <span asp-validation-for="ConfirmPassword"></span>
+        </div>
+        <button type="submit">Register</button>
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    </form>
+
+</div>
+</body>
+</html>
+
