@@ -88,7 +88,7 @@ public class ProducerController(CapEnjoyerDbContext context) : ControllerBase
             var isEditFor = await context.Producers.FindAsync(producerDto.IsEditFor);
             if (isEditFor == null)
             {
-                return this.NotFound($"Producer with ID {producerDto.Country} not found.");
+                return this.NotFound($"Producer with ID {producerDto.IsEditFor} not found.");
             }
         }
 
@@ -139,7 +139,7 @@ public class ProducerController(CapEnjoyerDbContext context) : ControllerBase
             var isEditFor = await context.Producers.FindAsync(producerDto.IsEditFor);
             if (isEditFor == null)
             {
-                return this.NotFound($"Producer with ID {producerDto.Country} not found.");
+                return this.NotFound($"Producer with ID {producerDto.IsEditFor} not found.");
             }
         }
 
