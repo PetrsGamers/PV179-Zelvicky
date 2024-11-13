@@ -8,80 +8,55 @@ using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController(CapEnjoyerDbContext context, ILogger<UsersController> logger) : ControllerBase
+public class UsersController(CapEnjoyerDbContext context) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetUsers()
     {
-        try
-        {
-            var users = await context.Users.ToListAsync();
-            return this.Ok(users);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
-        }
+        var users = await context.Users.ToListAsync();
+        return this.Ok(users);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateUser([FromBody] UserDetailDto userDto)
     {
-        try
+        if (string.IsNullOrEmpty(userDto.Username) || string.IsNullOrEmpty(userDto.Email) ||
+            string.IsNullOrEmpty(userDto.Password))
         {
-            if (string.IsNullOrEmpty(userDto.Username) || string.IsNullOrEmpty(userDto.Email) ||
-                string.IsNullOrEmpty(userDto.Password))
-            {
-                logger.LogError("Username, Email, and Password are required.");
-                return this.BadRequest("Username, Email, and Password are required.");
-            }
-
-            var user = new User
-            {
-                Id = Guid.NewGuid(), Username = userDto.Username, Email = userDto.Email, Password = userDto.Password
-            };
-
-            context.Users.Add(user);
-            await context.SaveChangesAsync();
-
-            return this.CreatedAtAction(nameof(this.GetUserById), new { id = user.Id }, user);
+            return this.BadRequest("Username, Email, and Password are required.");
         }
-        catch (Exception ex)
+
+        var user = new User
         {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
-        }
+            Id = Guid.NewGuid(), Username = userDto.Username, Email = userDto.Email, Password = userDto.Password
+        };
+
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
+
+        return this.CreatedAtAction(nameof(this.GetUserById), new { id = user.Id }, user);
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UserDetailDto userDto)
     {
-        try
+        var user = await context.Users.FindAsync(id);
+        if (user == null)
         {
-            var user = await context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return this.NotFound($"User with ID {id} not found.");
-            }
-
-
-            user.Username = userDto.Username;
-
-            user.Email = userDto.Email;
-
-            user.Password = userDto.Password;
-
-            context.Users.Update(user);
-            await context.SaveChangesAsync();
-
-            return this.NoContent();
+            return this.NotFound($"User with ID {id} not found.");
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
-        }
+
+
+        user.Username = userDto.Username;
+
+        user.Email = userDto.Email;
+
+        user.Password = userDto.Password;
+
+        context.Users.Update(user);
+        await context.SaveChangesAsync();
+
+        return this.NoContent();
     }
 
     [HttpGet("{id:guid}")]
@@ -103,7 +78,6 @@ public class UsersController(CapEnjoyerDbContext context, ILogger<UsersControlle
         var user = await context.Users.FindAsync(id);
         if (user == null)
         {
-            logger.LogError($"User with ID {id} not found.");
             return this.NotFound($"User with ID {id} not found.");
         }
 

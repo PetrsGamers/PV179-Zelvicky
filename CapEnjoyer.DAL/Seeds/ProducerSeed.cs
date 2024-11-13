@@ -1,224 +1,96 @@
 namespace CapEnjoyer.DAL.Seeds;
 
+using Bogus;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 
 public static class ProducerSeed
 {
+    private const string CzechProducerSeedString = "czech_producer_seed";
+    private const string UsaProducerSeedString = "usa_producer_seed";
+
+    private static readonly List<(string Name, string City, string Description)> CzechProducers =
+    [
+        ("Gambrinus Brewery", "Plzeň", "Famous for its lager beer."),
+        ("Pilsner Urquell", "Plzeň", "World-renowned for its pale lager."),
+        ("Ostrava Brewery", "Ostrava", "Known for various types of beer."),
+        ("Staropramen Brewery", "Prague", "One of the largest breweries in the Czech Republic."),
+        ("Velké Popovice Brewery", "Velké Popovice", "Produces Kozel beer."),
+        ("Krušovice Brewery", "Krušovice", "Known for its dark beer."),
+        ("Lobkowicz Brewery", "Vysoké Chvojno", "Offers a variety of beers."),
+        ("Humpolec Brewery (Bernard)", "Humpolec", "Family-owned brewery with a rich history."),
+        ("Nošovice Brewery (Radegast)", "Nošovice", "Famous for its Radegast beer."),
+        ("Svijany Brewery", "Svijany", "Known for its traditional brewing methods."),
+        ("Přerov Brewery (Zubr)", "Přerov", "Produces Zubr beer."),
+        ("Brno Brewery (Starobrno)", "Brno", "Famous for its lager."),
+        ("Hanušovice Brewery (Holba)", "Hanušovice", "Known for its Holba beer."),
+        ("Litovel Brewery", "Litovel", "Offers a variety of traditional Czech beers."),
+        ("Strakonice Brewery (Dudák)", "Strakonice", "Known for its Dudák beer."),
+        ("Březňák Brewery", "Březno", "Part of Heineken group."),
+        ("Benešov Brewery (Ferdinand)", "Benešov", "Offers Ferdinand beer."),
+        ("Dvůr Králové n. Labem Brewery (Tambor)", "Dvůr Králové", "Known for its Tambor beer."),
+        ("Chodová Planá Brewery", "Chodová Planá", "Famous for its Chodovar beer."),
+        ("Budweiser Brewery", "České Budějovice", "Famous for its Budweiser beer."),
+        ("Kofola", "Ostrava", "A popular Czech soft drink."),
+        ("Kingswood Cider", "Herefordshire", "A refreshing cider made from apples.")
+    ];
+
+    private static readonly List<(string Name, string City, string Description)> UsaProducers =
+    [
+        ("Fanta", "Atlanta", "A fruit-flavored carbonated soft drink."),
+        ("Pepsi", "Purchase, New York", "A major competitor to Coca-Cola.")
+    ];
+
+    private static readonly
+        List<(string SeedString, string CountryName, List<(string Name, string City, string Description)> Producers)>
+        ProducerData =
+        [
+            (CzechProducerSeedString, "Czech Republic", CzechProducers),
+            (UsaProducerSeedString, "United States", UsaProducers)
+        ];
+
     public static List<Producer> Seed(ModelBuilder modelBuilder, List<Country> countries)
     {
-        var czechCountry = countries.Find(country => country.Name == "Czech Republic");
-        var usaCountry = countries.Find(country => country.Name == "United States");
+        var producers = new List<Producer>();
+        var producerFaker = new Faker<Producer>().RuleFor(c => c.Id, f => f.Random.Guid());
 
-        if (czechCountry == null || usaCountry == null)
+        foreach (var (seedString, countryName, producerInfo) in ProducerData)
         {
-            throw new InvalidOperationException("Country not found.");
-        }
-
-        var czechId = czechCountry.Id;
-        var usaId = usaCountry.Id;
-
-        var producers = new List<Producer>
-        {
-            new()
+            var country = countries.Find(c => c.Name == countryName);
+            if (country == null)
             {
-                Id = Guid.NewGuid(),
-                Name = "Gambrinus Brewery",
-                City = "Plzeň",
-                Description = "Famous for its lager beer.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Pilsner Urquell",
-                City = "Plzeň",
-                Description = "World-renowned for its pale lager.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Ostrava Brewery",
-                City = "Ostrava",
-                Description = "Known for various types of beer.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Staropramen Brewery",
-                City = "Prague",
-                Description = "One of the largest breweries in the Czech Republic.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Velké Popovice Brewery",
-                City = "Velké Popovice",
-                Description = "Produces Kozel beer.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Krušovice Brewery",
-                City = "Krušovice",
-                Description = "Known for its dark beer.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Lobkowicz Brewery",
-                City = "Vysoké Chvojno",
-                Description = "Offers a variety of beers.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Humpolec Brewery (Bernard)",
-                City = "Humpolec",
-                Description = "Family-owned brewery with a rich history.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Nošovice Brewery (Radegast)",
-                City = "Nošovice",
-                Description = "Famous for its Radegast beer.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Svijany Brewery",
-                City = "Svijany",
-                Description = "Known for its traditional brewing methods.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Přerov Brewery (Zubr)",
-                City = "Přerov",
-                Description = "Produces Zubr beer.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Brno Brewery (Starobrno)",
-                City = "Brno",
-                Description = "Famous for its lager.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Hanušovice Brewery (Holba)",
-                City = "Hanušovice",
-                Description = "Known for its Holba beer.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Litovel Brewery",
-                City = "Litovel",
-                Description = "Offers a variety of traditional Czech beers.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Strakonice Brewery (Dudák)",
-                City = "Strakonice",
-                Description = "Known for its Dudák beer.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Březňák Brewery",
-                City = "Březno",
-                Description = "Part of Heineken group.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Benešov Brewery (Ferdinand)",
-                City = "Benešov",
-                Description = "Offers Ferdinand beer.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Dvůr Králové n. Labem Brewery (Tambor)",
-                City = "Dvůr Králové",
-                Description = "Known for its Tambor beer.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Chodová Planá Brewery",
-                City = "Chodová Planá",
-                Description = "Famous for its Chodovar beer.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Budweiser Brewery",
-                City = "České Budějovice",
-                Description = "Famous for its Budweiser beer.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Fanta",
-                City = "Atlanta",
-                Description = "A fruit-flavored carbonated soft drink.",
-                CountryId = usaId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Pepsi",
-                City = "Purchase, New York",
-                Description = "A major competitor to Coca-Cola.",
-                CountryId = usaId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Kofola",
-                City = "Ostrava",
-                Description = "A popular Czech soft drink.",
-                CountryId = czechId
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Kingswood Cider",
-                City = "Herefordshire",
-                Description = "A refreshing cider made from apples.",
-                CountryId = czechId
+                throw new InvalidOperationException($"Country '{countryName}' not found.");
             }
-        };
 
-        foreach (var producer in producers)
-        {
-            modelBuilder.Entity<Producer>().HasData(producer);
+            producers.AddRange(GenerateProducersForCountry(seedString, country.Id, producerInfo, producerFaker));
         }
 
+        for (var i = 10; i < 13; i++)
+        {
+            producers[i].Description = $"Updated description {i}";
+            producers[i].IsEditForId = producers[1].Id;
+        }
+
+        modelBuilder.Entity<Producer>().HasData(producers);
         return producers;
+    }
+
+    private static List<Producer> GenerateProducersForCountry(
+        string seedString,
+        Guid countryId,
+        List<(string Name, string City, string Description)> producerInfo,
+        Faker<Producer> producerFaker)
+    {
+        Randomizer.Seed = SeedUtils.GetRandom(seedString);
+
+        return producerInfo.Select(info =>
+        {
+            var producer = producerFaker.Generate();
+            producer.Name = info.Name;
+            producer.City = info.City;
+            producer.Description = info.Description;
+            producer.CountryId = countryId;
+            return producer;
+        }).ToList();
     }
 }

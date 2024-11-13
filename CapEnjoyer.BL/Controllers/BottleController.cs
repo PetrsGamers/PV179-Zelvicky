@@ -9,154 +9,126 @@ using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BottleController(CapEnjoyerDbContext context, ILogger<BottleController> logger) : ControllerBase
+public class BottleController(CapEnjoyerDbContext context) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllBottles()
     {
-        try
-        {
-            var bottles = await context.Bottles
-                .Select(b => new BottleDto
-                {
-                    Id = b.Id,
-                    Name = b.Name,
-                    Description = b.Description,
-                    Voltage = b.Voltage,
-                    BottlePicture = b.BottlePicture,
-                    DrinkType = b.DrinkType.ToString(),
-                    Producer = b.ProducerId,
-                    Caps = b.Caps.Select(c => c.Id).ToList(),
-                    IsEditFor = b.IsEditForId
-                })
-                .ToListAsync();
+        var bottles = await context.Bottles
+            .Select(b => new BottleDto
+            {
+                Id = b.Id,
+                Name = b.Name,
+                Description = b.Description,
+                Voltage = b.Voltage,
+                BottlePicture = b.BottlePicture,
+                DrinkType = b.DrinkType.ToString(),
+                Producer = b.ProducerId,
+                Caps = b.CapLinks.Select(cl => cl.CapId).ToList(),
+                IsEditFor = b.IsEditForId
+            })
+            .ToListAsync();
 
-            return this.Ok(bottles);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
-        }
+        return this.Ok(bottles);
     }
+
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetBottleById(Guid id)
     {
-        try
-        {
-            var bottle = await context.Bottles
-                .Where(b => b.Id == id)
-                .Select(b => new BottleDto
-                {
-                    Id = b.Id,
-                    Name = b.Name,
-                    Description = b.Description,
-                    Voltage = b.Voltage,
-                    BottlePicture = b.BottlePicture,
-                    DrinkType = b.DrinkType.ToString(),
-                    Producer = b.ProducerId,
-                    Caps = b.Caps.Select(c => c.Id).ToList(),
-                    IsEditFor = b.IsEditForId
-                })
-                .FirstOrDefaultAsync();
-
-            if (bottle == null)
+        var bottle = await context.Bottles
+            .Where(b => b.Id == id)
+            .Select(b => new BottleDto
             {
-                return this.NotFound($"Bottle with ID {id} not found.");
-            }
+                Id = b.Id,
+                Name = b.Name,
+                Description = b.Description,
+                Voltage = b.Voltage,
+                BottlePicture = b.BottlePicture,
+                DrinkType = b.DrinkType.ToString(),
+                Producer = b.ProducerId,
+                Caps = b.CapLinks.Select(cl => cl.CapId).ToList(),
+                IsEditFor = b.IsEditForId
+            })
+            .FirstOrDefaultAsync();
 
-            return this.Ok(bottle);
-        }
-        catch (Exception ex)
+        if (bottle == null)
         {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
+            return this.NotFound($"Bottle with ID {id} not found.");
         }
+
+        return this.Ok(bottle);
     }
 
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteBottle(Guid id)
     {
-        try
+        var bottle = await context.Bottles.FindAsync(id);
+        if (bottle == null)
         {
-            var bottle = await context.Bottles.FindAsync(id);
-            if (bottle == null)
-            {
-                return this.NotFound($"Bottle with ID {id} not found.");
-            }
+            return this.NotFound($"Bottle with ID {id} not found.");
+        }
 
-            context.Bottles.Remove(bottle);
-            await context.SaveChangesAsync();
-            return this.Ok("Bottle deleted.");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
-        }
+        context.Bottles.Remove(bottle);
+        await context.SaveChangesAsync();
+        return this.Ok("Bottle deleted.");
     }
+
 
     [HttpPost]
     public async Task<IActionResult> CreateBottle([FromBody] BottleDto bottleDto)
     {
-        try
+        var newId = Guid.NewGuid();
+        var bottle = new Bottle
         {
-            var bottle = new Bottle
-            {
-                Id = Guid.NewGuid(),
-                Name = bottleDto.Name,
-                Description = bottleDto.Description,
-                Voltage = bottleDto.Voltage,
-                BottlePicture = bottleDto.BottlePicture,
-                DrinkType = Enum.Parse<DrinkType>(bottleDto.DrinkType),
-                ProducerId = bottleDto.Producer,
-                IsEditForId = bottleDto.IsEditFor,
-                Caps = bottleDto.Caps.Select(id => new Cap { Id = id }).ToList()
-            };
+            Id = newId,
+            Name = bottleDto.Name,
+            Description = bottleDto.Description,
+            Voltage = bottleDto.Voltage,
+            BottlePicture = bottleDto.BottlePicture,
+            DrinkType = Enum.Parse<DrinkType>(bottleDto.DrinkType),
+            ProducerId = bottleDto.Producer,
+            IsEditForId = bottleDto.IsEditFor
+        };
 
-            await context.Bottles.AddAsync(bottle);
-            await context.SaveChangesAsync();
+        var capLinks = bottleDto.Caps.Select(capId => new CapToBottle { BottleId = newId, CapId = capId }).ToList();
 
-            return this.Ok(bottle);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
-        }
+        await context.Bottles.AddAsync(bottle);
+        await context.CapToBottles.AddRangeAsync(capLinks);
+        await context.SaveChangesAsync();
+
+        return this.Ok(bottle);
     }
+
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateBottle(Guid id, [FromBody] BottleDto bottleDto)
     {
-        try
+        var oldBottle = await context.Bottles.FindAsync(id);
+        if (oldBottle == null)
         {
-            var bottle = await context.Bottles.FindAsync(id);
-            if (bottle == null)
-            {
-                return this.NotFound($"Bottle with ID {id} not found.");
-            }
-
-            bottle.Name = bottleDto.Name;
-            bottle.Description = bottleDto.Description;
-            bottle.Voltage = bottleDto.Voltage;
-            bottle.BottlePicture = bottleDto.BottlePicture;
-            bottle.DrinkType = Enum.Parse<DrinkType>(bottleDto.DrinkType);
-            bottle.ProducerId = bottleDto.Producer;
-            bottle.IsEditForId = bottleDto.IsEditFor;
-            bottle.Caps = bottleDto.Caps.Select(cId => new Cap { Id = cId }).ToList();
-
-            context.Bottles.Update(bottle);
-            await context.SaveChangesAsync();
-
-            return this.Ok(bottle);
+            return this.NotFound($"Bottle with ID {id} not found.");
         }
-        catch (Exception ex)
+
+        var newId = Guid.NewGuid();
+
+        var newBottle = new Bottle
         {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
-        }
+            Id = newId,
+            Name = bottleDto.Name,
+            Description = bottleDto.Description,
+            Voltage = bottleDto.Voltage,
+            BottlePicture = bottleDto.BottlePicture,
+            DrinkType = Enum.Parse<DrinkType>(bottleDto.DrinkType),
+            ProducerId = bottleDto.Producer,
+            IsEditFor = oldBottle,
+            CapLinks = []
+        };
+
+        await context.Bottles.AddAsync(newBottle);
+        await context.SaveChangesAsync();
+
+        return this.Ok(newBottle);
     }
 }

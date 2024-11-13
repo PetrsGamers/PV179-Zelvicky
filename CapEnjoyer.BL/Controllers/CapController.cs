@@ -8,96 +8,83 @@ using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CapController(CapEnjoyerDbContext context, ILogger<CapController> logger) : ControllerBase
+public class CapController(CapEnjoyerDbContext context) : ControllerBase
 {
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetCapById(Guid id)
     {
-        try
-        {
-            var cap = await context.Caps
-                .Where(c => c.Id == id)
-                .Select(c => new CapDto
-                {
-                    Id = c.Id,
-                    TextOnCap = c.TextOnCap,
-                    Description = c.Description,
-                    CapPicture = c.CapPicture,
-                    TextColors = c.TextColors.Select(tc => tc.Id).ToList(),
-                    BgColors = c.BgColors.Select(bc => bc.Id).ToList(),
-                    Bottles = c.Bottles.Select(b => b.Id).ToList(),
-                    IsEditFor = c.IsEditForId
-                })
-                .FirstOrDefaultAsync();
-
-            if (cap == null)
+        var cap = await context.Caps
+            .Where(c => c.Id == id)
+            .Select(c => new CapDto
             {
-                return this.NotFound($"Cap with ID {id} not found.");
-            }
+                Id = c.Id,
+                TextOnCap = c.TextOnCap,
+                Description = c.Description,
+                CapPicture = c.CapPicture,
+                TextColors = c.TextColorLinks.Select(tc => tc.TextColorId).ToList(),
+                BgColors = c.BackgroundColorLinks.Select(bc => bc.BackgroundColorId).ToList(),
+                Bottles = c.BottleLinks.Select(bl => bl.BottleId).ToList(),
+                IsEditFor = c.IsEditForId
+            })
+            .FirstOrDefaultAsync();
 
-            return this.Ok(cap);
-        }
-        catch (Exception ex)
+        if (cap == null)
         {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
+            return this.NotFound($"Cap with ID {id} not found.");
         }
+
+        return this.Ok(cap);
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteCap(Guid id)
     {
-        try
-        {
-            var cap = await context.Caps.FindAsync(id);
-            if (cap == null)
-            {
-                return this.NotFound($"Cap with ID {id} not found.");
-            }
+        var cap = await context.Caps
+            .Include(c => c.TextColorLinks)
+            .Include(c => c.BackgroundColorLinks)
+            .Include(c => c.BottleLinks)
+            .Include(c => c.AlbumLinks)
+            .FirstOrDefaultAsync(c => c.Id == id);
 
-            context.Caps.Remove(cap);
-            await context.SaveChangesAsync();
-            return this.NoContent();
-        }
-        catch (Exception ex)
+        if (cap == null)
         {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
+            return this.NotFound($"Cap with ID {id} not found.");
         }
+
+        context.CapToTextColors.RemoveRange(cap.TextColorLinks);
+        context.CapToBackgroundColors.RemoveRange(cap.BackgroundColorLinks);
+        context.CapToBottles.RemoveRange(cap.BottleLinks);
+        context.CapToAlbums.RemoveRange(cap.AlbumLinks);
+
+        context.Caps.Remove(cap);
+        await context.SaveChangesAsync();
+        return this.Ok();
     }
 
     [HttpGet("album/{albumId:guid}")]
     public async Task<IActionResult> GetAllCapsByAlbumId(Guid albumId)
     {
-        try
-        {
-            var caps = await context.Caps
-                .Where(c => c.Albums.Any(a => a.Id == albumId))
-                .Select(c => new CapDto
-                {
-                    Id = c.Id,
-                    TextOnCap = c.TextOnCap,
-                    Description = c.Description,
-                    CapPicture = c.CapPicture,
-                    TextColors = c.TextColors.Select(tc => tc.Id).ToList(),
-                    BgColors = c.BgColors.Select(bc => bc.Id).ToList(),
-                    Bottles = c.Bottles.Select(b => b.Id).ToList(),
-                    IsEditFor = c.IsEditForId
-                })
-                .ToListAsync();
-
-            if (caps.Count == 0)
+        var caps = await context.Caps
+            .Where(c => c.AlbumLinks.Any(al => al.AlbumId == albumId))
+            .Select(c => new CapDto
             {
-                return this.NotFound($"No caps found for Album with ID {albumId}.");
-            }
+                Id = c.Id,
+                TextOnCap = c.TextOnCap,
+                Description = c.Description,
+                CapPicture = c.CapPicture,
+                TextColors = c.TextColorLinks.Select(tc => tc.TextColorId).ToList(),
+                BgColors = c.BackgroundColorLinks.Select(bc => bc.BackgroundColorId).ToList(),
+                Bottles = c.BottleLinks.Select(bl => bl.BottleId).ToList(),
+                IsEditFor = c.IsEditForId
+            })
+            .ToListAsync();
 
-            return this.Ok(caps);
-        }
-        catch (Exception ex)
+        if (caps.Count == 0)
         {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
+            return this.NotFound($"No caps found for Album with ID {albumId}.");
         }
+
+        return this.Ok(caps);
     }
 
     [HttpGet]
@@ -108,123 +95,108 @@ public class CapController(CapEnjoyerDbContext context, ILogger<CapController> l
         [FromQuery] List<Guid>? producerIds = null,
         [FromQuery] List<Guid>? countryIds = null)
     {
-        try
+        var query = context.Caps.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(textSubstring))
         {
-            var query = context.Caps.AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(textSubstring))
-            {
-                query = query.Where(c => c.TextOnCap.Contains(textSubstring));
-            }
-
-            if (textColorIds != null && textColorIds.Count != 0)
-            {
-                query = query.Where(c => textColorIds.All(tcId => c.TextColors.Any(tc => tc.Id == tcId)));
-            }
-
-            if (bgColorIds != null && bgColorIds.Count != 0)
-            {
-                query = query.Where(c => bgColorIds.All(bcId => c.BgColors.Any(bc => bc.Id == bcId)));
-            }
-
-            if (producerIds != null && producerIds.Count != 0)
-            {
-                query = query.Where(c => c.Bottles.Any(b => producerIds.Contains(b.ProducerId)));
-            }
-
-            if (countryIds != null && countryIds.Count != 0)
-            {
-                query = query.Where(c => c.Bottles.Any(b => countryIds.Contains(b.Producer.CountryId)));
-            }
-
-            var caps = await query
-                .Select(c => new CapDto
-                {
-                    Id = c.Id,
-                    TextOnCap = c.TextOnCap,
-                    Description = c.Description,
-                    CapPicture = c.CapPicture,
-                    TextColors = c.TextColors.Select(tc => tc.Id).ToList(),
-                    BgColors = c.BgColors.Select(bc => bc.Id).ToList(),
-                    Bottles = c.Bottles.Select(b => b.Id).ToList(),
-                    IsEditFor = c.IsEditForId
-                })
-                .ToListAsync();
-
-            if (caps.Count == 0)
-            {
-                return this.NotFound("No caps found matching the specified criteria.");
-            }
-
-            return this.Ok(caps);
+            query = query.Where(c => c.TextOnCap.Contains(textSubstring));
         }
-        catch (Exception ex)
+
+        if (textColorIds != null && textColorIds.Count != 0)
         {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
+            query = query.Where(c => textColorIds.All(tcId => c.TextColorLinks.Any(tc => tc.TextColorId == tcId)));
         }
+
+        if (bgColorIds != null && bgColorIds.Count != 0)
+        {
+            query = query.Where(c =>
+                bgColorIds.All(bcId => c.BackgroundColorLinks.Any(bc => bc.BackgroundColorId == bcId)));
+        }
+
+        if (producerIds != null && producerIds.Count != 0)
+        {
+            query = query.Where(c => c.BottleLinks.Any(b => producerIds.Contains(b.Bottle.ProducerId)));
+        }
+
+        if (countryIds != null && countryIds.Count != 0)
+        {
+            query = query.Where(c => c.BottleLinks.Any(b => countryIds.Contains(b.Bottle.Producer.CountryId)));
+        }
+
+        var caps = await query
+            .Select(c => new CapDto
+            {
+                Id = c.Id,
+                TextOnCap = c.TextOnCap,
+                Description = c.Description,
+                CapPicture = c.CapPicture,
+                TextColors = c.TextColorLinks.Select(tc => tc.TextColorId).ToList(),
+                BgColors = c.BackgroundColorLinks.Select(bc => bc.BackgroundColorId).ToList(),
+                Bottles = c.BottleLinks.Select(bl => bl.BottleId).ToList(),
+                IsEditFor = c.IsEditForId
+            })
+            .ToListAsync();
+
+        if (caps.Count == 0)
+        {
+            return this.NotFound("No caps found matching the specified criteria.");
+        }
+
+        return this.Ok(caps);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateCap([FromBody] CapDto capDto)
     {
-        try
+        var cap = new Cap
         {
-            var cap = new Cap
-            {
-                Id = Guid.NewGuid(),
-                TextOnCap = capDto.TextOnCap,
-                Description = capDto.Description,
-                CapPicture = capDto.CapPicture,
-                TextColors = capDto.TextColors.Select(id => new Color { Id = id }).ToList(),
-                BgColors = capDto.BgColors.Select(id => new Color { Id = id }).ToList(),
-                Bottles = capDto.Bottles.Select(id => new Bottle { Id = id }).ToList(),
-                IsEditForId = capDto.IsEditFor
-            };
+            Id = Guid.NewGuid(),
+            TextOnCap = capDto.TextOnCap,
+            Description = capDto.Description,
+            CapPicture = capDto.CapPicture,
+            TextColorLinks = capDto.TextColors.Select(id => new CapToTextColor { TextColorId = id }).ToList(),
+            BackgroundColorLinks =
+                capDto.BgColors.Select(id => new CapToBackgroundColor { BackgroundColorId = id }).ToList(),
+            BottleLinks = capDto.Bottles.Select(id => new CapToBottle { BottleId = id }).ToList(),
+            IsEditForId = capDto.IsEditFor
+        };
 
-            await context.Caps.AddAsync(cap);
-            await context.SaveChangesAsync();
+        await context.Caps.AddAsync(cap);
+        await context.SaveChangesAsync();
 
-            return this.Ok(cap);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
-        }
+        return this.Ok(cap);
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateCap(Guid id, [FromBody] CapDto capDto)
     {
-        try
+        var oldCap = await context.Caps
+            .Include(c => c.TextColorLinks)
+            .Include(c => c.BackgroundColorLinks)
+            .Include(c => c.BottleLinks)
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (oldCap == null)
         {
-            var cap = await context.Caps.Include(c => c.TextColors)
-                .Include(c => c.BgColors)
-                .Include(c => c.Bottles)
-                .FirstOrDefaultAsync(c => c.Id == id);
-            if (cap == null)
-            {
-                return this.NotFound($"Cap with ID {id} not found.");
-            }
-
-            cap.TextOnCap = capDto.TextOnCap;
-            cap.Description = capDto.Description;
-            cap.CapPicture = capDto.CapPicture;
-            cap.TextColors = capDto.TextColors.Select(id => new Color { Id = id }).ToList();
-            cap.BgColors = capDto.BgColors.Select(id => new Color { Id = id }).ToList();
-            cap.Bottles = capDto.Bottles.Select(id => new Bottle { Id = id }).ToList();
-            cap.IsEditForId = capDto.IsEditFor;
-
-            context.Caps.Update(cap);
-            await context.SaveChangesAsync();
-
-            return this.Ok(cap);
+            return this.NotFound($"Cap with ID {id} not found.");
         }
-        catch (Exception ex)
+
+        var newCap = new Cap
         {
-            logger.LogError(ex.Message);
-            return this.StatusCode(500, "Internal server error.");
-        }
+            Id = Guid.NewGuid(),
+            TextOnCap = capDto.TextOnCap,
+            Description = capDto.Description,
+            CapPicture = capDto.CapPicture,
+            TextColorLinks = capDto.TextColors.Select(colorId => new CapToTextColor { TextColorId = colorId }).ToList(),
+            BackgroundColorLinks =
+                capDto.BgColors.Select(colorId => new CapToBackgroundColor { BackgroundColorId = colorId }).ToList(),
+            BottleLinks = capDto.Bottles.Select(bottleId => new CapToBottle { BottleId = bottleId }).ToList(),
+            IsEditForId = oldCap.Id
+        };
+
+        await context.Caps.AddAsync(newCap);
+        await context.SaveChangesAsync();
+
+        return this.Ok(newCap);
     }
 }
