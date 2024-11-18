@@ -28,7 +28,10 @@ public class UsersController(CapEnjoyerDbContext context) : ControllerBase
 
         var user = new User
         {
-            Id = Guid.NewGuid(), Username = userDto.Username, Email = userDto.Email, Password = userDto.Password
+            Id = Guid.NewGuid(),
+            Username = userDto.Username,
+            Email = userDto.Email,
+            Password = userDto.Password
         };
 
         context.Users.Add(user);

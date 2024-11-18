@@ -35,7 +35,7 @@ public static class ColorSeed
         var colorFaker = new Faker<Color>()
             .RuleFor(c => c.Id, f => f.Random.Guid());
 
-        List<Color> colors = new();
+        List<Color> colors = [];
         foreach (var (name, hexCode) in DefaultColors)
         {
             var color = colorFaker.Generate();

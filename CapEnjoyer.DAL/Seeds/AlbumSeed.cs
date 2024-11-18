@@ -83,11 +83,11 @@ public static class AlbumSeed
     {
         var generatedAlbums = new List<Album>();
 
-        foreach (var albumInfo in albumInfos)
+        foreach (var (Name, Description) in albumInfos)
         {
             var album = albumFaker.Generate();
-            album.Name = albumInfo.Name;
-            album.Description = albumInfo.Description;
+            album.Name = Name;
+            album.Description = Description;
             album.UserId = userId;
 
             generatedAlbums.Add(album);

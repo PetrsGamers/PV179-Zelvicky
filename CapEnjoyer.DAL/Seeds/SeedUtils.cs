@@ -17,12 +17,7 @@ public static class SeedUtils
 
     public static Guid GetUserId(string username, List<User> users)
     {
-        var user = users.FirstOrDefault(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
-
-        if (user == null)
-        {
-            throw new NotFoundException($"User with username '{username}' not found.");
-        }
+        var user = users.FirstOrDefault(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase)) ?? throw new NotFoundException($"User with username '{username}' not found.");
 
         return user.Id;
     }

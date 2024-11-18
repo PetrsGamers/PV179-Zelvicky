@@ -13,20 +13,62 @@ public static class CapSeed
 
     private static readonly List<string> AestheticProperties =
     [
-        "Colorful", "Glossy", "Sleek", "Sparkling", "Textured", "Vibrant", "Elegant", "Modern", "Retro", "Artistic",
-        "Minimalistic", "Shiny", "Festive", "Chic", "Rustic", "Unique", "Classic", "Fancy", "Bold", "Whimsical"
+        "Colorful",
+        "Glossy",
+        "Sleek",
+        "Sparkling",
+        "Textured",
+        "Vibrant",
+        "Elegant",
+        "Modern",
+        "Retro",
+        "Artistic",
+        "Minimalistic",
+        "Shiny",
+        "Festive",
+        "Chic",
+        "Rustic",
+        "Unique",
+        "Classic",
+        "Fancy",
+        "Bold",
+        "Whimsical"
     ];
 
     private static readonly List<string> FunctionalProperties =
     [
-        "Sturdy", "Durable", "Lightweight", "Versatile", "Custom", "Secure", "Innovative", "Practical", "Premium",
-        "Reliable", "Eco-friendly", "Functional", "Heat-resistant", "Waterproof", "Leak-proof", "Tamper-evident",
-        "Insulated", "Safe", "Convenient", "Flexible"
+        "Sturdy",
+        "Durable",
+        "Lightweight",
+        "Versatile",
+        "Custom",
+        "Secure",
+        "Innovative",
+        "Practical",
+        "Premium",
+        "Reliable",
+        "Eco-friendly",
+        "Functional",
+        "Heat-resistant",
+        "Waterproof",
+        "Leak-proof",
+        "Tamper-evident",
+        "Insulated",
+        "Safe",
+        "Convenient",
+        "Flexible"
     ];
 
     private static readonly List<string> CapSynonyms =
     [
-        "cap", "lid", "seal", "stopper", "top", "crown seal", "crown cap", "crown cork"
+        "cap",
+        "lid",
+        "seal",
+        "stopper",
+        "top",
+        "crown seal",
+        "crown cap",
+        "crown cork"
     ];
 
 
