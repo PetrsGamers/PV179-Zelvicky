@@ -1,6 +1,7 @@
 namespace CapEnjoyer.DAL;
 
 using Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Seeds;
 
@@ -18,11 +19,23 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
     public DbSet<CapToBackgroundColor> CapToBackgroundColors { get; set; }
     public DbSet<CapToTextColor> CapToTextColors { get; set; }
 
+    public DbSet<LocalIdentityUser> LocalIdentityUsers { get; set; }
+
+
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ConfigureRelationships(modelBuilder);
         ConfigureEntities(modelBuilder);
         SeedData(modelBuilder);
+        modelBuilder.Entity<IdentityUserClaim<string>>().HasKey(p => new { p.Id });
+        modelBuilder.Entity<IdentityUserRole<string>>().HasKey(p => new { p.UserId, p.RoleId });
+        modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(p => new { p.UserId });
+        modelBuilder.Entity<IdentityUserToken<string>>().HasKey(p => new { p.UserId });
+        modelBuilder.Entity<IdentityRoleClaim<string>>().HasKey(p => new { p.Id });
+        modelBuilder.Entity<IdentityRole>().HasKey(p => new { p.Id });
+
     }
 
     private static void ConfigureRelationships(ModelBuilder modelBuilder)
