@@ -1,6 +1,7 @@
 namespace CapEnjoyer.DAL.Seeds;
 
 using System.Globalization;
+using System.Text;
 using Bogus;
 using Constants;
 using Entities;
@@ -10,21 +11,74 @@ public static class BottleSeed
 {
     private const string BottleSeedString = "default_bottle_seed";
     private const string DefaultBottlePicture = "default_picture_url.jpg";
-    private const string DescriptionTemplate = "A {0} for various beverages.";
+    private static readonly CompositeFormat DescriptionTemplate = CompositeFormat.Parse("A {0} for various beverages.");
 
 
     private static readonly List<string> FirstProperties =
     [
-        "Small", "Large", "Beautiful", "Elegant", "Fancy", "Rustic", "Modern", "Antique", "Vibrant", "Classic", "Dark",
-        "Light", "Sleek", "Bold", "Quaint", "Exotic", "Unique", "Delicate", "Sturdy", "Shiny", "Charming", "Glamorous",
-        "Sapphire", "Emerald", "Crystal", "Amber", "Ceramic", "Glass", "Wooden"
+        "Small",
+        "Large",
+        "Beautiful",
+        "Elegant",
+        "Fancy",
+        "Rustic",
+        "Modern",
+        "Antique",
+        "Vibrant",
+        "Classic",
+        "Dark",
+        "Light",
+        "Sleek",
+        "Bold",
+        "Quaint",
+        "Exotic",
+        "Unique",
+        "Delicate",
+        "Sturdy",
+        "Shiny",
+        "Charming",
+        "Glamorous",
+        "Sapphire",
+        "Emerald",
+        "Crystal",
+        "Amber",
+        "Ceramic",
+        "Glass",
+        "Wooden"
     ];
 
     private static readonly List<string> SecondProperties =
     [
-        "Baroque", "Pirate", "Vintage", "Royal", "Mystic", "Funky", "Elegant", "Bold", "Chic", "Rustic", "Traditional",
-        "Artisan", "Cultural", "Futuristic", "Tropical", "Gothic", "Cosmic", "Zen", "Urban", "Majestic", "Serene",
-        "Passionate", "Epic", "Legendary", "Whimsical", "Enchanting", "Daring", "Nautical", "Rugged", "Sophisticated"
+        "Baroque",
+        "Pirate",
+        "Vintage",
+        "Royal",
+        "Mystic",
+        "Funky",
+        "Elegant",
+        "Bold",
+        "Chic",
+        "Rustic",
+        "Traditional",
+        "Artisan",
+        "Cultural",
+        "Futuristic",
+        "Tropical",
+        "Gothic",
+        "Cosmic",
+        "Zen",
+        "Urban",
+        "Majestic",
+        "Serene",
+        "Passionate",
+        "Epic",
+        "Legendary",
+        "Whimsical",
+        "Enchanting",
+        "Daring",
+        "Nautical",
+        "Rugged",
+        "Sophisticated"
     ];
 
     public static List<Bottle> Seed(ModelBuilder modelBuilder, List<Producer> producers)

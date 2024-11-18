@@ -10,8 +10,8 @@ public class Color
         this.Id = id ?? Guid.NewGuid();
         this.Name = name;
         this.HexCode = hexCode;
-        this.CapTextLinks = capTextLinks ?? new List<CapToTextColor>();
-        this.CapBackgroundLinks = capBackgroundLinks ?? new List<CapToBackgroundColor>();
+        this.CapTextLinks = capTextLinks ?? [];
+        this.CapBackgroundLinks = capBackgroundLinks ?? [];
     }
 
     public Guid Id { get; set; }

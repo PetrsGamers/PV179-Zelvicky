@@ -1,6 +1,7 @@
 namespace CapEnjoyer.DAL.Seeds;
 
 using System.Globalization;
+using System.Text;
 using Bogus;
 using Entities;
 using Microsoft.EntityFrameworkCore;
@@ -9,24 +10,68 @@ public static class CapSeed
 {
     private const string CapSeedString = "default_cap_seed";
     private const string DefaultCapPicture = "default_cap_picture_url.jpg";
-    private const string DescriptionTemplate = "This is a unique cap named '{0}'.";
+
+    private static readonly CompositeFormat DescriptionTemplate =
+        CompositeFormat.Parse("This is a unique cap named '{0}'.");
 
     private static readonly List<string> AestheticProperties =
     [
-        "Colorful", "Glossy", "Sleek", "Sparkling", "Textured", "Vibrant", "Elegant", "Modern", "Retro", "Artistic",
-        "Minimalistic", "Shiny", "Festive", "Chic", "Rustic", "Unique", "Classic", "Fancy", "Bold", "Whimsical"
+        "Colorful",
+        "Glossy",
+        "Sleek",
+        "Sparkling",
+        "Textured",
+        "Vibrant",
+        "Elegant",
+        "Modern",
+        "Retro",
+        "Artistic",
+        "Minimalistic",
+        "Shiny",
+        "Festive",
+        "Chic",
+        "Rustic",
+        "Unique",
+        "Classic",
+        "Fancy",
+        "Bold",
+        "Whimsical"
     ];
 
     private static readonly List<string> FunctionalProperties =
     [
-        "Sturdy", "Durable", "Lightweight", "Versatile", "Custom", "Secure", "Innovative", "Practical", "Premium",
-        "Reliable", "Eco-friendly", "Functional", "Heat-resistant", "Waterproof", "Leak-proof", "Tamper-evident",
-        "Insulated", "Safe", "Convenient", "Flexible"
+        "Sturdy",
+        "Durable",
+        "Lightweight",
+        "Versatile",
+        "Custom",
+        "Secure",
+        "Innovative",
+        "Practical",
+        "Premium",
+        "Reliable",
+        "Eco-friendly",
+        "Functional",
+        "Heat-resistant",
+        "Waterproof",
+        "Leak-proof",
+        "Tamper-evident",
+        "Insulated",
+        "Safe",
+        "Convenient",
+        "Flexible"
     ];
 
     private static readonly List<string> CapSynonyms =
     [
-        "cap", "lid", "seal", "stopper", "top", "crown seal", "crown cap", "crown cork"
+        "cap",
+        "lid",
+        "seal",
+        "stopper",
+        "top",
+        "crown seal",
+        "crown cap",
+        "crown cork"
     ];
 
 
