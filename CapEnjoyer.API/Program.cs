@@ -1,4 +1,7 @@
+using CapEnjoyer.API.Helpers;
 using CapEnjoyer.BL.Middleware;
+using CapEnjoyer.BL.Services;
+using CapEnjoyer.BL.Services.Interfaces;
 using CapEnjoyer.DAL;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
@@ -7,16 +10,19 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
-var connectionString = $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
-                       $"Port={Environment.GetEnvironmentVariable("DB_PORT")};" +
-                       $"Username={Environment.GetEnvironmentVariable("DB_USERNAME")};" +
-                       $"Password={Environment.GetEnvironmentVariable("DB_PASSWORD")};" +
-                       $"Database={Environment.GetEnvironmentVariable("DB_NAME")}";
+
+Helpers.CheckIfEnvironmentVariablesAreSet();
+var connectionString = Helpers.GetConnectionString();
+
 
 builder.Services.AddControllers();
 builder.Services.AddDbContextFactory<CapEnjoyerDbContext>(
     options => options.UseNpgsql(connectionString));
+
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<ICapService, CapService>();
+builder.Services.AddScoped<IColorService, ColorService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer",
@@ -41,6 +47,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+// in case the database is not reachable or not created, throw an error
+Helpers.CheckIfDatabaseServerReachableAndCreated(app);
 
 app.UseSwagger();
 app.UseSwaggerUI();
