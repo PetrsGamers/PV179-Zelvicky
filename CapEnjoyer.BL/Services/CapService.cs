@@ -1,17 +1,15 @@
-namespace CapEnjoyer.BL.Controllers;
+﻿namespace CapEnjoyer.BL.Services;
 
 using DAL;
 using DAL.Entities;
 using DTOs;
+using Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[ApiController]
-[Route("api/[controller]")]
-public class CapController(CapEnjoyerDbContext context) : ControllerBase
+public class CapService(CapEnjoyerDbContext context) : ICapService
 {
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetCapById(Guid id)
+    public async Task<CapDto> GetCapByIdAsync(Guid id)
     {
         var cap = await context.Caps
             .Where(c => c.Id == id)
@@ -30,14 +28,13 @@ public class CapController(CapEnjoyerDbContext context) : ControllerBase
 
         if (cap == null)
         {
-            return this.NotFound($"Cap with ID {id} not found.");
+            throw new ArgumentException($"Cap with ID {id} not found.");
         }
 
-        return this.Ok(cap);
+        return cap;
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteCap(Guid id)
+    public async Task DeleteCapAsync(Guid id)
     {
         var cap = await context.Caps
             .Include(c => c.TextColorLinks)
@@ -48,7 +45,7 @@ public class CapController(CapEnjoyerDbContext context) : ControllerBase
 
         if (cap == null)
         {
-            return this.NotFound($"Cap with ID {id} not found.");
+            throw new ArgumentException($"Cap with ID {id} not found.");
         }
 
         context.CapToTextColors.RemoveRange(cap.TextColorLinks);
@@ -58,11 +55,9 @@ public class CapController(CapEnjoyerDbContext context) : ControllerBase
 
         context.Caps.Remove(cap);
         await context.SaveChangesAsync();
-        return this.Ok();
     }
 
-    [HttpGet("album/{albumId:guid}")]
-    public async Task<IActionResult> GetAllCapsByAlbumId(Guid albumId)
+    public async Task<IEnumerable<CapDto>> GetAllCapsByAlbumIdAsync(Guid albumId)
     {
         var caps = await context.Caps
             .Where(c => c.AlbumLinks.Any(al => al.AlbumId == albumId))
@@ -79,16 +74,11 @@ public class CapController(CapEnjoyerDbContext context) : ControllerBase
             })
             .ToListAsync();
 
-        if (caps.Count == 0)
-        {
-            return this.NotFound($"No caps found for Album with ID {albumId}.");
-        }
-
-        return this.Ok(caps);
+        return caps.Count == 0 ? [] : caps;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllCapsFiltered(
+    public async Task<IEnumerable<CapDto>> GetAllCapsFilteredAsync(
         [FromQuery] string? textSubstring = null,
         [FromQuery] List<Guid>? textColorIds = null,
         [FromQuery] List<Guid>? bgColorIds = null,
@@ -139,14 +129,14 @@ public class CapController(CapEnjoyerDbContext context) : ControllerBase
 
         if (caps.Count == 0)
         {
-            return this.NotFound("No caps found matching the specified criteria.");
+            throw new ArgumentException("No caps found matching the specified criteria.");
         }
 
-        return this.Ok(caps);
+        return caps;
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCap([FromBody] CapDto capDto)
+    public async Task<CapDto> CreateCapAsync([FromBody] CapDto capDto)
     {
         var cap = new Cap
         {
@@ -164,11 +154,11 @@ public class CapController(CapEnjoyerDbContext context) : ControllerBase
         await context.Caps.AddAsync(cap);
         await context.SaveChangesAsync();
 
-        return this.Ok(cap);
+        return capDto;
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateCap(Guid id, [FromBody] CapDto capDto)
+    public async Task<CapDto> UpdateCapAsync(Guid id, [FromBody] CapDto capDto)
     {
         var oldCap = await context.Caps
             .Include(c => c.TextColorLinks)
@@ -178,7 +168,7 @@ public class CapController(CapEnjoyerDbContext context) : ControllerBase
 
         if (oldCap == null)
         {
-            return this.NotFound($"Cap with ID {id} not found.");
+            throw new ArgumentException($"Cap with ID {id} not found.");
         }
 
         var newCap = new Cap
@@ -197,6 +187,6 @@ public class CapController(CapEnjoyerDbContext context) : ControllerBase
         await context.Caps.AddAsync(newCap);
         await context.SaveChangesAsync();
 
-        return this.Ok(newCap);
+        return capDto;
     }
 }
