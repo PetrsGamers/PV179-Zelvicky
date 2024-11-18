@@ -1,6 +1,7 @@
 namespace CapEnjoyer.DAL.Seeds;
 
 using System.Globalization;
+using System.Text;
 using Bogus;
 using Constants;
 using Entities;
@@ -10,7 +11,7 @@ public static class BottleSeed
 {
     private const string BottleSeedString = "default_bottle_seed";
     private const string DefaultBottlePicture = "default_picture_url.jpg";
-    private const string DescriptionTemplate = "A {0} for various beverages.";
+    private static readonly CompositeFormat DescriptionTemplate = CompositeFormat.Parse("A {0} for various beverages.");
 
 
     private static readonly List<string> FirstProperties =

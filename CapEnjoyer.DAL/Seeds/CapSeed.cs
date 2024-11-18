@@ -1,6 +1,7 @@
 namespace CapEnjoyer.DAL.Seeds;
 
 using System.Globalization;
+using System.Text;
 using Bogus;
 using Entities;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,9 @@ public static class CapSeed
 {
     private const string CapSeedString = "default_cap_seed";
     private const string DefaultCapPicture = "default_cap_picture_url.jpg";
-    private const string DescriptionTemplate = "This is a unique cap named '{0}'.";
+
+    private static readonly CompositeFormat DescriptionTemplate =
+        CompositeFormat.Parse("This is a unique cap named '{0}'.");
 
     private static readonly List<string> AestheticProperties =
     [
