@@ -1,87 +1,83 @@
 namespace CapEnjoyer.BL.Controllers;
 
-using DAL;
-using DAL.Entities;
 using DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Services.Interfaces;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ColorController(CapEnjoyerDbContext context) : ControllerBase
+public class ColorController(IColorService colorService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllColors()
     {
-        var colors = await context.Colors
-            .Select(c => new ColorDto { Id = c.Id, Name = c.Name, HexValue = c.HexCode })
-            .ToListAsync();
-
-        return this.Ok(colors);
+        try
+        {
+            var colors = await colorService.GetColorsAsync();
+            return this.Ok(colors);
+        }
+        catch (Exception e)
+        {
+            return this.BadRequest(e.Message);
+        }
     }
 
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetColorById(Guid id)
     {
-        var color = await context.Colors
-            .Where(c => c.Id == id)
-            .Select(c => new ColorDto { Id = c.Id, Name = c.Name, HexValue = c.HexCode })
-            .FirstOrDefaultAsync();
-
-        if (color == null)
+        try
         {
-            return this.NotFound($"Color with ID {id} not found.");
+            var color = await colorService.GetColorByIdAsync(id);
+            return this.Ok(color);
         }
-
-        return this.Ok(color);
+        catch (Exception e)
+        {
+            return this.BadRequest(e.Message);
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateColor([FromBody] ColorDto colorDto)
     {
-        var color = new Color { Id = Guid.NewGuid(), Name = colorDto.Name, HexCode = colorDto.HexValue };
-
-        await context.Colors.AddAsync(color);
-        await context.SaveChangesAsync();
-
-        return this.Ok(color);
+        try
+        {
+            var color = await colorService.CreateColorAsync(colorDto);
+            return this.Ok(color);
+        }
+        catch (Exception e)
+        {
+            return this.BadRequest(e.Message);
+        }
     }
 
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateColor(Guid id, [FromBody] ColorDto colorDto)
     {
-        var color = await context.Colors.FindAsync(id);
-
-        if (color == null)
+        try
         {
-            return this.NotFound($"Color with ID {id} not found.");
+            var color = await colorService.UpdateColorAsync(id, colorDto);
+            return this.Ok(color);
         }
-
-        color.Name = colorDto.Name;
-        color.HexCode = colorDto.HexValue;
-
-        context.Colors.Update(color);
-        await context.SaveChangesAsync();
-
-        return this.Ok(color);
+        catch (Exception ex)
+        {
+            return this.BadRequest(ex.Message);
+        }
     }
 
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteColor(Guid id)
     {
-        var color = await context.Colors.FindAsync(id);
-
-        if (color == null)
+        try
         {
-            return this.NotFound($"Color with ID {id} not found.");
+            await colorService.DeleteColorAsync(id);
+            return this.Ok();
         }
-
-        context.Colors.Remove(color);
-        await context.SaveChangesAsync();
-
-        return this.Ok("Color has been deleted.");
+        catch (Exception e)
+        {
+            return this.BadRequest(e.Message);
+        }
     }
 }
