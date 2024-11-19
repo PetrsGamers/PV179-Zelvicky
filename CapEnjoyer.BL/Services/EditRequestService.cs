@@ -127,11 +127,7 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
             .Include(c => c.TextColorLinks)
             .Include(c => c.BackgroundColorLinks)
             .Include(c => c.BottleLinks)
-            .FirstOrDefaultAsync(c => c.Id == capRequestId);
-        if (capRequest == null)
-        {
-            throw new ArgumentException("Cap edit request not found.");
-        }
+            .FirstOrDefaultAsync(c => c.Id == capRequestId) ?? throw new ArgumentException("Cap edit request not found.");
 
         if (!isEditConfirmed)
         {
@@ -143,11 +139,7 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
                 .Include(c => c.TextColorLinks)
                 .Include(c => c.BackgroundColorLinks)
                 .Include(c => c.BottleLinks)
-                .FirstOrDefaultAsync(c => c.Id == currentCapId);
-            if (currentCap == null)
-            {
-                throw new ArgumentException("Current cap not found.");
-            }
+                .FirstOrDefaultAsync(c => c.Id == currentCapId) ?? throw new ArgumentException("Current cap not found.");
 
             currentCap.TextOnCap = capRequest.TextOnCap;
             currentCap.Description = capRequest.Description;
@@ -166,11 +158,7 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
     {
         var bottleRequest = await context.Bottles
             .Include(b => b.CapLinks)
-            .FirstOrDefaultAsync(b => b.Id == bottleRequestId);
-        if (bottleRequest == null)
-        {
-            throw new ArgumentException("Bottle edit request not found.");
-        }
+            .FirstOrDefaultAsync(b => b.Id == bottleRequestId) ?? throw new ArgumentException("Bottle edit request not found.");
 
         if (!isEditConfirmed)
         {
@@ -180,11 +168,7 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
         {
             var currentBottle = await context.Bottles
                 .Include(b => b.CapLinks)
-                .FirstOrDefaultAsync(b => b.Id == currentBottleId);
-            if (currentBottle == null)
-            {
-                throw new ArgumentException("Current bottle not found.");
-            }
+                .FirstOrDefaultAsync(b => b.Id == currentBottleId) ?? throw new ArgumentException("Current bottle not found.");
 
             currentBottle.Name = bottleRequest.Name;
             currentBottle.Description = bottleRequest.Description;
@@ -202,11 +186,7 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
 
     public async Task ConfirmProducerEdit(Guid currentProducerId, Guid producerRequestId, bool isEditConfirmed)
     {
-        var producerRequest = await context.Producers.FindAsync(producerRequestId);
-        if (producerRequest == null)
-        {
-            throw new ArgumentException("Producer edit request not found.");
-        }
+        var producerRequest = await context.Producers.FindAsync(producerRequestId) ?? throw new ArgumentException("Producer edit request not found.");
 
         if (!isEditConfirmed)
         {
@@ -214,11 +194,7 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
         }
         else
         {
-            var currentProducer = await context.Producers.FindAsync(currentProducerId);
-            if (currentProducer == null)
-            {
-                throw new ArgumentException("Current producer not found.");
-            }
+            var currentProducer = await context.Producers.FindAsync(currentProducerId) ?? throw new ArgumentException("Current producer not found.");
 
             currentProducer.Name = producerRequest.Name;
             currentProducer.City = producerRequest.City;

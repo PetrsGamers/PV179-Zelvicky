@@ -16,14 +16,16 @@ public class LeaderboardService(CapEnjoyerDbContext context) : ILeaderboardServi
             .ToListAsync();
 
         var leaderboard = (from user in users
-                let distinctCapIds = user.Albums.SelectMany(album => album.CapLinks)
-                    .Select(capToAlbum => capToAlbum.Cap.Id)
-                    .Distinct()
-                    .ToList()
-                select new LeaderboardDto
-                {
-                    DistinctCapCount = distinctCapIds.Count, Rank = 0, Username = user.Username
-                })
+                           let distinctCapIds = user.Albums.SelectMany(album => album.CapLinks)
+                               .Select(capToAlbum => capToAlbum.Cap.Id)
+                               .Distinct()
+                               .ToList()
+                           select new LeaderboardDto
+                           {
+                               DistinctCapCount = distinctCapIds.Count,
+                               Rank = 0,
+                               Username = user.Username
+                           })
             .ToList();
 
         leaderboard.Sort((x, y) => y.DistinctCapCount.CompareTo(x.DistinctCapCount));
