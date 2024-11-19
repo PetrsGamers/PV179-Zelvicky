@@ -9,6 +9,43 @@ using Microsoft.EntityFrameworkCore;
 
 public class CapService(CapEnjoyerDbContext context) : ICapService
 {
+    public async Task UploadImageForCapAsync(Guid capId, IFormFile image)
+    {
+        if (image == null || image.Length == 0)
+        {
+            throw new ArgumentException("Invalid file.");
+        }
+
+        if (image.Length > 5 * 2048 * 2048)
+        {
+            throw new ArgumentException("File size is too big.");
+        }
+
+        if (image.ContentType is not "image/jpeg" and not "image/png")
+        {
+            throw new ArgumentException("Invalid file type.");
+        }
+
+        var baseDirectory = Directory.GetCurrentDirectory();
+        var uploadsFolder = Path.Combine(baseDirectory, @"wwwroot\images\caps");
+        Directory.CreateDirectory(uploadsFolder); // Ensure the folder exists
+
+        var fileName = $"{Guid.NewGuid()}_cap_{image.FileName}";
+        var filePath = Path.Combine(uploadsFolder, fileName);
+
+        await using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await image.CopyToAsync(stream);
+        }
+
+        var cap = await context.Caps.FirstOrDefaultAsync(c => c.Id == capId) ??
+                  throw new ArgumentException($"Cap with ID {capId} not found.");
+        cap.CapPicture = filePath;
+
+        context.Caps.Update(cap);
+        await context.SaveChangesAsync();
+    }
+
     public async Task<CapDto> GetCapByIdAsync(Guid id)
     {
         var cap = await context.Caps
@@ -169,7 +206,7 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
             IsEditForId = oldCap.Id
         };
 
-        await context.Caps.AddAsync(newCap);
+        context.Caps.Update(newCap);
         await context.SaveChangesAsync();
 
         return capDto;

@@ -8,6 +8,20 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 public class BottleController(IBottleService bottleService) : ControllerBase
 {
+    [HttpPost("/upload-image/{bottleId}")]
+    public async Task<IActionResult> UploadImageForBottle(Guid bottleId, IFormFile image)
+    {
+        try
+        {
+            await bottleService.UploadImageForBottleAsync(bottleId, image);
+            return this.Ok("Image uploaded successfully.");
+        }
+        catch (Exception e)
+        {
+            return this.BadRequest(e.Message);
+        }
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetAllBottles()
     {
@@ -27,8 +41,6 @@ public class BottleController(IBottleService bottleService) : ControllerBase
     {
         try
         {
-
-
             var bottle = await bottleService.GetBottleById(id);
 
 
@@ -86,5 +98,4 @@ public class BottleController(IBottleService bottleService) : ControllerBase
             return this.BadRequest(e.Message);
         }
     }
-
 }
