@@ -9,7 +9,6 @@ public static class UserSeed
 {
     private const string UsersSeedString = "basic_user_seed";
     private const string Domain = "@fitmuni.cz";
-    private const string Password = "password";
     private static readonly List<string> DefaultUsers = ["admin", "bivaD", "goretexak", "Ted", "Monke", "Senator"];
 
     public static List<User> Seed(ModelBuilder modelBuilder)
@@ -20,7 +19,6 @@ public static class UserSeed
             .RuleFor(u => u.Id, f => f.Random.Guid())
             .RuleFor(u => u.Username, f => f.Name.FirstName())
             .RuleFor(u => u.Email, f => f.Internet.Email())
-            .RuleFor(u => u.Password, Password)
             .RuleFor(u => u.Role, (_, u) => u.Username == "admin" ? Role.Admin : Role.User);
 
         List<User> users = [];

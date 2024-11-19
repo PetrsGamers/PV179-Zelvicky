@@ -1,4 +1,4 @@
-﻿namespace CapEnjoyer.BL.Services;
+namespace CapEnjoyer.BL.Services;
 
 using DAL;
 using DAL.Entities;
@@ -24,12 +24,7 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
                 Bottles = c.BottleLinks.Select(bl => bl.BottleId).ToList(),
                 IsEditFor = c.IsEditForId
             })
-            .FirstOrDefaultAsync();
-
-        if (cap == null)
-        {
-            throw new ArgumentException($"Cap with ID {id} not found.");
-        }
+            .FirstOrDefaultAsync() ?? throw new ArgumentException($"Cap with ID {id} not found.");
 
         return cap;
     }
@@ -41,12 +36,7 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
             .Include(c => c.BackgroundColorLinks)
             .Include(c => c.BottleLinks)
             .Include(c => c.AlbumLinks)
-            .FirstOrDefaultAsync(c => c.Id == id);
-
-        if (cap == null)
-        {
-            throw new ArgumentException($"Cap with ID {id} not found.");
-        }
+            .FirstOrDefaultAsync(c => c.Id == id) ?? throw new ArgumentException($"Cap with ID {id} not found.");
 
         context.CapToTextColors.RemoveRange(cap.TextColorLinks);
         context.CapToBackgroundColors.RemoveRange(cap.BackgroundColorLinks);
@@ -164,12 +154,7 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
             .Include(c => c.TextColorLinks)
             .Include(c => c.BackgroundColorLinks)
             .Include(c => c.BottleLinks)
-            .FirstOrDefaultAsync(c => c.Id == id);
-
-        if (oldCap == null)
-        {
-            throw new ArgumentException($"Cap with ID {id} not found.");
-        }
+            .FirstOrDefaultAsync(c => c.Id == id) ?? throw new ArgumentException($"Cap with ID {id} not found.");
 
         var newCap = new Cap
         {

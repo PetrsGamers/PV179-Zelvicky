@@ -146,10 +146,6 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
                 .IsRequired()
                 .HasMaxLength(255);
 
-            entity.Property(u => u.Password)
-                .IsRequired()
-                .HasMaxLength(255);
-
             entity.Property(u => u.Role)
                 .IsRequired()
                 .HasMaxLength(255);

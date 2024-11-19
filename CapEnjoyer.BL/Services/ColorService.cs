@@ -1,4 +1,4 @@
-﻿namespace CapEnjoyer.BL.Services;
+namespace CapEnjoyer.BL.Services;
 
 using DAL;
 using DAL.Entities;
@@ -36,11 +36,7 @@ public class ColorService(CapEnjoyerDbContext context) : IColorService
 
     public async Task<ColorDto> UpdateColorAsync(Guid id, ColorDto colorDto)
     {
-        var color = await context.Colors.FindAsync(id);
-        if (color == null)
-        {
-            throw new ArgumentException($"Color with ID {id} not found.");
-        }
+        var color = await context.Colors.FindAsync(id) ?? throw new ArgumentException($"Color with ID {id} not found.");
 
         color.Name = colorDto.Name;
         color.HexCode = colorDto.HexValue;
@@ -51,11 +47,7 @@ public class ColorService(CapEnjoyerDbContext context) : IColorService
 
     public async Task DeleteColorAsync(Guid id)
     {
-        var color = await context.Colors.FindAsync(id);
-        if (color == null)
-        {
-            throw new ArgumentException($"Color with ID {id} not found.");
-        }
+        var color = await context.Colors.FindAsync(id) ?? throw new ArgumentException($"Color with ID {id} not found.");
 
         context.Colors.Remove(color);
         await context.SaveChangesAsync();
