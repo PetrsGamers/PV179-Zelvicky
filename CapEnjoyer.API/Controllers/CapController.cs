@@ -1,13 +1,28 @@
-namespace CapEnjoyer.BL.Controllers;
+namespace CapEnjoyer.API.Controllers;
 
-using DTOs;
+using BL.DTOs;
+using BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Services.Interfaces;
 
 [ApiController]
 [Route("api/[controller]")]
 public class CapController(ICapService capService) : ControllerBase
 {
+    [HttpPost("upload-image/{capId:guid}")]
+    public async Task<IActionResult> UploadImageForCap(Guid capId, IFormFile image)
+    {
+        try
+        {
+            await capService.UploadImageForCapAsync(capId, image);
+            return this.Ok("Image uploaded successfully.");
+        }
+        catch (Exception e)
+        {
+            return this.BadRequest(e.Message);
+        }
+    }
+
+
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetCapById(Guid id)
     {

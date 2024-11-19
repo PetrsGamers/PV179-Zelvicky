@@ -4,6 +4,7 @@ using DTOs;
 
 public interface ICapService
 {
+    Task UploadImageForCapAsync(Guid capId, IFormFile image);
     Task<CapDto> GetCapByIdAsync(Guid id);
     Task<CapDto> CreateCapAsync(CapDto capDto);
     Task<IEnumerable<CapDto>> GetAllCapsByAlbumIdAsync(Guid albumId);

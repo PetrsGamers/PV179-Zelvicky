@@ -7,12 +7,46 @@ using DAL.Entities;
 using DTOs;
 using Microsoft.EntityFrameworkCore;
 
-
-
 public class BottleService(CapEnjoyerDbContext dbContext) : IBottleService
 {
-
     private readonly CapEnjoyerDbContext context = dbContext;
+
+    public async Task UploadImageForBottleAsync(Guid bottleId, IFormFile image)
+    {
+        if (image == null || image.Length == 0)
+        {
+            throw new ArgumentException("Invalid file.");
+        }
+
+        if (image.Length > 5 * 2048 * 2048)
+        {
+            throw new ArgumentException("File size is too big.");
+        }
+
+        if (image.ContentType is not "image/jpeg" and not "image/png")
+        {
+            throw new ArgumentException("Invalid file type.");
+        }
+
+        var baseDirectory = Directory.GetCurrentDirectory();
+        var uploadsFolder = Path.Combine(baseDirectory, @"wwwroot\images\bottles");
+        Directory.CreateDirectory(uploadsFolder); // Ensure the folder exists
+
+        var fileName = $"{Guid.NewGuid()}_bottle_{image.FileName}";
+        var filePath = Path.Combine(uploadsFolder, fileName);
+
+        await using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await image.CopyToAsync(stream);
+        }
+
+        var bottle = await this.context.Bottles.FirstOrDefaultAsync(b => b.Id == bottleId) ??
+                     throw new ArgumentException($"Bottle with ID {bottleId} not found.");
+        bottle.BottlePicture = filePath;
+
+        this.context.Bottles.Update(bottle);
+        await this.context.SaveChangesAsync();
+    }
 
     public async Task<BottleDto> GetBottleById(Guid id)
     {
@@ -33,6 +67,7 @@ public class BottleService(CapEnjoyerDbContext dbContext) : IBottleService
 
         return bottle;
     }
+
     public async Task<IEnumerable<BottleDto>> GetAllBottles()
     {
         var bottles = await this.context.Bottles
@@ -124,10 +159,10 @@ public class BottleService(CapEnjoyerDbContext dbContext) : IBottleService
 
     public async Task DeleteBottle(Guid id)
     {
-        var bottle = await this.context.Bottles.FindAsync(id) ?? throw new ArgumentException($"Bottle with ID {id} not found.");
+        var bottle = await this.context.Bottles.FindAsync(id) ??
+                     throw new ArgumentException($"Bottle with ID {id} not found.");
 
         this.context.Bottles.Remove(bottle);
         await this.context.SaveChangesAsync();
     }
-
 }
