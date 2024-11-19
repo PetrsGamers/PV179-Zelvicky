@@ -9,4 +9,7 @@ public interface IAlbumService
     Task<AlbumDto> CreateAlbum(AlbumInsertDto album);
     Task<AlbumDto> UpdateAlbum(Guid id, AlbumInsertDto album);
     Task DeleteAlbum(Guid id);
+
+    Task AddCapToAlbum(Guid albumId, Guid capId);
+    Task RemoveCapFromAlbum(Guid albumId, Guid capId);
 }
