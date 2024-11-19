@@ -19,10 +19,10 @@
 
 - [ ] Create user service
 - [ ] Write tests to David's service using mocking. Ensure tests are meaningful.
-- [ ] Update GitLab settings to:
+- [x] Update GitLab settings to:
     - Allow only successful merge requests to be merged
     - Require 1 approval for merging (effective from the start of working on the 2nd milestone)
-- [ ] Integrate an Identity Framework:
+- [x] Integrate an Identity Framework:
     - Develop a separate MVC application for this
     - For the current milestone, only implement authentication using the Identity Framework
 

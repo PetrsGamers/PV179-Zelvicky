@@ -1,4 +1,4 @@
-﻿namespace CapEnjoyer.API.Helpers;
+namespace CapEnjoyer.API.Helpers;
 
 using DAL;
 

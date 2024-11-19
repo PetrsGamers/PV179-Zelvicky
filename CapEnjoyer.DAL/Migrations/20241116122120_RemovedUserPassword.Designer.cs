@@ -3,6 +3,7 @@ using System;
 using CapEnjoyer.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CapEnjoyer.DAL.Migrations
 {
     [DbContext(typeof(CapEnjoyerDbContext))]
-    partial class CapEnjoyerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241116122120_RemovedUserPassword")]
+    partial class RemovedUserPassword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

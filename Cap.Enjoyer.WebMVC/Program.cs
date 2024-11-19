@@ -38,10 +38,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 // Configure the application cookie settings.
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/Login";
-});
+builder.Services.ConfigureApplicationCookie(options => options.LoginPath = "/Login");
 
 
 var app = builder.Build();

@@ -1,31 +1,14 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Cap.Enjoyer.WebMVC.Models;
-
 namespace Cap.Enjoyer.WebMVC.Controllers;
+using System.Diagnostics;
+using Cap.Enjoyer.WebMVC.Models;
+using Microsoft.AspNetCore.Mvc;
 
-public class HomeController : Controller
+public class HomeController(ILogger<HomeController> logger) : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    public IActionResult Index() => this.View();
 
-    public HomeController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
-
-    public IActionResult Index()
-    {
-        return View();
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+    public IActionResult Privacy() => this.View();
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
+    public IActionResult Error() => this.View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
 }
