@@ -21,6 +21,8 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
 
     public DbSet<LocalIdentityUser> LocalIdentityUsers { get; set; }
 
+    public DbSet<AuditLog> AuditLogs { get; set; }
+
 
 
 
