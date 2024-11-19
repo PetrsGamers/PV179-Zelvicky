@@ -51,7 +51,6 @@ public class AccountController(UserManager<LocalIdentityUser> userManager, SignI
         if (this.ModelState.IsValid)
         {
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, false, lockoutOnFailure: false);
-
             if (result.Succeeded)
             {
                 // return RedirectToAction("LoginSuccess", "Account");

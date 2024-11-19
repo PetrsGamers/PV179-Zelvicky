@@ -23,6 +23,7 @@ public class ColorServiceTests : IDisposable
     {
         this.context.Database.EnsureDeleted();
         this.context.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     [Fact]

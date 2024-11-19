@@ -5,16 +5,13 @@ using CapEnjoyer.BL.Services;
 using CapEnjoyer.DAL;
 using CapEnjoyer.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using Xunit.Abstractions;
 
 public class AlbumServiceTests : IDisposable
 {
-    private readonly ITestOutputHelper testOutputHelper;
     private readonly CapEnjoyerDbContext context;
 
-    public AlbumServiceTests(ITestOutputHelper testOutputHelper)
+    public AlbumServiceTests()
     {
-        this.testOutputHelper = testOutputHelper;
         var options = new DbContextOptionsBuilder<CapEnjoyerDbContext>()
             .UseInMemoryDatabase("TestAlbumDatabase")
             .Options;
@@ -26,6 +23,8 @@ public class AlbumServiceTests : IDisposable
     {
         this.context.Database.EnsureDeleted();
         this.context.Dispose();
+        GC.SuppressFinalize(this);
+
     }
 
 

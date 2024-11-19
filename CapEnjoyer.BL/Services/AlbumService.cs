@@ -100,7 +100,7 @@ public class AlbumService(CapEnjoyerDbContext dbContext) : IAlbumService
         }
         else
         {
-            existingAlbum.CapLinks = new List<CapToAlbum>();
+            existingAlbum.CapLinks = [];
         }
 
         this.context.Albums.Update(existingAlbum);
