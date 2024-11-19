@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CapEnjoyer.API\wwwroot\images\caps\"/>
     <Folder Include="wwwroot\images\caps\"/>
   </ItemGroup>
 

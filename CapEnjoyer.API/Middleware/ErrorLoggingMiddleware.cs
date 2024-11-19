@@ -1,6 +1,12 @@
-namespace CapEnjoyer.BL.Middleware;
+namespace CapEnjoyer.API.Middleware;
 
-public class ErrorLoggingMiddleware(RequestDelegate next, ILogger<ErrorLoggingMiddleware> logger)
+using BL.Services.Interfaces;
+using DAL.Constants;
+
+public class ErrorLoggingMiddleware(
+    RequestDelegate next,
+    ILogger<ErrorLoggingMiddleware> logger,
+    IMiddlewareLoggingService middlewareLoggingService)
 {
     private static readonly Action<ILogger, string, Exception?> LogUnhandledException =
         LoggerMessage.Define<string>(
@@ -23,12 +29,15 @@ public class ErrorLoggingMiddleware(RequestDelegate next, ILogger<ErrorLoggingMi
         catch (Exception ex)
         {
             LogUnhandledException(logger, ex.Message, ex);
+            await middlewareLoggingService.LogMiddlewareAsync(MiddlewareLogAction.Error, ex.Message);
             await HandleExceptionAsync(context);
         }
 
-        if (context.Response.StatusCode == StatusCodes.Status500InternalServerError && !context.Response.HasStarted)
+        if (context.Response is { StatusCode: StatusCodes.Status500InternalServerError, HasStarted: false })
         {
             Log500StatusWithoutException(logger, null);
+            await middlewareLoggingService.LogMiddlewareAsync(MiddlewareLogAction.Error,
+                "500 status code without exception");
             await HandleExceptionAsync(context);
         }
     }
@@ -42,7 +51,7 @@ public class ErrorLoggingMiddleware(RequestDelegate next, ILogger<ErrorLoggingMi
         {
             StatusCode = 500,
             Message =
-                "The programmer that made this code after more than 5 beers. Be patient, he will fix it sometimes."
+                "The programmer made this code after more than 5 beers. Be patient, he will fix it sometimes."
         };
 
         return context.Response.WriteAsJsonAsync(responseMessage);

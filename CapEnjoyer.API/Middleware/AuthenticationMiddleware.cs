@@ -1,6 +1,12 @@
-namespace CapEnjoyer.BL.Middleware;
+namespace CapEnjoyer.API.Middleware;
 
-public class AuthenticationMiddleware(RequestDelegate next, ILogger<AuthenticationMiddleware> logger)
+using BL.Services.Interfaces;
+using DAL.Constants;
+
+public class AuthenticationMiddleware(
+    RequestDelegate next,
+    ILogger<AuthenticationMiddleware> logger,
+    IMiddlewareLoggingService middlewareLoggingService)
 {
     private const string HardCodedToken = "token";
 
@@ -28,6 +34,7 @@ public class AuthenticationMiddleware(RequestDelegate next, ILogger<Authenticati
         }
         else
         {
+            await middlewareLoggingService.LogMiddlewareAsync(MiddlewareLogAction.Error, "Unauthorized access attempt");
             LogUnauthorizedAccess(logger, null);
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             await context.Response.WriteAsync("Unauthorized");

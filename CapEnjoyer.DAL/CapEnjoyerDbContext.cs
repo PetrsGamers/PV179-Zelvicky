@@ -18,12 +18,9 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
     public DbSet<CapToBottle> CapToBottles { get; set; }
     public DbSet<CapToBackgroundColor> CapToBackgroundColors { get; set; }
     public DbSet<CapToTextColor> CapToTextColors { get; set; }
-
     public DbSet<LocalIdentityUser> LocalIdentityUsers { get; set; }
-
     public DbSet<AuditLog> AuditLogs { get; set; }
-
-
+    public DbSet<MiddlewareLog> MiddlewareLogs { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,7 +34,6 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
         modelBuilder.Entity<IdentityUserToken<string>>().HasKey(p => new { p.UserId });
         modelBuilder.Entity<IdentityRoleClaim<string>>().HasKey(p => new { p.Id });
         modelBuilder.Entity<IdentityRole>().HasKey(p => new { p.Id });
-
     }
 
     private static void ConfigureRelationships(ModelBuilder modelBuilder)
