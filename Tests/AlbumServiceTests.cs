@@ -5,13 +5,16 @@ using CapEnjoyer.BL.Services;
 using CapEnjoyer.DAL;
 using CapEnjoyer.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using Xunit.Abstractions;
 
 public class AlbumServiceTests : IDisposable
 {
+    private readonly ITestOutputHelper testOutputHelper;
     private readonly CapEnjoyerDbContext context;
 
-    public AlbumServiceTests()
+    public AlbumServiceTests(ITestOutputHelper testOutputHelper)
     {
+        this.testOutputHelper = testOutputHelper;
         var options = new DbContextOptionsBuilder<CapEnjoyerDbContext>()
             .UseInMemoryDatabase("TestAlbumDatabase")
             .Options;
@@ -66,18 +69,201 @@ public class AlbumServiceTests : IDisposable
     {
         var albumService = new AlbumService(this.context);
 
+
+        var albumDto = new AlbumInsertDto { Name = "Album1", Description = "Description1", };
+        var createdAlbum = await albumService.CreateAlbum(albumDto);
+        await this.context.SaveChangesAsync();
+
+        var result = await this.context.Albums.FindAsync(createdAlbum.Id);
+
+        Assert.NotNull(result);
+        Assert.Equal(createdAlbum.Id, result?.Id);
+        Assert.Equal("Album1", result?.Name);
+        Assert.Equal("Description1", result?.Description);
+    }
+
+    [Fact]
+    public async Task CreateAlbumThrowsExceptionWhenNameOrDescriptionIsMissing()
+    {
+        var albumService = new AlbumService(this.context);
+
+        var albumDto = new AlbumInsertDto { Name = "", Description = "Description1" };
+
+        await Assert.ThrowsAsync<ArgumentException>(() => albumService.CreateAlbum(albumDto));
+    }
+
+    [Fact]
+    public async Task DeleteAlbumRemovesAlbum()
+    {
+        var albumService = new AlbumService(this.context);
+
         var albumId = Guid.NewGuid();
         var album = new Album { Id = albumId, Name = "Album1", Description = "Description1" };
-        var albumDto = new AlbumInsertDto { Name = album.Name, Description = album.Description };
-        await albumService.CreateAlbum(albumDto);
+
+        this.context.Albums.Add(album);
+        await this.context.SaveChangesAsync();
+
+        await albumService.DeleteAlbum(albumId);
+
+        var deletedAlbum = await this.context.Albums.FindAsync(albumId);
+        Assert.Null(deletedAlbum);
+    }
+
+    [Fact]
+    public async Task UpdateAlbumUpdatesAlbum()
+    {
+        var albumService = new AlbumService(this.context);
+
+        var albumId = Guid.NewGuid();
+        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1" };
+
+        this.context.Albums.Add(album);
+        await this.context.SaveChangesAsync();
+
+        var updatedAlbum = new AlbumInsertDto { Name = "Album2", Description = "Description2" };
+        await albumService.UpdateAlbum(albumId, updatedAlbum);
 
         var result = await this.context.Albums.FindAsync(albumId);
 
         Assert.NotNull(result);
         Assert.Equal(albumId, result?.Id);
-        Assert.Equal("Album1", result?.Name);
-        Assert.Equal("Description1", result?.Description);
+        Assert.Equal("Album2", result?.Name);
+        Assert.Equal("Description2", result?.Description);
     }
+
+    [Fact]
+    public async Task UpdateAlbumThrowsExceptionWhenAlbumNotFound()
+    {
+        var albumService = new AlbumService(this.context);
+
+        var albumId = Guid.NewGuid();
+        var updatedAlbum = new AlbumInsertDto { Name = "Album2", Description = "Description2" };
+
+        await Assert.ThrowsAsync<ArgumentException>(() => albumService.UpdateAlbum(albumId, updatedAlbum));
+    }
+
+
+    [Fact]
+    public async Task AddCapToAlbumAddsCapToAlbum()
+    {
+        var albumService = new AlbumService(this.context);
+        var capService = new CapService(this.context);
+
+        var albumId = Guid.NewGuid();
+        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1" };
+
+        this.context.Albums.Add(album);
+        await this.context.SaveChangesAsync();
+
+        var capId = Guid.NewGuid();
+        var cap = new Cap { Id = capId, TextOnCap = "Cap1", Description = "Description1", CapPicture = "Picture1" };
+        this.context.Caps.Add(cap);
+
+        await albumService.AddCapToAlbum(albumId, capId);
+
+        var result = await this.context.CapToAlbums.FirstOrDefaultAsync(cl => cl.AlbumId == albumId && cl.CapId == capId);
+
+        Assert.NotNull(result);
+        Assert.Equal(albumId, result?.AlbumId);
+        Assert.Equal(capId, result?.CapId);
+    }
+
+    [Fact]
+    public async Task AddCapToAlbumThrowsExceptionWhenAlbumNotFound()
+    {
+        var albumService = new AlbumService(this.context);
+        var capService = new CapService(this.context);
+
+        var albumId = Guid.NewGuid();
+        var capId = Guid.NewGuid();
+        var cap = new Cap { Id = capId, TextOnCap = "Cap1", Description = "Description1", CapPicture = "Picture1" };
+        this.context.Caps.Add(cap);
+
+        await Assert.ThrowsAsync<ArgumentException>(() => albumService.AddCapToAlbum(albumId, capId));
+    }
+
+    [Fact]
+    public async Task AddCapToAlbumThrowsExceptionWhenCapNotFound()
+    {
+        var albumService = new AlbumService(this.context);
+        var capService = new CapService(this.context);
+
+        var albumId = Guid.NewGuid();
+        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1" };
+
+        this.context.Albums.Add(album);
+        await this.context.SaveChangesAsync();
+
+        var capId = Guid.NewGuid();
+
+        await Assert.ThrowsAsync<ArgumentException>(() => albumService.AddCapToAlbum(albumId, capId));
+    }
+
+    [Fact]
+    public async Task RemoveCapFromAlbumRemovesCapFromAlbum()
+    {
+        var albumService = new AlbumService(this.context);
+        var capService = new CapService(this.context);
+
+        var albumId = Guid.NewGuid();
+        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1" };
+
+        this.context.Albums.Add(album);
+        await this.context.SaveChangesAsync();
+
+        var capId = Guid.NewGuid();
+        var cap = new Cap { Id = capId, TextOnCap = "Cap1", Description = "Description1", CapPicture = "Picture1" };
+        this.context.Caps.Add(cap);
+
+        await albumService.AddCapToAlbum(albumId, capId);
+        await albumService.RemoveCapFromAlbum(albumId, capId);
+
+        var result = await this.context.CapToAlbums.FirstOrDefaultAsync(cl => cl.AlbumId == albumId && cl.CapId == capId);
+
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task RemoveCapFromAlbumThrowsExceptionWhenCapNotFoundInAlbum()
+    {
+        var albumService = new AlbumService(this.context);
+        var capService = new CapService(this.context);
+
+        var albumId = Guid.NewGuid();
+        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1" };
+
+        this.context.Albums.Add(album);
+        await this.context.SaveChangesAsync();
+
+        var capId = Guid.NewGuid();
+        var cap = new Cap { Id = capId, TextOnCap = "Cap1", Description = "Description1", CapPicture = "Picture1" };
+        this.context.Caps.Add(cap);
+
+        await Assert.ThrowsAsync<ArgumentException>(() => albumService.RemoveCapFromAlbum(albumId, capId));
+    }
+
+    [Fact]
+    public async Task RemoveCapFromAlbumThrowsExceptionWhenAlbumNotFound()
+    {
+        var albumService = new AlbumService(this.context);
+        var capService = new CapService(this.context);
+
+        var albumId = Guid.NewGuid();
+        var capId = Guid.NewGuid();
+        var cap = new Cap { Id = capId, TextOnCap = "Cap1", Description = "Description1", CapPicture = "Picture1" };
+        this.context.Caps.Add(cap);
+
+        await Assert.ThrowsAsync<ArgumentException>(() => albumService.RemoveCapFromAlbum(albumId, capId));
+    }
+
+
+
+
+
+
+
+
+
 
 
 }

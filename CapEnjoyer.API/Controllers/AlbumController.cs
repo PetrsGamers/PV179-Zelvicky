@@ -89,4 +89,34 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
             return this.BadRequest(e.Message);
         }
     }
+
+    [HttpPost("{albumId}/caps/{capId}")]
+    public async Task<IActionResult> AddCapToAlbum(Guid albumId, Guid capId)
+    {
+        try
+        {
+            await albumService.AddCapToAlbum(albumId, capId);
+
+            return this.Ok();
+        }
+        catch (Exception e)
+        {
+            return this.BadRequest(e.Message);
+        }
+    }
+
+    [HttpDelete("{albumId}/caps/{capId}")]
+    public async Task<IActionResult> RemoveCapFromAlbum(Guid albumId, Guid capId)
+    {
+        try
+        {
+            await albumService.RemoveCapFromAlbum(albumId, capId);
+
+            return this.Ok();
+        }
+        catch (Exception e)
+        {
+            return this.BadRequest(e.Message);
+        }
+    }
 }
