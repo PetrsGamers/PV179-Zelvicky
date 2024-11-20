@@ -10,12 +10,12 @@ public class AccountController(
     UserManager<LocalIdentityUser> userManager,
     SignInManager<LocalIdentityUser> signInManager) : Controller
 {
-    public IActionResult Register() => this.View();
+    public IActionResult Register() => View();
 
     [HttpPost]
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
-        if (this.ModelState.IsValid)
+        if (ModelState.IsValid)
         {
             var user = new LocalIdentityUser
             {
@@ -36,10 +36,10 @@ public class AccountController(
             {
                 foreach (var error in result.Errors)
                 {
-                    this.ModelState.AddModelError(string.Empty, error.Description);
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
 
-                return this.View(model);
+                return View(model);
             }
 
             if (result.Succeeded)
@@ -50,14 +50,14 @@ public class AccountController(
 
             foreach (var error in result.Errors)
             {
-                this.ModelState.AddModelError(string.Empty, error.Description);
+                ModelState.AddModelError(string.Empty, error.Description);
             }
         }
 
-        return this.View(model);
+        return View(model);
     }
 
-    public IActionResult Login() => this.View();
+    public IActionResult Login() => View();
 
     [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel model)

@@ -65,7 +65,6 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumService
             capLinks = album.Caps.Select(capId => new CapToAlbum { AlbumId = newId, CapId = capId }).ToList();
 
         }
-
         await context.Albums.AddAsync(newAlbum);
         await context.CapToAlbums.AddRangeAsync(capLinks);
         await context.SaveChangesAsync();

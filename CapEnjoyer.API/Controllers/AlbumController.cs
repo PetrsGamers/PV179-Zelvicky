@@ -22,7 +22,7 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
         }
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetAlbumById(Guid id)
     {
         try
@@ -53,7 +53,7 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateAlbum(Guid id, [FromBody] AlbumInsertDto album)
     {
         try
@@ -69,7 +69,7 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteAlbum(Guid id)
     {
         try
@@ -83,7 +83,7 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
         }
     }
 
-    [HttpPost("{albumId}/caps/{capId}")]
+    [HttpPost("{albumId:guid}/caps/{capId:guid}")]
     public async Task<IActionResult> AddCapToAlbum(Guid albumId, Guid capId)
     {
         try
@@ -98,7 +98,7 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
         }
     }
 
-    [HttpDelete("{albumId}/caps/{capId}")]
+    [HttpDelete("{albumId:guid}/caps/{capId:guid}")]
     public async Task<IActionResult> RemoveCapFromAlbum(Guid albumId, Guid capId)
     {
         try

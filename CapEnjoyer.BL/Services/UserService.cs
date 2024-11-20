@@ -23,7 +23,6 @@ public class UserService(CapEnjoyerDbContext context) : IUserService
 
     public async Task<User> CreateUser(User user)
     {
-        // Přidat logiku pro validaci nebo další procesy
         if (string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.Email))
         {
             throw new ArgumentException("Username and Email are required.");

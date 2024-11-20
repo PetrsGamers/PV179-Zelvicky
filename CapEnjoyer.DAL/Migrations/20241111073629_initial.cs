@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 /// <inheritdoc />
 public partial class initial : Migration
 {
-    private static readonly string[] columns = new[] { "Id", "CapPicture", "Description", "IsEditForId", "TextOnCap" };
+    private static readonly string[] columns = ["Id", "CapPicture", "Description", "IsEditForId", "TextOnCap"];
 
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
@@ -401,7 +401,7 @@ public partial class initial : Migration
 
         migrationBuilder.InsertData(
             table: "Colors",
-            columns: new[] { "Id", "HexCode", "Name" },
+            columns: ["Id", "HexCode", "Name"],
             values: new object[,]
             {
                 { new Guid("248c84d8-84b1-0024-ef1f-637897fdb75c"), "#e9ecec", "White" },
@@ -424,7 +424,7 @@ public partial class initial : Migration
 
         migrationBuilder.InsertData(
             table: "Countries",
-            columns: new[] { "Id", "Name" },
+            columns: ["Id", "Name"],
             values: new object[,]
             {
                 { new Guid("02ab35e7-74d9-661a-c297-7a83cc4a706c"), "Jordan" },
@@ -627,7 +627,7 @@ public partial class initial : Migration
 
         migrationBuilder.InsertData(
             table: "Users",
-            columns: new[] { "Id", "Email", "Password", "Role", "Username" },
+            columns: ["Id", "Email", "Password", "Role", "Username"],
             values: new object[,]
             {
                 { new Guid("3cd58330-80d5-834f-6d9a-587a4d431aaa"), "admin@fitmuni.cz", "password", "User", "admin" },
@@ -640,7 +640,7 @@ public partial class initial : Migration
 
         migrationBuilder.InsertData(
             table: "Albums",
-            columns: new[] { "Id", "Description", "Name", "Public", "UserId" },
+            columns: ["Id", "Description", "Name", "Public", "UserId"],
             values: new object[,]
             {
                 { new Guid("088546c5-ab6f-3413-a0d4-2c0a352ec661"), "Caps with waterproof goretex™ membrate.", "GORE-TEX collection", true, new Guid("a29c7e55-9fc2-735c-3ca9-dd3f5b0c6f2a") },
@@ -661,7 +661,7 @@ public partial class initial : Migration
 
         migrationBuilder.InsertData(
             table: "CapToBackgroundColors",
-            columns: new[] { "BackgroundColorId", "CapId", "ColorId" },
+            columns: ["BackgroundColorId", "CapId", "ColorId"],
             values: new object[,]
             {
                 { new Guid("5533f98a-cf33-06a4-c8c5-987bef175b61"), new Guid("01135f45-c514-86e0-a992-70c01c26dcd1"), null },
@@ -951,7 +951,7 @@ public partial class initial : Migration
 
         migrationBuilder.InsertData(
             table: "CapToTextColors",
-            columns: new[] { "CapId", "TextColorId", "ColorId" },
+            columns: ["CapId", "TextColorId", "ColorId"],
             values: new object[,]
             {
                 { new Guid("01135f45-c514-86e0-a992-70c01c26dcd1"), new Guid("32151b40-e27a-2e3c-901c-a5105fdd135d"), null },
@@ -1183,7 +1183,7 @@ public partial class initial : Migration
 
         migrationBuilder.InsertData(
             table: "Producers",
-            columns: new[] { "Id", "City", "CountryId", "Description", "IsEditForId", "Name" },
+            columns: ["Id", "City", "CountryId", "Description", "IsEditForId", "Name"],
             values: new object[,]
             {
                 { new Guid("07235d12-b492-ffb0-aa04-2179338ff694"), "Litovel", new Guid("95ca884a-9a6b-468c-9980-b3f264c0c3c1"), "Offers a variety of traditional Czech beers.", null, "Litovel Brewery" },
@@ -1211,7 +1211,7 @@ public partial class initial : Migration
 
         migrationBuilder.InsertData(
             table: "Bottles",
-            columns: new[] { "Id", "BottlePicture", "Description", "DrinkType", "IsEditForId", "Name", "ProducerId", "Voltage" },
+            columns: ["Id", "BottlePicture", "Description", "DrinkType", "IsEditForId", "Name", "ProducerId", "Voltage"],
             values: new object[,]
             {
                 { new Guid("0028c526-25ba-8088-ee23-b841b0be7fe9"), "default_picture_url.jpg", "A Classic Vintage bottle for various beverages.", "BeerApa", null, "Classic Vintage bottle", new Guid("ea012d9a-b145-fce5-fa06-4fa09d41d5e3"), 5.5499999999999998 },
@@ -1262,7 +1262,7 @@ public partial class initial : Migration
 
         migrationBuilder.InsertData(
             table: "CapToAlbums",
-            columns: new[] { "AlbumId", "CapId" },
+            columns: ["AlbumId", "CapId"],
             values: new object[,]
             {
                 { new Guid("6b96f1a4-a0f6-728a-f63e-0c9741119d37"), new Guid("01135f45-c514-86e0-a992-70c01c26dcd1") },
@@ -1935,7 +1935,7 @@ public partial class initial : Migration
 
         migrationBuilder.InsertData(
             table: "CapToBackgroundColors",
-            columns: new[] { "BackgroundColorId", "CapId", "ColorId" },
+            columns: ["BackgroundColorId", "CapId", "ColorId"],
             values: new object[,]
             {
                 { new Guid("6247a2a5-d006-dd1d-69be-31d2acc526a9"), new Guid("048f57a3-9451-58ec-ea12-1068aab41d49"), null },
@@ -1955,7 +1955,7 @@ public partial class initial : Migration
 
         migrationBuilder.InsertData(
             table: "CapToTextColors",
-            columns: new[] { "CapId", "TextColorId", "ColorId" },
+            columns: ["CapId", "TextColorId", "ColorId"],
             values: new object[,]
             {
                 { new Guid("048f57a3-9451-58ec-ea12-1068aab41d49"), new Guid("248c84d8-84b1-0024-ef1f-637897fdb75c"), null },
@@ -1975,7 +1975,7 @@ public partial class initial : Migration
 
         migrationBuilder.InsertData(
             table: "Producers",
-            columns: new[] { "Id", "City", "CountryId", "Description", "IsEditForId", "Name" },
+            columns: ["Id", "City", "CountryId", "Description", "IsEditForId", "Name"],
             values: new object[,]
             {
                 { new Guid("2bc5498d-50b0-656f-9092-aad979ad6c3d"), "Brno", new Guid("95ca884a-9a6b-468c-9980-b3f264c0c3c1"), "Updated description 11", new Guid("3e11cf14-496e-a352-50fd-0b2241d04178"), "Brno Brewery (Starobrno)" },
@@ -1985,7 +1985,7 @@ public partial class initial : Migration
 
         migrationBuilder.InsertData(
             table: "Bottles",
-            columns: new[] { "Id", "BottlePicture", "Description", "DrinkType", "IsEditForId", "Name", "ProducerId", "Voltage" },
+            columns: ["Id", "BottlePicture", "Description", "DrinkType", "IsEditForId", "Name", "ProducerId", "Voltage"],
             values: new object[,]
             {
                 { new Guid("15fedbdf-3067-0412-4826-5c63c9565cde"), "default_picture_url.jpg", "Updated description 12", "Cider", new Guid("060b8aca-6d76-f94d-ab6f-b3ba6f285f39"), "Wooden Majestic bottle", new Guid("1cc6c6f9-6589-13ab-4f58-b9e47abc6953"), 6.79 },
@@ -1998,7 +1998,7 @@ public partial class initial : Migration
 
         migrationBuilder.InsertData(
             table: "CapToBottles",
-            columns: new[] { "BottleId", "CapId" },
+            columns: ["BottleId", "CapId"],
             values: new object[,]
             {
                 { new Guid("060b8aca-6d76-f94d-ab6f-b3ba6f285f39"), new Guid("048f57a3-9451-58ec-ea12-1068aab41d49") },

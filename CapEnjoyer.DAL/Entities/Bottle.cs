@@ -20,10 +20,10 @@ public class Bottle
         List<Bottle>? edits = null,
         List<CapToBottle>? capLinks = null)
     {
-        this.Id = id ?? Guid.NewGuid();
-        this.Name = name;
-        this.Description = description;
-        this.Voltage = voltage;
+        Id = id ?? Guid.NewGuid();
+        Name = name;
+        Description = description;
+        Voltage = voltage;
         this.DrinkType = drinkType;
         this.BottlePicture = bottlePicture;
         this.ProducerId = producerId;

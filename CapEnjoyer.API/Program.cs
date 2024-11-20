@@ -26,6 +26,8 @@ builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<ICapService, CapService>();
 builder.Services.AddScoped<IColorService, ColorService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
+builder.Services.AddScoped<IEditRequestService, EditRequestService>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer",
