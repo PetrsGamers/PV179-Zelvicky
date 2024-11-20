@@ -7,11 +7,11 @@ public class Color
     public Color(Guid? id, string name, string hexCode, List<CapToTextColor>? capTextLinks = null,
         List<CapToBackgroundColor>? capBackgroundLinks = null)
     {
-        this.Id = id ?? Guid.NewGuid();
-        this.Name = name;
-        this.HexCode = hexCode;
-        this.CapTextLinks = capTextLinks ?? [];
-        this.CapBackgroundLinks = capBackgroundLinks ?? [];
+        Id = id ?? Guid.NewGuid();
+        Name = name;
+        HexCode = hexCode;
+        CapTextLinks = capTextLinks ?? [];
+        CapBackgroundLinks = capBackgroundLinks ?? [];
     }
 
     public Guid Id { get; set; }

@@ -7,13 +7,13 @@ public class Album
     public Album(Guid? id, string name, string description, bool @public, Guid userId, User user,
         List<CapToAlbum>? capLinks = null)
     {
-        this.Id = id ?? Guid.NewGuid();
-        this.Name = name;
-        this.Description = description;
-        this.Public = @public;
-        this.UserId = userId;
-        this.User = user;
-        this.CapLinks = capLinks ?? [];
+        Id = id ?? Guid.NewGuid();
+        Name = name;
+        Description = description;
+        Public = @public;
+        UserId = userId;
+        User = user;
+        CapLinks = capLinks ?? [];
     }
 
     public Guid Id { get; set; }

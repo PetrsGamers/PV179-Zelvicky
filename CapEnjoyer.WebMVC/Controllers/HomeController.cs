@@ -4,13 +4,13 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
-public class HomeController(ILogger<HomeController> logger) : Controller
+public class HomeController() : Controller
 {
-    public IActionResult Index() => this.View();
+    public IActionResult Index() => View();
 
-    public IActionResult Privacy() => this.View();
+    public IActionResult Privacy() => View();
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error() =>
-        this.View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
+        View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 }

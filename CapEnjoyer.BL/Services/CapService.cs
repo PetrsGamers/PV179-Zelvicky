@@ -104,7 +104,6 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
         return caps.Count == 0 ? [] : caps;
     }
 
-    [HttpGet]
     public async Task<IEnumerable<CapDto>> GetAllCapsFilteredAsync(
         [FromQuery] string? textSubstring = null,
         [FromQuery] List<Guid>? textColorIds = null,
@@ -162,10 +161,8 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
         return caps;
     }
 
-    [HttpPut("{id:guid}")]
     public async Task<CapDto> UpdateCapAsync(Guid id, [FromBody] CapInsertDto capInsertDto)
     {
-        // Retrieve the existing entity
         var oldCap = await context.Caps
                          .Include(c => c.TextColorLinks)
                          .Include(c => c.BackgroundColorLinks)
@@ -199,7 +196,6 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
         };
     }
 
-    [HttpPost]
     public async Task<CapDto> CreateCapAsync([FromBody] CapInsertDto capInsertDto)
     {
         var cap = new Cap

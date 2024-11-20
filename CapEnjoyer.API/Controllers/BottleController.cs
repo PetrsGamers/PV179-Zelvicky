@@ -8,13 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 public class BottleController(IBottleService bottleService) : ControllerBase
 {
-    [HttpPost("/upload-image/{bottleId}")]
+    [HttpPost("/upload-image/{bottleId:guid}")]
     public async Task<IActionResult> UploadImageForBottle(Guid bottleId, IFormFile image)
     {
         try
         {
             await bottleService.UploadImageForBottleAsync(bottleId, image);
-            return this.Ok("Image uploaded successfully.");
+            return Ok("Image uploaded successfully.");
         }
         catch (Exception e)
         {
@@ -36,7 +36,7 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         }
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetBottleById(Guid id)
     {
         try
@@ -64,7 +64,7 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateBottle(Guid id, [FromBody] BottleDto bottle)
     {
         try
@@ -78,7 +78,7 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteBottle(Guid id)
     {
         try
