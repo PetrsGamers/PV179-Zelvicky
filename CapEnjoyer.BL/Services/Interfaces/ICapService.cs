@@ -6,7 +6,7 @@ public interface ICapService
 {
     Task UploadImageForCapAsync(Guid capId, IFormFile image);
     Task<CapDto> GetCapByIdAsync(Guid id);
-    Task<CapDto> CreateCapAsync(CapDto capDto);
+    Task<CapDto> CreateCapAsync(CapInsertDto capInsertDto);
     Task<IEnumerable<CapDto>> GetAllCapsByAlbumIdAsync(Guid albumId);
 
     Task<IEnumerable<CapDto>> GetAllCapsFilteredAsync(
@@ -16,6 +16,6 @@ public interface ICapService
         List<Guid>? producerIds = null,
         List<Guid>? countryIds = null);
 
-    Task<CapDto> UpdateCapAsync(Guid id, CapDto capDto);
+    Task<CapDto> UpdateCapAsync(Guid id, CapInsertDto capInsertDto);
     Task DeleteCapAsync(Guid id);
 }
