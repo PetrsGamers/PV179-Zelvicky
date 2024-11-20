@@ -19,20 +19,20 @@ public class AdminController(IEditRequestService editRequestService) : Controlle
     public async Task<IActionResult> ConfirmCapEdit([FromBody] ConfirmEditRequestDto dto)
     {
         await editRequestService.ConfirmCapEdit(dto.CurrentId, dto.RequestId, dto.IsEditConfirmed);
-        return this.Ok(new { Message = "Cap edit confirmed successfully." });
+        return this.Ok(dto.IsEditConfirmed ? "Cap edit confirmed successfully." : "Cap edit rejected successfully.");
     }
 
     [HttpPost("confirm-bottle-edit")]
     public async Task<IActionResult> ConfirmBottleEdit([FromBody] ConfirmEditRequestDto dto)
     {
         await editRequestService.ConfirmBottleEdit(dto.CurrentId, dto.RequestId, dto.IsEditConfirmed);
-        return this.Ok(new { Message = "Bottle edit confirmed successfully." });
+        return this.Ok(dto.IsEditConfirmed ? "Bottle edit confirmed successfully." : "Bottle edit rejected successfully.");
     }
 
     [HttpPost("confirm-producer-edit")]
     public async Task<IActionResult> ConfirmProducerEdit([FromBody] ConfirmEditRequestDto dto)
     {
         await editRequestService.ConfirmProducerEdit(dto.CurrentId, dto.RequestId, dto.IsEditConfirmed);
-        return this.Ok(new { Message = "Producer edit confirmed successfully." });
+        return this.Ok(dto.IsEditConfirmed ? "Producer edit confirmed successfully." : "Producer edit rejected successfully.");
     }
 }

@@ -204,11 +204,7 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
     {
         var producerRequest = await context.Producers.FindAsync(producerRequestId) ?? throw new ArgumentException("Producer edit request not found.");
 
-        if (!isEditConfirmed)
-        {
-            context.Producers.Remove(producerRequest);
-        }
-        else
+        if (isEditConfirmed)
         {
             var currentProducer = await context.Producers.FindAsync(currentProducerId) ?? throw new ArgumentException("Current producer not found.");
 
@@ -216,10 +212,9 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
             currentProducer.City = producerRequest.City;
             currentProducer.Description = producerRequest.Description;
             currentProducer.CountryId = producerRequest.CountryId;
-
-            context.Producers.Remove(producerRequest);
         }
 
+        context.Producers.Remove(producerRequest);
         await context.SaveChangesAsync();
     }
 }
