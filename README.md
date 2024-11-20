@@ -40,11 +40,16 @@ dotnet build
 dotnet run
 ```
 
+Je potřeba po setupu potřeba vytvořit .env souboru z .evn.example a doplnit do něj potřebné proměnné.
+
+
 Používej formatter před každým commitem. Jinak neprojde CR.
 
 ```
  dotnet format ../CapEnjoyer.sln
 ```
+
+
 ## Technický pohled
 
 ![ERD diagram](erd.png)
