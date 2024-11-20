@@ -14,7 +14,13 @@
 - [ ] Implement Audit Logging:
     - Track information about who edited the Product entity and how many times it was edited overall
 - [x] Modify data seeding to use Bogus (or a similar NuGet package)
-
+- [x] Develop Middleware to:
+    - Transform API response to XML or JSON
+    - Default format should be JSON unless specified in the query parameter
+    - Ensure MVC and WebAPI are set up as separate projects, allowing them to:
+        - Operate under different configurations
+        - Use different database setups
+        - Maintain clear boundaries, ensuring API endpoints are not accessible from MVC, and vice versa
 ## Petr's Tasks
 
 - [ ] Create user service
@@ -42,13 +48,6 @@
 ## Unassigned Tasks
 
 - [ ] Client requests the ability to use images on the website and prefers that they be saved directly to the hard drive for easy access and management
-- [ ] Develop Middleware to:
-    - Transform API response to XML or JSON
-    - Default format should be JSON unless specified in the query parameter
-    - Ensure MVC and WebAPI are set up as separate projects, allowing them to:
-        - Operate under different configurations
-        - Use different database setups
-        - Maintain clear boundaries, ensuring API endpoints are not accessible from MVC, and vice versa
 
 # Tasks that David don't understand why they exist
 - [ ] optional: add .ini / config file
