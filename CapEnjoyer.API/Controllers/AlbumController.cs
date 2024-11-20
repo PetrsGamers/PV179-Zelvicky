@@ -1,7 +1,7 @@
 namespace CapEnjoyer.API.Controllers;
 
 using BL.DTOs;
-using BL.Interfaces;
+using BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -13,7 +13,6 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
     {
         try
         {
-
             var albums = await albumService.GetAllAlbums();
             return this.Ok(albums);
         }
@@ -26,13 +25,11 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAlbumById(Guid id)
     {
-
         try
         {
             var album = await albumService.GetAlbumById(id);
 
             return this.Ok(album);
-
         }
         catch (Exception e)
         {
@@ -54,7 +51,6 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
         {
             return this.BadRequest(e.Message);
         }
-
     }
 
     [HttpPut("{id}")]
@@ -62,7 +58,6 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
     {
         try
         {
-
             var updatedAlbum = await albumService.UpdateAlbum(id, album);
 
 
@@ -79,9 +74,7 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
     {
         try
         {
-            var deleted = albumService.DeleteAlbum(id);
-
-
+            await albumService.DeleteAlbum(id);
             return this.Ok();
         }
         catch (Exception e)

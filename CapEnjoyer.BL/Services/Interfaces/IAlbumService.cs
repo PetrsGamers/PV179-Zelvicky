@@ -1,15 +1,15 @@
-namespace CapEnjoyer.BL.Interfaces;
+namespace CapEnjoyer.BL.Services.Interfaces;
 
 using DTOs;
 
 public interface IAlbumService
 {
-    Task<IEnumerable<AlbumDto>> GetAllAlbums();
-    Task<AlbumDto> GetAlbumById(Guid id);
-    Task<AlbumDto> CreateAlbum(AlbumInsertDto album);
-    Task<AlbumDto> UpdateAlbum(Guid id, AlbumInsertDto album);
-    Task DeleteAlbum(Guid id);
+    public Task<IEnumerable<AlbumDto>> GetAllAlbums();
+    public Task<AlbumDto> GetAlbumById(Guid id);
+    public Task<AlbumDto> CreateAlbum(AlbumInsertDto album);
+    public Task<AlbumDto> UpdateAlbum(Guid id, AlbumInsertDto album);
+    public Task DeleteAlbum(Guid id);
 
-    Task AddCapToAlbum(Guid albumId, Guid capId);
-    Task RemoveCapFromAlbum(Guid albumId, Guid capId);
+    public Task AddCapToAlbum(Guid albumId, Guid capId);
+    public Task RemoveCapFromAlbum(Guid albumId, Guid capId);
 }

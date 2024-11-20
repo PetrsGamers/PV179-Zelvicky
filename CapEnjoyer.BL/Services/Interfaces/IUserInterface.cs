@@ -1,12 +1,12 @@
-namespace CapEnjoyer.BL.Interfaces;
+namespace CapEnjoyer.BL.Services.Interfaces;
 
 using DAL.Entities;
 
 public interface IUserService
 {
-    Task<IEnumerable<User>> GetAllUsers();
-    Task<User> GetUserById(Guid id);
-    Task<User> CreateUser(User user);
-    Task<User> UpdateUser(Guid id, User user);
-    Task DeleteUser(Guid id);
+    public Task<IEnumerable<User>> GetAllUsers();
+    public Task<User> GetUserById(Guid id);
+    public Task<User> CreateUser(User user);
+    public Task<User> UpdateUser(Guid id, User user);
+    public Task DeleteUser(Guid id);
 }

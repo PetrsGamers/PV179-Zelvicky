@@ -56,7 +56,8 @@ public static class ProducerSeed
 
         foreach (var (seedString, countryName, producerInfo) in ProducerData)
         {
-            var country = countries.Find(c => c.Name == countryName) ?? throw new InvalidOperationException($"Country '{countryName}' not found.");
+            var country = countries.Find(c => c.Name == countryName) ??
+                          throw new InvalidOperationException($"Country '{countryName}' not found.");
 
             producers.AddRange(GenerateProducersForCountry(seedString, country.Id, producerInfo, producerFaker));
         }

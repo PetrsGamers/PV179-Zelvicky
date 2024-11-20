@@ -1,7 +1,7 @@
 namespace CapEnjoyer.API.Controllers;
 
 using BL.DTOs;
-using BL.Interfaces;
+using BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -42,8 +42,6 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         try
         {
             var bottle = await bottleService.GetBottleById(id);
-
-
             return this.Ok(bottle);
         }
         catch (Exception e)
@@ -58,8 +56,6 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         try
         {
             var createdBottle = await bottleService.CreateBottle(bottleDto);
-
-
             return this.CreatedAtAction(nameof(this.GetBottleById), new { id = createdBottle.Id }, createdBottle);
         }
         catch (Exception e)
@@ -74,8 +70,6 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         try
         {
             var updatedBottle = await bottleService.UpdateBottle(id, bottle);
-
-
             return this.Ok(updatedBottle);
         }
         catch (Exception e)
@@ -90,7 +84,6 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         try
         {
             await bottleService.DeleteBottle(id);
-
             return this.Ok();
         }
         catch (Exception e)

@@ -19,7 +19,6 @@ builder.Services.AddDbContextFactory<CapEnjoyerDbContext>(
     options => options.UseNpgsql(connectionString));
 
 
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddIdentity<LocalIdentityUser, IdentityRole>()
@@ -28,7 +27,6 @@ builder.Services.AddIdentity<LocalIdentityUser, IdentityRole>()
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
-
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
     options.Password.RequireNonAlphanumeric = false;
@@ -59,7 +57,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

@@ -1,13 +1,13 @@
-namespace CapEnjoyer.BL.Interfaces;
+namespace CapEnjoyer.BL.Services.Interfaces;
 
 using DTOs;
 
 public interface IBottleService
 {
-    Task UploadImageForBottleAsync(Guid bottleId, IFormFile image);
-    Task<BottleDto> GetBottleById(Guid id);
-    Task<IEnumerable<BottleDto>> GetAllBottles();
-    Task<BottleDto> CreateBottle(BottleDto bottle);
-    Task<BottleDto> UpdateBottle(Guid id, BottleDto bottle);
-    Task DeleteBottle(Guid id);
+    public Task UploadImageForBottleAsync(Guid bottleId, IFormFile image);
+    public Task<BottleDto> GetBottleById(Guid id);
+    public Task<IEnumerable<BottleDto>> GetAllBottles();
+    public Task<BottleDto> CreateBottle(BottleDto bottle);
+    public Task<BottleDto> UpdateBottle(Guid id, BottleDto bottle);
+    public Task DeleteBottle(Guid id);
 }

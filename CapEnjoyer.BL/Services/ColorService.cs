@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 public class ColorService(CapEnjoyerDbContext context) : IColorService
 {
-    // implement IColorService methods
     public async Task<IEnumerable<ColorDto>> GetColorsAsync()
     {
         var colors = await context.Colors

@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
-public class AccountController(UserManager<LocalIdentityUser> userManager, SignInManager<LocalIdentityUser> signInManager) : Controller
+public class AccountController(
+    UserManager<LocalIdentityUser> userManager,
+    SignInManager<LocalIdentityUser> signInManager) : Controller
 {
     public IActionResult Register() => this.View();
 
@@ -15,7 +17,19 @@ public class AccountController(UserManager<LocalIdentityUser> userManager, SignI
     {
         if (this.ModelState.IsValid)
         {
-            var user = new LocalIdentityUser { UserName = model.Email, Email = model.Email, User = new() { Id = new Guid(), Username = model.Email, Email = model.Email, Albums = [], Role = Role.User } };
+            var user = new LocalIdentityUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                User = new User
+                {
+                    Id = new Guid(),
+                    Username = model.Email,
+                    Email = model.Email,
+                    Albums = [],
+                    Role = Role.User
+                }
+            };
             var result = await userManager.CreateAsync(user, model.Password);
 
             if (!result.Succeeded)
@@ -24,12 +38,13 @@ public class AccountController(UserManager<LocalIdentityUser> userManager, SignI
                 {
                     this.ModelState.AddModelError(string.Empty, error.Description);
                 }
+
                 return this.View(model);
             }
 
             if (result.Succeeded)
             {
-                await signInManager.SignInAsync(user, isPersistent: false);
+                await signInManager.SignInAsync(user, false);
                 // return RedirectToAction("Login", "Account");
                 return this.RedirectToAction(nameof(Login), nameof(AccountController).Replace("Controller", ""));
             }
@@ -54,7 +69,8 @@ public class AccountController(UserManager<LocalIdentityUser> userManager, SignI
             if (result.Succeeded)
             {
                 // return RedirectToAction("LoginSuccess", "Account");
-                return this.RedirectToAction(nameof(LoginSuccess), nameof(AccountController).Replace("Controller", ""));
+                return this.RedirectToAction(nameof(this.LoginSuccess),
+                    nameof(AccountController).Replace("Controller", ""));
             }
 
             this.ModelState.AddModelError(string.Empty, "Invalid login attempt.");
@@ -72,4 +88,3 @@ public class AccountController(UserManager<LocalIdentityUser> userManager, SignI
 
     public IActionResult LoginSuccess() => this.View();
 }
-

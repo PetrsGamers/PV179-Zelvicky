@@ -1,21 +1,16 @@
 namespace CapEnjoyer.BL.Services;
 
-using BL.Interfaces;
 using DAL;
 using DAL.Entities;
 using DTOs;
+using Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-
-
-
-public class AlbumService(CapEnjoyerDbContext dbContext) : IAlbumService
+public class AlbumService(CapEnjoyerDbContext context) : IAlbumService
 {
-    private readonly CapEnjoyerDbContext context = dbContext;
-
     public async Task<IEnumerable<AlbumDto>> GetAllAlbums()
     {
-        var albums = await this.context.Albums
+        var albums = await context.Albums
             .Select(a => new AlbumDto
             {
                 Id = a.Id,
@@ -32,7 +27,7 @@ public class AlbumService(CapEnjoyerDbContext dbContext) : IAlbumService
 
     public async Task<AlbumDto> GetAlbumById(Guid id)
     {
-        var album = await this.context.Albums
+        var album = await context.Albums
             .Where(a => a.Id == id)
             .Select(a => new AlbumDto
             {
@@ -71,9 +66,9 @@ public class AlbumService(CapEnjoyerDbContext dbContext) : IAlbumService
 
         }
 
-        await this.context.Albums.AddAsync(newAlbum);
-        await this.context.CapToAlbums.AddRangeAsync(capLinks);
-        await this.context.SaveChangesAsync();
+        await context.Albums.AddAsync(newAlbum);
+        await context.CapToAlbums.AddRangeAsync(capLinks);
+        await context.SaveChangesAsync();
 
         return new AlbumDto
         {
@@ -87,25 +82,28 @@ public class AlbumService(CapEnjoyerDbContext dbContext) : IAlbumService
 
     public async Task<AlbumDto> UpdateAlbum(Guid id, AlbumInsertDto album)
     {
-        var existingAlbum = await this.context.Albums.FindAsync(id) ?? throw new ArgumentException("Album not found.");
+        var existingAlbum =
+            await context.Albums.Include(a => a.CapLinks).Where(a => a.Id == id).FirstOrDefaultAsync() ??
+            throw new ArgumentException("Album not found.");
 
         existingAlbum.Name = album.Name;
         existingAlbum.Description = album.Description;
         existingAlbum.Public = album.Public;
         existingAlbum.UserId = album.User;
-        if (album.Caps != null)
+        if (album.Caps == null)
+        {
+            existingAlbum.CapLinks = [];
+
+        }
+        else
         {
             existingAlbum.CapLinks =
                 album.Caps.Select(capId => new CapToAlbum { AlbumId = id, CapId = capId }).ToList();
         }
-        else
-        {
-            existingAlbum.CapLinks = [];
-        }
 
-        this.context.Albums.Update(existingAlbum);
+        context.Albums.Update(existingAlbum);
 
-        await this.context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return new AlbumDto
         {
@@ -114,36 +112,34 @@ public class AlbumService(CapEnjoyerDbContext dbContext) : IAlbumService
             Description = existingAlbum.Description,
             Public = existingAlbum.Public,
             User = existingAlbum.UserId,
-            Caps = existingAlbum.CapLinks.Select(cl => cl.CapId).ToList()
         };
     }
 
     public async Task DeleteAlbum(Guid id)
     {
-        var album = this.context.Albums.Find(id) ?? throw new ArgumentException("Album not found.");
-
-        this.context.Albums.Remove(album);
-        await this.context.SaveChangesAsync();
+        var album = await context.Albums.FindAsync(id) ?? throw new ArgumentException("Album not found.");
+        context.Albums.Remove(album);
+        await context.SaveChangesAsync();
     }
 
     public async Task AddCapToAlbum(Guid albumId, Guid capId)
     {
-        var album = await this.context.Albums.FindAsync(albumId) ?? throw new ArgumentException("Album not found.");
-        var cap = await this.context.Caps.FindAsync(capId) ?? throw new ArgumentException("Cap not found.");
+        var album = await context.Albums.FindAsync(albumId) ?? throw new ArgumentException("Album not found.");
+        var cap = await context.Caps.FindAsync(capId) ?? throw new ArgumentException("Cap not found.");
 
         var capLink = new CapToAlbum { AlbumId = albumId, CapId = capId };
 
-        await this.context.CapToAlbums.AddAsync(capLink);
-        await this.context.SaveChangesAsync();
+        await context.CapToAlbums.AddAsync(capLink);
+        await context.SaveChangesAsync();
     }
 
     public async Task RemoveCapFromAlbum(Guid albumId, Guid capId)
     {
-        var capLink = await this.context.CapToAlbums
+        var capLink = await context.CapToAlbums
             .Where(cl => cl.AlbumId == albumId && cl.CapId == capId)
             .FirstOrDefaultAsync() ?? throw new ArgumentException("Cap not found in album.");
 
-        this.context.CapToAlbums.Remove(capLink);
-        await this.context.SaveChangesAsync();
+        context.CapToAlbums.Remove(capLink);
+        await context.SaveChangesAsync();
     }
 }

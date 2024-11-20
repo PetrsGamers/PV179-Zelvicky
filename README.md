@@ -11,11 +11,11 @@ Tento projekt je databází pro sběratele pivních víček, která slouží k t
 
 ### Role
 + Uživatel: Spravuje svou sbírku, zobrazuje statistiky, využívá vyhledávání a porovnává svou sbírku s ostatními.
-+ Admin: Spravuje platformu, přidává funkce, moderuje obsah a zajišťuje bezproblémový chod.
++ Admin: Moderuje obsah, zajišťuje tak, aby nikdo nemohl zničit dataset
 
 ---
 
-Tento projekt pomáhá sběratelům udržet přehled o jejich sbírce a zefektivnit jejich rozhodování při rozšiřování sbírky.
+Tento projekt pomáhá sběratelům udržet přehled o jejich sbírce a zjednodušit rozšiřování sbírky.
 
 
 ## Getting started

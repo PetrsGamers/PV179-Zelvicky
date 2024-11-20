@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 public class CountryService(CapEnjoyerDbContext context) : ICountryService
 {
-    // implement ICountryService
     public async Task<IEnumerable<CountryDto>> GetCountriesAsync()
     {
         var countries = await context.Countries
