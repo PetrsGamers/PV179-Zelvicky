@@ -15,8 +15,8 @@ Env.Load();
 Helpers.CheckIfEnvironmentVariablesAreSet();
 var connectionString = Helpers.GetConnectionString();
 
+builder.Services.AddControllers(options => options.RespectBrowserAcceptHeader = true).AddXmlSerializerFormatters();
 
-builder.Services.AddControllers();
 builder.Services.AddDbContextFactory<CapEnjoyerDbContext>(
     options => options.UseNpgsql(connectionString));
 
