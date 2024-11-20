@@ -87,10 +87,9 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
 
     public async Task<BottleDto> CreateBottle(BottleDto bottle)
     {
-        // Přidat logiku pro validaci nebo další procesy
         if (string.IsNullOrEmpty(bottle.Name) || string.IsNullOrEmpty(bottle.Description))
         {
-            throw new ArgumentException("Name or destription is missing");
+            throw new ArgumentException("Name or description is missing");
         }
 
         var newBottle = new Bottle
@@ -127,7 +126,7 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
     {
         var existingBottle = await context.Bottles
             .Include(b => b.CapLinks)
-            .FirstOrDefaultAsync(b => b.Id == id) ?? throw new ArgumentException($"Botte with ID {id} not found.");
+            .FirstOrDefaultAsync(b => b.Id == id) ?? throw new ArgumentException($"Bottle with ID {id} not found.");
 
         existingBottle.Name = bottle.Name;
         existingBottle.Description = bottle.Description;

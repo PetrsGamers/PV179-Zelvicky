@@ -15,10 +15,10 @@ public class Producer
         Guid? isEditForId,
         List<Producer>? edits = null)
     {
-        this.Id = id ?? Guid.NewGuid();
-        this.Name = name;
-        this.City = city;
-        this.Description = description;
+        Id = id ?? Guid.NewGuid();
+        Name = name;
+        City = city;
+        Description = description;
         this.CountryId = countryId;
         this.Country = country;
         this.IsEditFor = isEditFor;
