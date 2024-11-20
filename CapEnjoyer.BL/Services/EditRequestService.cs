@@ -1,4 +1,5 @@
 namespace CapEnjoyer.BL.Services;
+using CapEnjoyer.DAL.Entities;
 
 using DAL;
 using DTOs;
@@ -125,15 +126,14 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
     {
         var capRequest = await context.Caps
             .Include(c => c.TextColorLinks)
+                .ThenInclude(tcl => tcl.TextColor)
             .Include(c => c.BackgroundColorLinks)
+                .ThenInclude(bcl => bcl.BackgroundColor)
             .Include(c => c.BottleLinks)
+                .ThenInclude(bl => bl.Bottle)
             .FirstOrDefaultAsync(c => c.Id == capRequestId) ?? throw new ArgumentException("Cap edit request not found.");
 
-        if (!isEditConfirmed)
-        {
-            context.Caps.Remove(capRequest);
-        }
-        else
+        if (isEditConfirmed)
         {
             var currentCap = await context.Caps
                 .Include(c => c.TextColorLinks)
@@ -144,27 +144,38 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
             currentCap.TextOnCap = capRequest.TextOnCap;
             currentCap.Description = capRequest.Description;
             currentCap.CapPicture = capRequest.CapPicture;
-            currentCap.TextColorLinks = capRequest.TextColorLinks;
-            currentCap.BackgroundColorLinks = capRequest.BackgroundColorLinks;
-            currentCap.BottleLinks = capRequest.BottleLinks;
 
-            context.Caps.Remove(capRequest);
+            currentCap.TextColorLinks.Clear();
+            foreach (var textColorLink in capRequest.TextColorLinks)
+            {
+                currentCap.TextColorLinks.Add(new CapToTextColor(currentCap.Id, currentCap, textColorLink.TextColorId, textColorLink.TextColor));
+            }
+
+            currentCap.BackgroundColorLinks.Clear();
+            foreach (var backgroundColorLink in capRequest.BackgroundColorLinks)
+            {
+                currentCap.BackgroundColorLinks.Add(new CapToBackgroundColor(currentCap.Id, currentCap, backgroundColorLink.BackgroundColorId, backgroundColorLink.BackgroundColor));
+            }
+            currentCap.BottleLinks.Clear();
+            foreach (var bottleLink in capRequest.BottleLinks)
+            {
+                currentCap.BottleLinks.Add(new CapToBottle(currentCap.Id, currentCap, bottleLink.BottleId, bottleLink.Bottle));
+            }
+
+            context.Caps.Update(currentCap);
         }
 
+        context.Caps.Remove(capRequest);
         await context.SaveChangesAsync();
     }
-
     public async Task ConfirmBottleEdit(Guid currentBottleId, Guid bottleRequestId, bool isEditConfirmed)
     {
         var bottleRequest = await context.Bottles
             .Include(b => b.CapLinks)
+            .ThenInclude(cl => cl.Cap)
             .FirstOrDefaultAsync(b => b.Id == bottleRequestId) ?? throw new ArgumentException("Bottle edit request not found.");
 
-        if (!isEditConfirmed)
-        {
-            context.Bottles.Remove(bottleRequest);
-        }
-        else
+        if (isEditConfirmed)
         {
             var currentBottle = await context.Bottles
                 .Include(b => b.CapLinks)
@@ -176,11 +187,16 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
             currentBottle.BottlePicture = bottleRequest.BottlePicture;
             currentBottle.DrinkType = bottleRequest.DrinkType;
             currentBottle.ProducerId = bottleRequest.ProducerId;
-            currentBottle.CapLinks = bottleRequest.CapLinks;
+            currentBottle.CapLinks.Clear();
+            foreach (var capLink in bottleRequest.CapLinks)
+            {
+                currentBottle.CapLinks.Add(new CapToBottle(capLink.CapId, capLink.Cap, currentBottle.Id, currentBottle));
+            }
 
-            context.Bottles.Remove(bottleRequest);
+            context.Bottles.Update(currentBottle);
         }
 
+        context.Bottles.Remove(bottleRequest);
         await context.SaveChangesAsync();
     }
 
