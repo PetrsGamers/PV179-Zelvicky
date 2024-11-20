@@ -1,7 +1,5 @@
 using CapEnjoyer.API.Helpers;
 using CapEnjoyer.API.Middleware;
-using CapEnjoyer.BL.Interfaces;
-using CapEnjoyer.BL.Middleware;
 using CapEnjoyer.BL.Services;
 using CapEnjoyer.BL.Services.Interfaces;
 using CapEnjoyer.DAL;

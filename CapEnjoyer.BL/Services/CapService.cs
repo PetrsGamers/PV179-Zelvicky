@@ -250,16 +250,5 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
             IsEditFor = cap.IsEditForId
         };
 
-        context.Caps.Update(newCap);
-        await context.AuditLogs.AddAsync(new AuditLog
-        {
-            Action = AuditLogAction.Update,
-            EditedAt = DateTime.Now.ToUniversalTime(),
-            Log = $"Updated cap with {id} ID",
-            CapId = id
-        });
-        await context.SaveChangesAsync();
-
-        return capDto;
     }
 }
