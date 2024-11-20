@@ -22,11 +22,9 @@ public class LoggerMiddleware(
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // add logging for incoming request
 
         IncomingRequest(logger, context.Request.Method, context.Request.Path.ToString(), null);
-        // await middlewareLoggingService.LogMiddlewareAsync(MiddlewareLogAction.Request,
-        // $"{context.Request.Method} {context.Request.Path}");
+
         await next(context);
         await middlewareLoggingService.LogMiddlewareAsync(MiddlewareLogAction.Response,
             $"{context.Request.Method} {context.Request.Path}");
