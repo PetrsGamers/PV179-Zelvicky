@@ -3,6 +3,7 @@ using System;
 using CapEnjoyer.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CapEnjoyer.DAL.Migrations
 {
     [DbContext(typeof(CapEnjoyerDbContext))]
-    partial class CapEnjoyerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241119224726_AddMiddlewareLog")]
+    partial class AddMiddlewareLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -9712,6 +9715,27 @@ namespace CapEnjoyer.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("LocalIdentityUsers");
+                });
+
+            modelBuilder.Entity("CapEnjoyer.DAL.Entities.MiddlewareLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Action")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Log")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MiddlewareLogs");
                 });
 
             modelBuilder.Entity("CapEnjoyer.DAL.Entities.Producer", b =>

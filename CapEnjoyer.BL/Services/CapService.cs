@@ -1,6 +1,7 @@
 namespace CapEnjoyer.BL.Services;
 
 using DAL;
+using DAL.Constants;
 using DAL.Entities;
 using DTOs;
 using Interfaces;
@@ -43,6 +44,13 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
         cap.CapPicture = filePath;
 
         context.Caps.Update(cap);
+        await context.AuditLogs.AddAsync(new AuditLog
+        {
+            Action = AuditLogAction.ImageUpload,
+            EditedAt = DateTime.Now,
+            Log = $"Image uploaded for cap with ID {capId}.",
+            CapId = capId
+        });
         await context.SaveChangesAsync();
     }
 
@@ -81,6 +89,14 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
         context.CapToAlbums.RemoveRange(cap.AlbumLinks);
 
         context.Caps.Remove(cap);
+        await context.AuditLogs.AddAsync(new AuditLog
+        {
+            Action = AuditLogAction.Delete,
+            EditedAt = DateTime.Now.ToUniversalTime(),
+            Log = $"Delete cap with {id} ID",
+            CapId = id
+        });
+
         await context.SaveChangesAsync();
     }
 
@@ -212,6 +228,14 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
         };
 
         await context.Caps.AddAsync(cap);
+        await context.AuditLogs.AddAsync(new AuditLog
+        {
+            Action = AuditLogAction.Create,
+            EditedAt = DateTime.Now.ToUniversalTime(),
+            Log = $"Create cap with {cap.Id} ID",
+            CapId = cap.Id
+        });
+
         await context.SaveChangesAsync();
 
         return new CapDto
@@ -225,5 +249,6 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
             Bottles = cap.BottleLinks.Select(bl => bl.BottleId).ToList(),
             IsEditFor = cap.IsEditForId
         };
+
     }
 }

@@ -1,6 +1,12 @@
-namespace CapEnjoyer.BL.Middleware;
+namespace CapEnjoyer.API.Middleware;
 
-public class LoggerMiddleware(RequestDelegate next, ILogger<LoggerMiddleware> logger)
+using BL.Services.Interfaces;
+using DAL.Constants;
+
+public class LoggerMiddleware(
+    RequestDelegate next,
+    ILogger<LoggerMiddleware> logger,
+    IMiddlewareLoggingService middlewareLoggingService)
 {
     private static readonly Action<ILogger, string, string, Exception?> IncomingRequest =
         LoggerMessage.Define<string, string>(
@@ -16,10 +22,12 @@ public class LoggerMiddleware(RequestDelegate next, ILogger<LoggerMiddleware> lo
 
     public async Task InvokeAsync(HttpContext context)
     {
+
         IncomingRequest(logger, context.Request.Method, context.Request.Path.ToString(), null);
 
         await next(context);
-
+        await middlewareLoggingService.LogMiddlewareAsync(MiddlewareLogAction.Response,
+            $"{context.Request.Method} {context.Request.Path}");
         ResponseLog(logger, context.Response.StatusCode, null);
     }
 }
