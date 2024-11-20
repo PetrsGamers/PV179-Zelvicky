@@ -47,7 +47,7 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
         await context.AuditLogs.AddAsync(new AuditLog
         {
             Action = AuditLogAction.ImageUpload,
-            EditedAt = DateTime.Now,
+            EditedAt = DateTime.Now.ToUniversalTime(),
             Log = $"Image uploaded for cap with ID {capId}.",
             CapId = capId
         });
@@ -198,6 +198,14 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
             .Select(bottleId => new CapToBottle { BottleId = bottleId }).ToList();
         oldCap.IsEditForId = oldCap.Id;
 
+        await context.AuditLogs.AddAsync(new AuditLog
+        {
+            Action = AuditLogAction.Create,
+            EditedAt = DateTime.Now.ToUniversalTime(),
+            Log = $"Update cap with {oldCap.Id} ID",
+            CapId = oldCap.Id
+        });
+
         await context.SaveChangesAsync();
         return new CapDto
         {
@@ -249,6 +257,5 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
             Bottles = cap.BottleLinks.Select(bl => bl.BottleId).ToList(),
             IsEditFor = cap.IsEditForId
         };
-
     }
 }
