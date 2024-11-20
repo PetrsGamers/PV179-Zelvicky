@@ -1,20 +1,20 @@
 namespace CapEnjoyer.API.Controllers;
 
 using BL.DTOs;
-using BL.Interfaces;
+using BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
 public class BottleController(IBottleService bottleService) : ControllerBase
 {
-    [HttpPost("/upload-image/{bottleId}")]
+    [HttpPost("/upload-image/{bottleId:guid}")]
     public async Task<IActionResult> UploadImageForBottle(Guid bottleId, IFormFile image)
     {
         try
         {
             await bottleService.UploadImageForBottleAsync(bottleId, image);
-            return this.Ok("Image uploaded successfully.");
+            return Ok("Image uploaded successfully.");
         }
         catch (Exception e)
         {
@@ -36,14 +36,12 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         }
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetBottleById(Guid id)
     {
         try
         {
             var bottle = await bottleService.GetBottleById(id);
-
-
             return this.Ok(bottle);
         }
         catch (Exception e)
@@ -58,8 +56,6 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         try
         {
             var createdBottle = await bottleService.CreateBottle(bottleDto);
-
-
             return this.CreatedAtAction(nameof(this.GetBottleById), new { id = createdBottle.Id }, createdBottle);
         }
         catch (Exception e)
@@ -68,14 +64,12 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateBottle(Guid id, [FromBody] BottleDto bottle)
     {
         try
         {
             var updatedBottle = await bottleService.UpdateBottle(id, bottle);
-
-
             return this.Ok(updatedBottle);
         }
         catch (Exception e)
@@ -84,13 +78,12 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteBottle(Guid id)
     {
         try
         {
             await bottleService.DeleteBottle(id);
-
             return this.Ok();
         }
         catch (Exception e)

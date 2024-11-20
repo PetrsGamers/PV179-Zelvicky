@@ -1,7 +1,7 @@
 namespace CapEnjoyer.API.Controllers;
 
 using BL.DTOs;
-using BL.Interfaces;
+using BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -13,7 +13,6 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
     {
         try
         {
-
             var albums = await albumService.GetAllAlbums();
             return this.Ok(albums);
         }
@@ -23,16 +22,14 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
         }
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetAlbumById(Guid id)
     {
-
         try
         {
             var album = await albumService.GetAlbumById(id);
 
             return this.Ok(album);
-
         }
         catch (Exception e)
         {
@@ -54,15 +51,13 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
         {
             return this.BadRequest(e.Message);
         }
-
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateAlbum(Guid id, [FromBody] AlbumInsertDto album)
     {
         try
         {
-
             var updatedAlbum = await albumService.UpdateAlbum(id, album);
 
 
@@ -74,14 +69,12 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteAlbum(Guid id)
     {
         try
         {
-            var deleted = albumService.DeleteAlbum(id);
-
-
+            await albumService.DeleteAlbum(id);
             return this.Ok();
         }
         catch (Exception e)
@@ -90,7 +83,7 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
         }
     }
 
-    [HttpPost("{albumId}/caps/{capId}")]
+    [HttpPost("{albumId:guid}/caps/{capId:guid}")]
     public async Task<IActionResult> AddCapToAlbum(Guid albumId, Guid capId)
     {
         try
@@ -105,7 +98,7 @@ public class AlbumController(IAlbumService albumService) : ControllerBase
         }
     }
 
-    [HttpDelete("{albumId}/caps/{capId}")]
+    [HttpDelete("{albumId:guid}/caps/{capId:guid}")]
     public async Task<IActionResult> RemoveCapFromAlbum(Guid albumId, Guid capId)
     {
         try

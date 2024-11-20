@@ -1,6 +1,6 @@
 namespace Tests;
 
-public class UnitTest1
+public class HelloWorld
 {
     [Fact]
     public void Test1() => Assert.True(true);

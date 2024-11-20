@@ -1,16 +1,14 @@
 namespace CapEnjoyer.BL.Services;
 
-using BL.Interfaces;
 using DAL;
 using DAL.Constants;
 using DAL.Entities;
 using DTOs;
+using Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-public class BottleService(CapEnjoyerDbContext dbContext) : IBottleService
+public class BottleService(CapEnjoyerDbContext context) : IBottleService
 {
-    private readonly CapEnjoyerDbContext context = dbContext;
-
     public async Task UploadImageForBottleAsync(Guid bottleId, IFormFile image)
     {
         if (image == null || image.Length == 0)
@@ -40,17 +38,17 @@ public class BottleService(CapEnjoyerDbContext dbContext) : IBottleService
             await image.CopyToAsync(stream);
         }
 
-        var bottle = await this.context.Bottles.FirstOrDefaultAsync(b => b.Id == bottleId) ??
+        var bottle = await context.Bottles.FirstOrDefaultAsync(b => b.Id == bottleId) ??
                      throw new ArgumentException($"Bottle with ID {bottleId} not found.");
         bottle.BottlePicture = filePath;
 
-        this.context.Bottles.Update(bottle);
-        await this.context.SaveChangesAsync();
+        context.Bottles.Update(bottle);
+        await context.SaveChangesAsync();
     }
 
     public async Task<BottleDto> GetBottleById(Guid id)
     {
-        var bottle = await this.context.Bottles
+        var bottle = await context.Bottles
             .Select(b => new BottleDto
             {
                 Id = b.Id,
@@ -70,7 +68,7 @@ public class BottleService(CapEnjoyerDbContext dbContext) : IBottleService
 
     public async Task<IEnumerable<BottleDto>> GetAllBottles()
     {
-        var bottles = await this.context.Bottles
+        var bottles = await context.Bottles
             .Select(b => new BottleDto
             {
                 Id = b.Id,
@@ -89,10 +87,9 @@ public class BottleService(CapEnjoyerDbContext dbContext) : IBottleService
 
     public async Task<BottleDto> CreateBottle(BottleDto bottle)
     {
-        // Přidat logiku pro validaci nebo další procesy
         if (string.IsNullOrEmpty(bottle.Name) || string.IsNullOrEmpty(bottle.Description))
         {
-            throw new ArgumentException("Name or destription is missing");
+            throw new ArgumentException("Name or description is missing");
         }
 
         var newBottle = new Bottle
@@ -108,8 +105,8 @@ public class BottleService(CapEnjoyerDbContext dbContext) : IBottleService
             IsEditForId = bottle.IsEditFor
         };
 
-        await this.context.Bottles.AddAsync(newBottle);
-        await this.context.SaveChangesAsync();
+        await context.Bottles.AddAsync(newBottle);
+        await context.SaveChangesAsync();
 
         return new BottleDto
         {
@@ -127,9 +124,9 @@ public class BottleService(CapEnjoyerDbContext dbContext) : IBottleService
 
     public async Task<BottleDto> UpdateBottle(Guid id, BottleDto bottle)
     {
-        var existingBottle = await this.context.Bottles
+        var existingBottle = await context.Bottles
             .Include(b => b.CapLinks)
-            .FirstOrDefaultAsync(b => b.Id == id) ?? throw new ArgumentException($"Botte with ID {id} not found.");
+            .FirstOrDefaultAsync(b => b.Id == id) ?? throw new ArgumentException($"Bottle with ID {id} not found.");
 
         existingBottle.Name = bottle.Name;
         existingBottle.Description = bottle.Description;
@@ -140,8 +137,8 @@ public class BottleService(CapEnjoyerDbContext dbContext) : IBottleService
         existingBottle.CapLinks = bottle.Caps.Select(capId => new CapToBottle { CapId = capId }).ToList();
         existingBottle.IsEditForId = bottle.IsEditFor;
 
-        this.context.Bottles.Update(existingBottle);
-        await this.context.SaveChangesAsync();
+        context.Bottles.Update(existingBottle);
+        await context.SaveChangesAsync();
 
         return new BottleDto
         {
@@ -159,10 +156,10 @@ public class BottleService(CapEnjoyerDbContext dbContext) : IBottleService
 
     public async Task DeleteBottle(Guid id)
     {
-        var bottle = await this.context.Bottles.FindAsync(id) ??
+        var bottle = await context.Bottles.FindAsync(id) ??
                      throw new ArgumentException($"Bottle with ID {id} not found.");
 
-        this.context.Bottles.Remove(bottle);
-        await this.context.SaveChangesAsync();
+        context.Bottles.Remove(bottle);
+        await context.SaveChangesAsync();
     }
 }

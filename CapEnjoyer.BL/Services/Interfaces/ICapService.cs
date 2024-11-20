@@ -4,18 +4,18 @@ using DTOs;
 
 public interface ICapService
 {
-    Task UploadImageForCapAsync(Guid capId, IFormFile image);
-    Task<CapDto> GetCapByIdAsync(Guid id);
-    Task<CapDto> CreateCapAsync(CapDto capDto);
-    Task<IEnumerable<CapDto>> GetAllCapsByAlbumIdAsync(Guid albumId);
+    public Task UploadImageForCapAsync(Guid capId, IFormFile image);
+    public Task<CapDto> GetCapByIdAsync(Guid id);
+    public Task<CapDto> CreateCapAsync(CapInsertDto capInsertDto);
+    public Task<IEnumerable<CapDto>> GetAllCapsByAlbumIdAsync(Guid albumId);
 
-    Task<IEnumerable<CapDto>> GetAllCapsFilteredAsync(
+    public Task<IEnumerable<CapDto>> GetAllCapsFilteredAsync(
         string? textSubstring = null,
         List<Guid>? textColorIds = null,
         List<Guid>? bgColorIds = null,
         List<Guid>? producerIds = null,
         List<Guid>? countryIds = null);
 
-    Task<CapDto> UpdateCapAsync(Guid id, CapDto capDto);
-    Task DeleteCapAsync(Guid id);
+    public Task<CapDto> UpdateCapAsync(Guid id, CapInsertDto capInsertDto);
+    public Task DeleteCapAsync(Guid id);
 }

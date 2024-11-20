@@ -1,6 +1,7 @@
 using CapEnjoyer.API.Helpers;
 using CapEnjoyer.API.Middleware;
 using CapEnjoyer.BL.Interfaces;
+using CapEnjoyer.BL.Middleware;
 using CapEnjoyer.BL.Services;
 using CapEnjoyer.BL.Services.Interfaces;
 using CapEnjoyer.DAL;
@@ -15,8 +16,8 @@ Env.Load();
 Helpers.CheckIfEnvironmentVariablesAreSet();
 var connectionString = Helpers.GetConnectionString();
 
+builder.Services.AddControllers(options => options.RespectBrowserAcceptHeader = true).AddXmlSerializerFormatters();
 
-builder.Services.AddControllers();
 builder.Services.AddDbContextFactory<CapEnjoyerDbContext>(
     options => options.UseNpgsql(connectionString));
 
@@ -28,6 +29,8 @@ builder.Services.AddScoped<ICapService, CapService>();
 builder.Services.AddScoped<IColorService, ColorService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IMiddlewareLoggingService, MiddlewareLoggingService>();
+builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
+builder.Services.AddScoped<IEditRequestService, EditRequestService>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer",

@@ -13,7 +13,7 @@ namespace CapEnjoyer.DAL.Migrations
 {
     [DbContext(typeof(CapEnjoyerDbContext))]
     [Migration("20241113214406_added_IdentityUser")]
-    partial class added_IdentityUser
+    partial class addedIdentityUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

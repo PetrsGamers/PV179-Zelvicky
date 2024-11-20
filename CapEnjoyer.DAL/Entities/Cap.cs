@@ -9,22 +9,22 @@ public class Cap
         string textOnCap,
         string description,
         string capPicture,
-                List<CapToTextColor>? textColorLinks = null,
+        List<CapToTextColor>? textColorLinks = null,
         List<CapToBackgroundColor>? backgroundColorLinks = null,
-              List<CapToBottle>? bottleLinks = null,
+        List<CapToBottle>? bottleLinks = null,
         List<CapToAlbum>? albumLinks = null,
         Guid? isEditForId = null,
         Cap? isEditFor = null,
         List<Cap>? edits = null)
     {
-        this.Id = id ?? Guid.NewGuid();
-        this.TextOnCap = textOnCap;
-        this.Description = description;
-        this.CapPicture = capPicture;
-        this.TextColorLinks = textColorLinks ?? [];
-        this.BackgroundColorLinks = backgroundColorLinks ?? [];
-        this.BottleLinks = bottleLinks ?? [];
-        this.AlbumLinks = albumLinks ?? [];
+        Id = id ?? Guid.NewGuid();
+        TextOnCap = textOnCap;
+        Description = description;
+        CapPicture = capPicture;
+        TextColorLinks = textColorLinks ?? [];
+        BackgroundColorLinks = backgroundColorLinks ?? [];
+        BottleLinks = bottleLinks ?? [];
+        AlbumLinks = albumLinks ?? [];
         this.IsEditForId = isEditForId;
         this.IsEditFor = isEditFor;
         this.Edits = edits ?? [];

@@ -8,11 +8,11 @@ public class User
 
     public User(Guid? id, string username, string email, Role role, List<Album>? albums = null)
     {
-        this.Id = id ?? Guid.NewGuid();
-        this.Username = username;
-        this.Email = email;
-        this.Albums = albums ?? [];
-        this.Role = role;
+        Id = id ?? Guid.NewGuid();
+        Username = username;
+        Email = email;
+        Albums = albums ?? [];
+        Role = role;
     }
 
     public Guid Id { get; set; }

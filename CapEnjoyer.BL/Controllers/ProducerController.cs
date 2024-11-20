@@ -25,7 +25,7 @@ public class ProducerController(CapEnjoyerDbContext context) : ControllerBase
             })
             .ToListAsync();
 
-        return this.Ok(producers);
+        return Ok(producers);
     }
 
 
@@ -47,10 +47,10 @@ public class ProducerController(CapEnjoyerDbContext context) : ControllerBase
 
         if (producer == null)
         {
-            return this.NotFound($"Producer with ID {id} not found.");
+            return NotFound($"Producer with ID {id} not found.");
         }
 
-        return this.Ok(producer);
+        return Ok(producer);
     }
 
 
@@ -60,12 +60,12 @@ public class ProducerController(CapEnjoyerDbContext context) : ControllerBase
         var producer = await context.Producers.FindAsync(id);
         if (producer == null)
         {
-            return this.NotFound($"Producer with ID {id} not found.");
+            return NotFound($"Producer with ID {id} not found.");
         }
 
         context.Producers.Remove(producer);
         await context.SaveChangesAsync();
-        return this.NoContent();
+        return NoContent();
     }
 
 
@@ -74,13 +74,13 @@ public class ProducerController(CapEnjoyerDbContext context) : ControllerBase
     {
         if (producerDto.Name.Length < 1 && producerDto.City.Length < 1)
         {
-            return this.BadRequest("Name and city must be non-empty string.");
+            return BadRequest("Name and city must be non-empty string.");
         }
 
         var country = await context.Countries.FindAsync(producerDto.Country);
         if (country == null)
         {
-            return this.NotFound($"Country with ID {producerDto.Country} not found.");
+            return NotFound($"Country with ID {producerDto.Country} not found.");
         }
 
         if (producerDto.IsEditFor != null)
@@ -88,7 +88,7 @@ public class ProducerController(CapEnjoyerDbContext context) : ControllerBase
             var isEditFor = await context.Producers.FindAsync(producerDto.IsEditFor);
             if (isEditFor == null)
             {
-                return this.NotFound($"Producer with ID {producerDto.IsEditFor} not found.");
+                return NotFound($"Producer with ID {producerDto.IsEditFor} not found.");
             }
         }
 
@@ -105,7 +105,7 @@ public class ProducerController(CapEnjoyerDbContext context) : ControllerBase
         await context.Producers.AddAsync(producer);
         await context.SaveChangesAsync();
 
-        return this.Ok(producer);
+        return Ok(producer);
     }
 
 
@@ -114,24 +114,24 @@ public class ProducerController(CapEnjoyerDbContext context) : ControllerBase
     {
         if (producerDto.Name.Length < 1 && producerDto.City.Length < 1)
         {
-            return this.BadRequest("Name and city must be non-empty string.");
+            return BadRequest("Name and city must be non-empty string.");
         }
 
         var oldProducer = await context.Producers.FindAsync(id);
         if (oldProducer == null)
         {
-            return this.NotFound($"Producer with ID {id} not found.");
+            return NotFound($"Producer with ID {id} not found.");
         }
 
         var country = await context.Countries.FindAsync(producerDto.Country);
         if (country == null)
         {
-            return this.NotFound($"Country with ID {producerDto.Country} not found.");
+            return NotFound($"Country with ID {producerDto.Country} not found.");
         }
 
         if (producerDto.Name.Length < 1 && producerDto.City.Length < 1)
         {
-            return this.BadRequest("Name and city must be non-empty string.");
+            return BadRequest("Name and city must be non-empty string.");
         }
 
         if (producerDto.IsEditFor != null)
@@ -139,7 +139,7 @@ public class ProducerController(CapEnjoyerDbContext context) : ControllerBase
             var isEditFor = await context.Producers.FindAsync(producerDto.IsEditFor);
             if (isEditFor == null)
             {
-                return this.NotFound($"Producer with ID {producerDto.IsEditFor} not found.");
+                return NotFound($"Producer with ID {producerDto.IsEditFor} not found.");
             }
         }
 
@@ -156,6 +156,6 @@ public class ProducerController(CapEnjoyerDbContext context) : ControllerBase
         await context.Producers.AddAsync(newProducer);
         await context.SaveChangesAsync();
 
-        return this.Ok(newProducer);
+        return Ok(newProducer);
     }
 }
