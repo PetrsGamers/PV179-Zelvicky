@@ -2,7 +2,7 @@ namespace Tests;
 
 using System.Text;
 using CapEnjoyer.BL.DTOs;
-using CapEnjoyer.BL.Interfaces;
+using CapEnjoyer.BL.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Moq;
 

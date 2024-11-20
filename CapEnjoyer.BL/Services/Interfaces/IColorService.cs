@@ -4,9 +4,9 @@ using DTOs;
 
 public interface IColorService
 {
-    Task<IEnumerable<ColorDto>> GetColorsAsync();
-    Task<ColorDto?> GetColorByIdAsync(Guid id);
-    Task<ColorDto> CreateColorAsync(ColorDto colorDto);
-    Task<ColorDto> UpdateColorAsync(Guid id, ColorDto colorDto);
-    Task DeleteColorAsync(Guid id);
+    public Task<IEnumerable<ColorDto>> GetColorsAsync();
+    public Task<ColorDto?> GetColorByIdAsync(Guid id);
+    public Task<ColorDto> CreateColorAsync(ColorDto colorDto);
+    public Task<ColorDto> UpdateColorAsync(Guid id, ColorDto colorDto);
+    public Task DeleteColorAsync(Guid id);
 }
