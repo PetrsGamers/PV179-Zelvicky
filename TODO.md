@@ -10,7 +10,7 @@
 
 ### Milestone 2 Tasks
 - [x] Create admin and leaderboard service
-- [ ] Write tests to Ted's service using mocking. Ensure tests are meaningful.
+- [x] Write tests to Ted's service using mocking. Ensure tests are meaningful.
 - [ ] Implement Audit Logging:
     - Track information about who edited the Product entity and how many times it was edited overall
 - [x] Modify data seeding to use Bogus (or a similar NuGet package)
