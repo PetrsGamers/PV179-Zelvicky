@@ -45,7 +45,6 @@ public class AccountController(
             if (result.Succeeded)
             {
                 await signInManager.SignInAsync(user, false);
-                // return RedirectToAction("Login", "Account");
                 return this.RedirectToAction(nameof(Login), nameof(AccountController).Replace("Controller", ""));
             }
 
@@ -68,7 +67,6 @@ public class AccountController(
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, false, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                // return RedirectToAction("LoginSuccess", "Account");
                 return this.RedirectToAction(nameof(this.LoginSuccess),
                     nameof(AccountController).Replace("Controller", ""));
             }
@@ -82,7 +80,6 @@ public class AccountController(
     public async Task<IActionResult> Logout()
     {
         await signInManager.SignOutAsync();
-        // return RedirectToAction("Index", "Home");
         return this.RedirectToAction(nameof(HomeController.Index), nameof(HomeController).Replace("Controller", ""));
     }
 
