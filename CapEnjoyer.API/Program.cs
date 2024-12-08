@@ -24,14 +24,15 @@ builder.Services.AddDbContextFactory<CapEnjoyerDbContext>(
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBottleService, BottleService>();
-builder.Services.AddScoped<IAlbumServiceAsync, AlbumService>();
+builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<ICapService, CapService>();
 builder.Services.AddScoped<IColorService, ColorService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IMiddlewareLoggingService, MiddlewareLoggingService>();
 builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
 builder.Services.AddScoped<IEditRequestService, EditRequestService>();
-builder.Services.AddScoped<IProducerServiceAsync, ProducerService>();
+builder.Services.AddScoped<IProducerService, ProducerService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer",

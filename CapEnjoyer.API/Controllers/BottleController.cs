@@ -11,6 +11,15 @@ public class BottleController(IBottleService bottleService) : ControllerBase
     [HttpPost("/upload-image/{bottleId:guid}")]
     public async Task<IActionResult> UploadImageForBottle(Guid bottleId, IFormFile image)
     {
+        try
+        {
+            await imageService.UploadImageForBottleAsync(bottleId, image);
+            return Ok("Image uploaded successfully.");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
 
         await bottleService.UploadImageForBottleAsync(bottleId, image);
         return Ok("Image uploaded successfully.");

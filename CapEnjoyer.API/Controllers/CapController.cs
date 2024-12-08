@@ -6,19 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CapController(ICapService capService) : ControllerBase
+public class CapController(ICapService capService, IImageService imageService) : ControllerBase
 {
     [HttpPost("upload-image/{capId:guid}")]
     public async Task<IActionResult> UploadImageForCap(Guid capId, IFormFile image)
     {
         try
         {
-            await capService.UploadImageForCapAsync(capId, image);
-            return this.Ok("Image uploaded successfully.");
+            await imageService.UploadImageForCapAsync(capId, image);
+            return Ok("Image uploaded successfully.");
         }
         catch (Exception e)
         {
-            return this.BadRequest(e.Message);
+            return BadRequest(e.Message);
         }
     }
 
@@ -29,11 +29,11 @@ public class CapController(ICapService capService) : ControllerBase
         try
         {
             var cap = await capService.GetCapByIdAsync(id);
-            return this.Ok(cap);
+            return Ok(cap);
         }
         catch (Exception e)
         {
-            return this.BadRequest(e.Message);
+            return BadRequest(e.Message);
         }
     }
 
@@ -43,11 +43,11 @@ public class CapController(ICapService capService) : ControllerBase
         try
         {
             await capService.DeleteCapAsync(id);
-            return this.Ok($"Cap with ID {id} deleted successfully.");
+            return Ok($"Cap with ID {id} deleted successfully.");
         }
         catch (Exception e)
         {
-            return this.BadRequest(e.Message);
+            return BadRequest(e.Message);
         }
     }
 
@@ -57,11 +57,11 @@ public class CapController(ICapService capService) : ControllerBase
         try
         {
             var caps = await capService.GetAllCapsByAlbumIdAsync(albumId);
-            return this.Ok(caps);
+            return Ok(caps);
         }
         catch (Exception e)
         {
-            return this.BadRequest(e.Message);
+            return BadRequest(e.Message);
         }
     }
 
@@ -77,11 +77,11 @@ public class CapController(ICapService capService) : ControllerBase
         {
             var caps = await capService.GetAllCapsFilteredAsync(textSubstring, textColorIds, bgColorIds, producerIds,
                 countryIds);
-            return this.Ok(caps);
+            return Ok(caps);
         }
         catch (Exception e)
         {
-            return this.BadRequest(e.Message);
+            return BadRequest(e.Message);
         }
     }
 
@@ -91,11 +91,11 @@ public class CapController(ICapService capService) : ControllerBase
         try
         {
             var cap = await capService.CreateCapAsync(capDto);
-            return this.Ok(cap);
+            return Ok(cap);
         }
         catch (Exception e)
         {
-            return this.BadRequest(e.Message);
+            return BadRequest(e.Message);
         }
     }
 
@@ -105,11 +105,11 @@ public class CapController(ICapService capService) : ControllerBase
         try
         {
             var cap = await capService.UpdateCapAsync(id, capDto);
-            return this.Ok(cap);
+            return Ok(cap);
         }
         catch (Exception e)
         {
-            return this.BadRequest(e.Message);
+            return BadRequest(e.Message);
         }
     }
 }
