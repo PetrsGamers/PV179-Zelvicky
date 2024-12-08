@@ -9,43 +9,6 @@ using Microsoft.EntityFrameworkCore;
 
 public class BottleService(CapEnjoyerDbContext context) : IBottleService
 {
-    public async Task UploadImageForBottleAsync(Guid bottleId, IFormFile image)
-    {
-        if (image == null || image.Length == 0)
-        {
-            throw new ArgumentException("Invalid file.");
-        }
-
-        if (image.Length > 5 * 2048 * 2048)
-        {
-            throw new ArgumentException("File size is too big.");
-        }
-
-        if (image.ContentType is not "image/jpeg" and not "image/png")
-        {
-            throw new ArgumentException("Invalid file type.");
-        }
-
-        var baseDirectory = Directory.GetCurrentDirectory();
-        var uploadsFolder = Path.Combine(baseDirectory, @"wwwroot\images\bottles");
-        Directory.CreateDirectory(uploadsFolder); // Ensure the folder exists
-
-        var fileName = $"{Guid.NewGuid()}_bottle_{image.FileName}";
-        var filePath = Path.Combine(uploadsFolder, fileName);
-
-        await using (var stream = new FileStream(filePath, FileMode.Create))
-        {
-            await image.CopyToAsync(stream);
-        }
-
-        var bottle = await context.Bottles.FirstOrDefaultAsync(b => b.Id == bottleId) ??
-                     throw new ArgumentException($"Bottle with ID {bottleId} not found.");
-        bottle.BottlePicture = filePath;
-
-        context.Bottles.Update(bottle);
-        await context.SaveChangesAsync();
-    }
-
     public async Task<BottleDto> GetBottleById(Guid id)
     {
         var bottle = await context.Bottles

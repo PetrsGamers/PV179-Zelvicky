@@ -30,6 +30,7 @@ builder.Services.AddScoped<IMiddlewareLoggingService, MiddlewareLoggingService>(
 builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
 builder.Services.AddScoped<IEditRequestService, EditRequestService>();
 builder.Services.AddScoped<IProducerService, ProducerService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer",

@@ -4,7 +4,6 @@ using DTOs;
 
 public interface IBottleService
 {
-    public Task UploadImageForBottleAsync(Guid bottleId, IFormFile image);
     public Task<BottleDto> GetBottleById(Guid id);
     public Task<IEnumerable<BottleDto>> GetAllBottles();
     public Task<BottleDto> CreateBottle(BottleDto bottle);

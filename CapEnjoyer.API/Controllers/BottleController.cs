@@ -6,19 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BottleController(IBottleService bottleService) : ControllerBase
+public class BottleController(IBottleService bottleService, IImageService imageService) : ControllerBase
 {
     [HttpPost("/upload-image/{bottleId:guid}")]
     public async Task<IActionResult> UploadImageForBottle(Guid bottleId, IFormFile image)
     {
         try
         {
-            await bottleService.UploadImageForBottleAsync(bottleId, image);
+            await imageService.UploadImageForBottleAsync(bottleId, image);
             return Ok("Image uploaded successfully.");
         }
         catch (Exception e)
         {
-            return this.BadRequest(e.Message);
+            return BadRequest(e.Message);
         }
     }
 
@@ -28,11 +28,11 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         try
         {
             var bottles = await bottleService.GetAllBottles();
-            return this.Ok(bottles);
+            return Ok(bottles);
         }
         catch (Exception e)
         {
-            return this.BadRequest(e.Message);
+            return BadRequest(e.Message);
         }
     }
 
@@ -42,11 +42,11 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         try
         {
             var bottle = await bottleService.GetBottleById(id);
-            return this.Ok(bottle);
+            return Ok(bottle);
         }
         catch (Exception e)
         {
-            return this.BadRequest(e.Message);
+            return BadRequest(e.Message);
         }
     }
 
@@ -56,11 +56,11 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         try
         {
             var createdBottle = await bottleService.CreateBottle(bottleDto);
-            return this.CreatedAtAction(nameof(this.GetBottleById), new { id = createdBottle.Id }, createdBottle);
+            return CreatedAtAction(nameof(GetBottleById), new { id = createdBottle.Id }, createdBottle);
         }
         catch (Exception e)
         {
-            return this.BadRequest(e.Message);
+            return BadRequest(e.Message);
         }
     }
 
@@ -70,11 +70,11 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         try
         {
             var updatedBottle = await bottleService.UpdateBottle(id, bottle);
-            return this.Ok(updatedBottle);
+            return Ok(updatedBottle);
         }
         catch (Exception e)
         {
-            return this.BadRequest(e.Message);
+            return BadRequest(e.Message);
         }
     }
 
@@ -84,11 +84,11 @@ public class BottleController(IBottleService bottleService) : ControllerBase
         try
         {
             await bottleService.DeleteBottle(id);
-            return this.Ok();
+            return Ok();
         }
         catch (Exception e)
         {
-            return this.BadRequest(e.Message);
+            return BadRequest(e.Message);
         }
     }
 }
