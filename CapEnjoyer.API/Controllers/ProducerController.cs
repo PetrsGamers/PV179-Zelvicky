@@ -1,8 +1,8 @@
-namespace CapEnjoyer.BL.Controllers;
+namespace CapEnjoyer.API.Controllers;
 
-using DTOs;
+using BL.DTOs;
+using BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Services.Interfaces;
 
 [ApiController]
 [Route("api/[controller]")]
