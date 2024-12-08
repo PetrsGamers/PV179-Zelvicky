@@ -11,13 +11,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
 
-Helpers.CheckIfEnvironmentVariablesAreSet();
-var connectionString = Helpers.GetConnectionString();
+var postgreValidator = new PostgresOptionValidator
+{
+    Host = Environment.GetEnvironmentVariable("DB_HOST"),
+    Port = Environment.GetEnvironmentVariable("DB_PORT"),
+    Username = Environment.GetEnvironmentVariable("DB_USERNAME"),
+    Password = Environment.GetEnvironmentVariable("DB_PASSWORD"),
+    Database = Environment.GetEnvironmentVariable("DB_NAME")
+};
 
 builder.Services.AddControllers(options => options.RespectBrowserAcceptHeader = true).AddXmlSerializerFormatters();
 
 builder.Services.AddDbContextFactory<CapEnjoyerDbContext>(
-    options => options.UseNpgsql(connectionString));
+    options => options.UseNpgsql(postgreValidator.ConnectionString));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -57,7 +63,7 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 // in case the database is not reachable or not created, throw an error
-Helpers.CheckIfDatabaseServerReachableAndCreated(app);
+app.ValidateConnection(postgreValidator);
 
 app.UseSwagger();
 app.UseSwaggerUI();
