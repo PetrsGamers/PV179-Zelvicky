@@ -72,6 +72,7 @@ public class ProducerService(CapEnjoyerDbContext context) : IProducerServiceAsyn
             City = producerDto.City,
             Description = producerDto.Description,
             CountryId = producerDto.Country,
+            Country = country,
             IsEditForId = producerDto.IsEditFor
         };
 

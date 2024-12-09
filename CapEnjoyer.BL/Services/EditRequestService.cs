@@ -146,21 +146,17 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
             currentCap.CapPicture = capRequest.CapPicture;
 
             currentCap.TextColorLinks.Clear();
-            foreach (var textColorLink in capRequest.TextColorLinks)
-            {
-                currentCap.TextColorLinks.Add(new CapToTextColor(currentCap.Id, currentCap, textColorLink.TextColorId, textColorLink.TextColor));
-            }
+            currentCap.TextColorLinks = capRequest.TextColorLinks
+                .Select(textColorLink => new CapToTextColor{CapId = currentCap.Id, Cap = currentCap, TextColorId = textColorLink.TextColorId, TextColor = textColorLink.TextColor})
+                .ToList();
 
-            currentCap.BackgroundColorLinks.Clear();
-            foreach (var backgroundColorLink in capRequest.BackgroundColorLinks)
-            {
-                currentCap.BackgroundColorLinks.Add(new CapToBackgroundColor(currentCap.Id, currentCap, backgroundColorLink.BackgroundColorId, backgroundColorLink.BackgroundColor));
-            }
-            currentCap.BottleLinks.Clear();
-            foreach (var bottleLink in capRequest.BottleLinks)
-            {
-                currentCap.BottleLinks.Add(new CapToBottle(currentCap.Id, currentCap, bottleLink.BottleId, bottleLink.Bottle));
-            }
+            currentCap.BackgroundColorLinks = capRequest.BackgroundColorLinks
+                .Select(backgroundColorLink => new CapToBackgroundColor{CapId = currentCap.Id, Cap = currentCap, BackgroundColorId = backgroundColorLink.BackgroundColorId, BackgroundColor = backgroundColorLink.BackgroundColor})
+                .ToList();
+
+            currentCap.BottleLinks = capRequest.BottleLinks
+                .Select(bottleLink => new CapToBottle{CapId = currentCap.Id,Cap = currentCap,BottleId = bottleLink.BottleId,Bottle = bottleLink.Bottle})
+                .ToList();
 
             context.Caps.Update(currentCap);
         }
@@ -190,7 +186,7 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
             currentBottle.CapLinks.Clear();
             foreach (var capLink in bottleRequest.CapLinks)
             {
-                currentBottle.CapLinks.Add(new CapToBottle(capLink.CapId, capLink.Cap, currentBottle.Id, currentBottle));
+                currentBottle.CapLinks.Add(new CapToBottle{CapId = capLink.CapId, Cap = capLink.Cap, BottleId = currentBottle.Id, Bottle = currentBottle});
             }
 
             context.Bottles.Update(currentBottle);

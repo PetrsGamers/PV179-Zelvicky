@@ -91,6 +91,7 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
         {
             throw new ArgumentException("Name or description is missing");
         }
+        var producer = await context.Producers.FindAsync(bottle.Producer) ?? throw new ArgumentException("Producer not found.");
 
         var newBottle = new Bottle
         {
@@ -101,9 +102,24 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
             BottlePicture = bottle.BottlePicture,
             DrinkType = Enum.Parse<DrinkType>(bottle.DrinkType),
             ProducerId = bottle.Producer,
-            CapLinks = bottle.Caps.Select(capId => new CapToBottle { CapId = capId }).ToList(),
+            Producer = producer,
+            CapLinks = new List<CapToBottle>(),
             IsEditForId = bottle.IsEditFor
         };
+
+        if (bottle.Caps != null)
+        {
+            newBottle.CapLinks = await context.Caps
+                .Where(c => bottle.Caps.Contains(c.Id))
+                .Select(c => new CapToBottle
+                {
+                    BottleId = newBottle.Id,
+                    CapId = c.Id,
+                    Cap = c,
+                    Bottle = newBottle
+                })
+                .ToListAsync();
+        }
 
         await context.Bottles.AddAsync(newBottle);
         await context.SaveChangesAsync();
@@ -122,20 +138,36 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
         };
     }
 
-    public async Task<BottleDto> UpdateBottle(Guid id, BottleDto bottle)
-    {
-        var existingBottle = await context.Bottles
-            .Include(b => b.CapLinks)
-            .FirstOrDefaultAsync(b => b.Id == id) ?? throw new ArgumentException($"Bottle with ID {id} not found.");
+   public async Task<BottleDto> UpdateBottle(Guid id, BottleDto bottle)
+{
+    var existingBottle = await context.Bottles
+        .Include(b => b.CapLinks)
+        .FirstOrDefaultAsync(b => b.Id == id) ?? throw new ArgumentException($"Bottle with ID {id} not found.");
 
-        existingBottle.Name = bottle.Name;
-        existingBottle.Description = bottle.Description;
-        existingBottle.Voltage = bottle.Voltage;
-        existingBottle.BottlePicture = bottle.BottlePicture;
-        existingBottle.DrinkType = Enum.Parse<DrinkType>(bottle.DrinkType);
-        existingBottle.ProducerId = bottle.Producer;
-        existingBottle.CapLinks = bottle.Caps.Select(capId => new CapToBottle { CapId = capId }).ToList();
-        existingBottle.IsEditForId = bottle.IsEditFor;
+    existingBottle.Name = bottle.Name;
+    existingBottle.Description = bottle.Description;
+    existingBottle.Voltage = bottle.Voltage;
+    existingBottle.BottlePicture = bottle.BottlePicture;
+    existingBottle.DrinkType = Enum.Parse<DrinkType>(bottle.DrinkType);
+    existingBottle.ProducerId = bottle.Producer;
+
+    if (bottle.Caps == null)
+    {
+        existingBottle.CapLinks = new List<CapToBottle>();
+    }
+    else
+    {
+        existingBottle.CapLinks = await context.Caps
+            .Where(c => bottle.Caps.Contains(c.Id))
+            .Select(c => new CapToBottle
+            {
+                BottleId = id,
+                CapId = c.Id,
+                Cap = c,
+                Bottle = existingBottle
+            })
+            .ToListAsync();
+    }
 
         context.Bottles.Update(existingBottle);
         await context.SaveChangesAsync();

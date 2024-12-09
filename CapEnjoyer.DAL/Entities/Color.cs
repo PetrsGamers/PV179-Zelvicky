@@ -2,21 +2,9 @@ namespace CapEnjoyer.DAL.Entities;
 
 public class Color
 {
-    public Color() { }
-
-    public Color(Guid? id, string name, string hexCode, List<CapToTextColor>? capTextLinks = null,
-        List<CapToBackgroundColor>? capBackgroundLinks = null)
-    {
-        Id = id ?? Guid.NewGuid();
-        Name = name;
-        HexCode = hexCode;
-        CapTextLinks = capTextLinks ?? [];
-        CapBackgroundLinks = capBackgroundLinks ?? [];
-    }
-
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-    public string HexCode { get; set; }
-    public List<CapToTextColor> CapTextLinks { get; set; }
-    public List<CapToBackgroundColor> CapBackgroundLinks { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public required string Name { get; set; }
+    public required string HexCode { get; set; }
+    public List<CapToTextColor> CapTextLinks { get; set; } = [];
+    public List<CapToBackgroundColor> CapBackgroundLinks { get; set; } = [];
 }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 public class AlbumService(CapEnjoyerDbContext context) : IAlbumServiceAsync
 {
+
     public async Task<IEnumerable<AlbumDto>> GetAllAlbums()
     {
         var albums = await context.Albums
@@ -64,8 +65,16 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumServiceAsync
         var capLinks = new List<CapToAlbum>();
         if (album.Caps != null)
         {
-            capLinks = album.Caps.Select(capId => new CapToAlbum { AlbumId = newId, CapId = capId }).ToList();
-
+            capLinks = await context.Caps
+                .Where(c => album.Caps.Contains(c.Id))
+                .Select(c => new CapToAlbum
+                {
+                    AlbumId = newAlbum.Id,
+                    CapId = c.Id,
+                    Cap = c,
+                    Album = newAlbum
+                })
+                .ToListAsync();
         }
         await context.Albums.AddAsync(newAlbum);
         await context.CapToAlbums.AddRangeAsync(capLinks);
@@ -93,13 +102,20 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumServiceAsync
         existingAlbum.UserId = album.User;
         if (album.Caps == null)
         {
-            existingAlbum.CapLinks = [];
-
+            existingAlbum.CapLinks = new List<CapToAlbum>();
         }
         else
         {
-            existingAlbum.CapLinks =
-                album.Caps.Select(capId => new CapToAlbum { AlbumId = id, CapId = capId }).ToList();
+            existingAlbum.CapLinks = await context.Caps
+                .Where(c => album.Caps.Contains(c.Id))
+                .Select(c => new CapToAlbum
+                {
+                    AlbumId = id,
+                    CapId = c.Id,
+                    Cap = c,
+                    Album = existingAlbum
+                })
+                .ToListAsync();
         }
 
         context.Albums.Update(existingAlbum);
@@ -128,7 +144,7 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumServiceAsync
         var album = await context.Albums.FindAsync(albumId) ?? throw new ArgumentException("Album not found.");
         var cap = await context.Caps.FindAsync(capId) ?? throw new ArgumentException("Cap not found.");
 
-        var capLink = new CapToAlbum { AlbumId = albumId, CapId = capId };
+        var capLink = new CapToAlbum { AlbumId = albumId, CapId = capId, Cap = cap, Album = album };
 
         await context.CapToAlbums.AddAsync(capLink);
         await context.SaveChangesAsync();

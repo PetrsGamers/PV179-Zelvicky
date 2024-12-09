@@ -21,4 +21,8 @@
     <ProjectReference Include="..\CapEnjoyer.DAL\CapEnjoyer.DAL.csproj"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Riok.Mapperly" Version="4.1.1" />
+  </ItemGroup>
+
 </Project>
