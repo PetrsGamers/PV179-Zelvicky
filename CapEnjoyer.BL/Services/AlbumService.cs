@@ -6,7 +6,7 @@ using DTOs;
 using Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-public class AlbumService(CapEnjoyerDbContext context) : IAlbumService
+public class AlbumService(CapEnjoyerDbContext context) : IAlbumServiceAsync
 {
     public async Task<IEnumerable<AlbumDto>> GetAllAlbums()
     {
@@ -28,7 +28,6 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumService
     public async Task<AlbumDto> GetAlbumById(Guid id)
     {
         var album = await context.Albums
-            .Where(a => a.Id == id)
             .Select(a => new AlbumDto
             {
                 Id = a.Id,
@@ -38,7 +37,7 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumService
                 User = a.UserId,
                 Caps = a.CapLinks.Select(cl => cl.CapId).ToList()
             })
-            .FirstOrDefaultAsync() ?? throw new ArgumentException($"Album with ID {id} not found.");
+            .FirstOrDefaultAsync(a => a.Id == id) ?? throw new ArgumentException($"Album with ID {id} not found.");
 
         return album;
     }
@@ -50,6 +49,8 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumService
             throw new ArgumentException("Name and Description are required.");
         }
 
+        var user = await context.Users.FindAsync(album.User) ?? throw new ArgumentException("User not found.");
+
         var newId = Guid.NewGuid();
         var newAlbum = new Album
         {
@@ -57,7 +58,8 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumService
             Name = album.Name,
             Description = album.Description,
             Public = album.Public,
-            UserId = album.User
+            UserId = user.Id,
+            User = user
         };
         var capLinks = new List<CapToAlbum>();
         if (album.Caps != null)
@@ -82,7 +84,7 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumService
     public async Task<AlbumDto> UpdateAlbum(Guid id, AlbumInsertDto album)
     {
         var existingAlbum =
-            await context.Albums.Include(a => a.CapLinks).Where(a => a.Id == id).FirstOrDefaultAsync() ??
+            await context.Albums.Include(a => a.CapLinks).FirstOrDefaultAsync(a => a.Id == id) ??
             throw new ArgumentException("Album not found.");
 
         existingAlbum.Name = album.Name;

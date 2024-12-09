@@ -6,14 +6,14 @@ using Services.Interfaces;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProducerController(IProducerService producerService) : ControllerBase
+public class ProducerController(IProducerServiceAsync producerServiceAsync) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllProducers()
     {
         try
         {
-            var producers = await producerService.GetAllProducersAsync();
+            var producers = await producerServiceAsync.GetAllProducersAsync();
             return Ok(producers);
         }
         catch (Exception e)
@@ -28,7 +28,7 @@ public class ProducerController(IProducerService producerService) : ControllerBa
     {
         try
         {
-            var producer = await producerService.GetProducerByIdAsync(id);
+            var producer = await producerServiceAsync.GetProducerByIdAsync(id);
             return Ok(producer);
         }
         catch (Exception e)
@@ -43,7 +43,7 @@ public class ProducerController(IProducerService producerService) : ControllerBa
     {
         try
         {
-            await producerService.DeleteProducerAsync(id);
+            await producerServiceAsync.DeleteProducerAsync(id);
             return Ok();
         }
         catch (Exception e)
@@ -58,7 +58,7 @@ public class ProducerController(IProducerService producerService) : ControllerBa
     {
         try
         {
-            var producer = await producerService.CreateProducerAsync(producerDto);
+            var producer = await producerServiceAsync.CreateProducerAsync(producerDto);
             return Ok(producer);
         }
         catch (Exception e)
@@ -73,7 +73,7 @@ public class ProducerController(IProducerService producerService) : ControllerBa
     {
         try
         {
-            var producer = await producerService.UpdateProducerAsync(id, producerDto);
+            var producer = await producerServiceAsync.UpdateProducerAsync(id, producerDto);
             return Ok(producer);
         }
         catch (Exception e)

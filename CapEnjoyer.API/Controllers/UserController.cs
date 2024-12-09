@@ -11,70 +11,45 @@ public class UserController(IUserService userService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetUsers()
     {
-        try
-        {
-            var users = await userService.GetAllUsers();
-            return this.Ok(users);
-        }
-        catch (Exception e)
-        {
-            return this.BadRequest(e.Message);
-        }
+
+        var users = await userService.GetAllUsers();
+        return this.Ok(users);
+
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetUserById(Guid id)
     {
-        try
-        {
-            var user = await userService.GetUserById(id);
-            return this.Ok(user);
-        }
-        catch (Exception e)
-        {
-            return this.BadRequest(e.Message);
-        }
+
+        var user = await userService.GetUserById(id);
+        return this.Ok(user);
+
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateUser([FromBody] User user)
     {
-        try
-        {
-            var createdUser = await userService.CreateUser(user);
-            return this.CreatedAtAction(nameof(this.GetUserById), new { id = createdUser.Id }, createdUser);
-        }
-        catch (Exception e)
-        {
-            return this.BadRequest(e.Message);
-        }
+
+        var createdUser = await userService.CreateUser(user);
+        return this.CreatedAtAction(nameof(this.GetUserById), new { id = createdUser.Id }, createdUser);
+
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateUser(Guid id, [FromBody] User user)
     {
-        try
-        {
-            var updatedUser = await userService.UpdateUser(id, user);
-            return this.Ok(updatedUser);
-        }
-        catch (Exception e)
-        {
-            return this.BadRequest(e.Message);
-        }
+
+        var updatedUser = await userService.UpdateUser(id, user);
+        return this.Ok(updatedUser);
+
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteUser(Guid id)
     {
-        try
-        {
-            await userService.DeleteUser(id);
-            return this.Ok();
-        }
-        catch (Exception e)
-        {
-            return this.BadRequest(e.Message);
-        }
+
+        await userService.DeleteUser(id);
+        return this.Ok();
+
     }
 }

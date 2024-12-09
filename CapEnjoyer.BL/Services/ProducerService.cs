@@ -6,7 +6,7 @@ using DTOs;
 using Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-public class ProducerService(CapEnjoyerDbContext context) : IProducerService
+public class ProducerService(CapEnjoyerDbContext context) : IProducerServiceAsync
 {
     public async Task<IEnumerable<ProducerDto>> GetAllProducersAsync()
     {
@@ -28,7 +28,6 @@ public class ProducerService(CapEnjoyerDbContext context) : IProducerService
     public async Task<ProducerDto> GetProducerByIdAsync(Guid id)
     {
         var producer = await context.Producers
-            .Where(p => p.Id == id)
             .Select(p => new ProducerDto
             {
                 Id = p.Id,
@@ -38,7 +37,7 @@ public class ProducerService(CapEnjoyerDbContext context) : IProducerService
                 Country = p.CountryId,
                 IsEditFor = p.IsEditForId
             })
-            .FirstOrDefaultAsync() ?? throw new ArgumentException($"Producer with ID {id} not found.");
+            .FirstOrDefaultAsync(p => p.Id == id) ?? throw new ArgumentException($"Producer with ID {id} not found.");
 
         return producer;
     }
@@ -54,7 +53,7 @@ public class ProducerService(CapEnjoyerDbContext context) : IProducerService
 
     public async Task<ProducerDto> CreateProducerAsync(ProducerInsertDto producerDto)
     {
-        if (producerDto.Name.Length < 1 && producerDto.City.Length < 1)
+        if (string.IsNullOrEmpty(producerDto.Name) || string.IsNullOrEmpty(producerDto.City))
         {
             throw new ArgumentException("Name and city must be non-empty string.");
         }

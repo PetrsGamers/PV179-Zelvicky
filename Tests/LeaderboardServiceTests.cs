@@ -2,6 +2,7 @@ namespace Tests;
 
 using CapEnjoyer.BL.Services;
 using CapEnjoyer.DAL;
+using CapEnjoyer.DAL.Constants;
 using CapEnjoyer.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -32,8 +33,8 @@ public class LeaderboardServiceTests : IDisposable
         // Arrange
         var leaderboardService = new LeaderboardService(this.context);
 
-        var user1 = new User { Id = Guid.NewGuid(), Email = "e1@example.com", Username = "User1", Albums = [] };
-        var user2 = new User { Id = Guid.NewGuid(), Email = "e2@example.com", Username = "User2", Albums = [] };
+        var user1 = new User { Id = Guid.NewGuid(), Email = "e1@example.com", Username = "User1", Albums = [], Role = Role.User };
+        var user2 = new User { Id = Guid.NewGuid(), Email = "e2@example.com", Username = "User2", Albums = [], Role = Role.User };
         var cap1 = new Cap { Id = Guid.NewGuid(), TextOnCap = "Cap1", CapPicture = "Cap1picture", Description = "Cap1description" };
         var cap2 = new Cap { Id = Guid.NewGuid(), TextOnCap = "Cap2", CapPicture = "Cap2picture", Description = "Cap2description" };
         var cap3 = new Cap { Id = Guid.NewGuid(), TextOnCap = "Cap3", CapPicture = "Cap3picture", Description = "Cap3description" };
@@ -48,6 +49,10 @@ public class LeaderboardServiceTests : IDisposable
             ],
             Description = "Description1",
             Name = "Name1",
+            Public = true,
+            User = user1,
+            UserId = user1.Id
+
         });
         user1.Albums.Add(new Album
         {
@@ -59,6 +64,9 @@ public class LeaderboardServiceTests : IDisposable
             ],
             Description = "Description1",
             Name = "Name1",
+            Public = true,
+            User = user1,
+            UserId = user1.Id
         });
 
         user2.Albums.Add(new Album
@@ -67,6 +75,9 @@ public class LeaderboardServiceTests : IDisposable
             CapLinks = [new CapToAlbum { Cap = cap1 }],
             Description = "Description2",
             Name = "Name2",
+            Public = true,
+            User = user2,
+            UserId = user2.Id
         });
 
         this.context.Users.AddRange(user1, user2);
@@ -96,8 +107,8 @@ public class LeaderboardServiceTests : IDisposable
         // Arrange
         var leaderboardService = new LeaderboardService(this.context);
 
-        var user1 = new User { Id = Guid.NewGuid(), Email = "e1@example.com", Username = "User1", Albums = [] };
-        var user2 = new User { Id = Guid.NewGuid(), Email = "e2@example.com", Username = "User2", Albums = [] };
+        var user1 = new User { Id = Guid.NewGuid(), Email = "e1@example.com", Username = "User1", Albums = [], Role = Role.User };
+        var user2 = new User { Id = Guid.NewGuid(), Email = "e2@example.com", Username = "User2", Albums = [], Role = Role.User };
 
         this.context.Users.AddRange(user1, user2);
         await this.context.SaveChangesAsync();
@@ -121,8 +132,8 @@ public class LeaderboardServiceTests : IDisposable
         // Arrange
         var leaderboardService = new LeaderboardService(this.context);
 
-        var user1 = new User { Id = Guid.NewGuid(), Email = "e1@example.com", Username = "User1", Albums = [] };
-        var user2 = new User { Id = Guid.NewGuid(), Email = "e2@example.com", Username = "User2", Albums = [] };
+        var user1 = new User { Id = Guid.NewGuid(), Email = "e1@example.com", Username = "User1", Albums = [], Role = Role.User };
+        var user2 = new User { Id = Guid.NewGuid(), Email = "e2@example.com", Username = "User2", Albums = [], Role = Role.User };
         var cap1 = new Cap { Id = Guid.NewGuid(), TextOnCap = "Cap1", CapPicture = "Cap1picture", Description = "Cap1description" };
         var cap2 = new Cap { Id = Guid.NewGuid(), TextOnCap = "Cap2", CapPicture = "Cap2picture", Description = "Cap2description" };
 
@@ -136,6 +147,9 @@ public class LeaderboardServiceTests : IDisposable
             ],
             Description = "Description1",
             Name = "Name1",
+            Public = true,
+            User = user1,
+            UserId = user1.Id
         });
 
         user2.Albums.Add(new Album
@@ -148,6 +162,9 @@ public class LeaderboardServiceTests : IDisposable
             ],
             Description = "Description2",
             Name = "Name2",
+            Public = true,
+            User = user2,
+            UserId = user2.Id
         });
 
         this.context.Users.AddRange(user1, user2);

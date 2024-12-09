@@ -7,5 +7,6 @@ public class LocalIdentityUser : IdentityUser
 {
     public Guid UserId { get; set; }
 
-    [ForeignKey("UserId")] public virtual User? User { get; set; }
+    [ForeignKey("UserId")]
+    public virtual User? User { get; set; }
 }

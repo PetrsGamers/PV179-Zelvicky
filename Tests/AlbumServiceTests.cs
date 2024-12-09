@@ -3,6 +3,7 @@ namespace Tests;
 using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services;
 using CapEnjoyer.DAL;
+using CapEnjoyer.DAL.Constants;
 using CapEnjoyer.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,9 +33,14 @@ public class AlbumServiceTests : IDisposable
     public async Task GetAlbumByIdReturnsCorrectAlbum()
     {
         var albumService = new AlbumService(this.context);
+        var userService = new UserService(this.context);
+
+        var userId = Guid.NewGuid();
+        var user = new User { Id = userId, Email = "email", Username = "User1", Albums = [], Role = Role.User };
+        this.context.Users.Add(user);
 
         var albumId = Guid.NewGuid();
-        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1" };
+        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1", Public = true, UserId = userId, User = user };
 
         this.context.Albums.Add(album);
         await this.context.SaveChangesAsync();
@@ -51,10 +57,17 @@ public class AlbumServiceTests : IDisposable
     public async Task GetAlbumsReturnsAllAlbums()
     {
         var albumService = new AlbumService(this.context);
+        var userService = new UserService(this.context);
+
+        var userId = Guid.NewGuid();
+        var user = new User { Id = userId, Email = "email", Username = "User1", Albums = [], Role = Role.User };
+        this.context.Users.Add(user);
+
+
 
         this.context.Albums.AddRange(
-            new Album { Id = Guid.NewGuid(), Name = "Album1", Description = "Description1" },
-            new Album { Id = Guid.NewGuid(), Name = "Album2", Description = "Description2" }
+            new Album { Id = Guid.NewGuid(), Name = "Album1", Description = "Description1", Public = true, UserId = userId, User = user },
+            new Album { Id = Guid.NewGuid(), Name = "Album2", Description = "Description2", Public = true, UserId = userId, User = user }
         );
         await this.context.SaveChangesAsync();
 
@@ -67,9 +80,13 @@ public class AlbumServiceTests : IDisposable
     public async Task CreateAlbumAddsNewAlbum()
     {
         var albumService = new AlbumService(this.context);
+        var userService = new UserService(this.context);
 
+        var userId = Guid.NewGuid();
+        var user = new User { Id = userId, Email = "email", Username = "User1", Albums = [], Role = Role.User };
+        this.context.Users.Add(user);
 
-        var albumDto = new AlbumInsertDto { Name = "Album1", Description = "Description1", };
+        var albumDto = new AlbumInsertDto { Name = "Album1", Description = "Description1", Public = true, User = userId };
         var createdAlbum = await albumService.CreateAlbum(albumDto);
         await this.context.SaveChangesAsync();
 
@@ -95,9 +112,14 @@ public class AlbumServiceTests : IDisposable
     public async Task DeleteAlbumRemovesAlbum()
     {
         var albumService = new AlbumService(this.context);
+        var userService = new UserService(this.context);
+
+        var userId = Guid.NewGuid();
+        var user = new User { Id = userId, Email = "email", Username = "User1", Albums = [], Role = Role.User };
+        this.context.Users.Add(user);
 
         var albumId = Guid.NewGuid();
-        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1" };
+        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1", Public = true, UserId = userId, User = user };
 
         this.context.Albums.Add(album);
         await this.context.SaveChangesAsync();
@@ -112,9 +134,14 @@ public class AlbumServiceTests : IDisposable
     public async Task UpdateAlbumUpdatesAlbum()
     {
         var albumService = new AlbumService(this.context);
+        var userService = new UserService(this.context);
+
+        var userId = Guid.NewGuid();
+        var user = new User { Id = userId, Email = "email", Username = "User1", Albums = [], Role = Role.User };
+        this.context.Users.Add(user);
 
         var albumId = Guid.NewGuid();
-        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1" };
+        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1", Public = true, UserId = userId, User = user };
 
         this.context.Albums.Add(album);
         await this.context.SaveChangesAsync();
@@ -147,9 +174,14 @@ public class AlbumServiceTests : IDisposable
     {
         var albumService = new AlbumService(this.context);
         var capService = new CapService(this.context);
+        var userService = new UserService(this.context);
+
+        var userId = Guid.NewGuid();
+        var user = new User { Id = userId, Email = "email", Username = "User1", Albums = [], Role = Role.User };
+        this.context.Users.Add(user);
 
         var albumId = Guid.NewGuid();
-        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1" };
+        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1", Public = true, UserId = userId, User = user };
 
         this.context.Albums.Add(album);
         await this.context.SaveChangesAsync();
@@ -186,9 +218,14 @@ public class AlbumServiceTests : IDisposable
     {
         var albumService = new AlbumService(this.context);
         var capService = new CapService(this.context);
+        var userService = new UserService(this.context);
+
+        var userId = Guid.NewGuid();
+        var user = new User { Id = userId, Email = "email", Username = "User1", Albums = [], Role = Role.User };
+        this.context.Users.Add(user);
 
         var albumId = Guid.NewGuid();
-        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1" };
+        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1", Public = true, UserId = userId, User = user };
 
         this.context.Albums.Add(album);
         await this.context.SaveChangesAsync();
@@ -203,9 +240,14 @@ public class AlbumServiceTests : IDisposable
     {
         var albumService = new AlbumService(this.context);
         var capService = new CapService(this.context);
+        var userService = new UserService(this.context);
+
+        var userId = Guid.NewGuid();
+        var user = new User { Id = userId, Email = "email", Username = "User1", Albums = [], Role = Role.User };
+        this.context.Users.Add(user);
 
         var albumId = Guid.NewGuid();
-        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1" };
+        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1", Public = true, UserId = userId, User = user };
 
         this.context.Albums.Add(album);
         await this.context.SaveChangesAsync();
@@ -227,9 +269,14 @@ public class AlbumServiceTests : IDisposable
     {
         var albumService = new AlbumService(this.context);
         var capService = new CapService(this.context);
+        var userService = new UserService(this.context);
+
+        var userId = Guid.NewGuid();
+        var user = new User { Id = userId, Email = "email", Username = "User1", Albums = [], Role = Role.User };
+        this.context.Users.Add(user);
 
         var albumId = Guid.NewGuid();
-        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1" };
+        var album = new Album { Id = albumId, Name = "Album1", Description = "Description1", Public = true, UserId = userId, User = user };
 
         this.context.Albums.Add(album);
         await this.context.SaveChangesAsync();
@@ -254,15 +301,4 @@ public class AlbumServiceTests : IDisposable
 
         await Assert.ThrowsAsync<ArgumentException>(() => albumService.RemoveCapFromAlbum(albumId, capId));
     }
-
-
-
-
-
-
-
-
-
-
-
 }

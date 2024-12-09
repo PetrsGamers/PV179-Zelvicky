@@ -48,7 +48,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Albums");
+                    b.ToTable("Albums", (string)null);
 
                     b.HasData(
                         new
@@ -189,7 +189,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("CapEnjoyer.DAL.Entities.Bottle", b =>
@@ -233,7 +233,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasIndex("ProducerId");
 
-                    b.ToTable("Bottles");
+                    b.ToTable("Bottles", (string)null);
 
                     b.HasData(
                         new
@@ -770,7 +770,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasIndex("IsEditForId");
 
-                    b.ToTable("Caps");
+                    b.ToTable("Caps", (string)null);
 
                     b.HasData(
                         new
@@ -1844,7 +1844,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasIndex("AlbumId");
 
-                    b.ToTable("CapToAlbums");
+                    b.ToTable("CapToAlbums", (string)null);
 
                     b.HasData(
                         new
@@ -5196,7 +5196,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasIndex("ColorId");
 
-                    b.ToTable("CapToBackgroundColors");
+                    b.ToTable("CapToBackgroundColors", (string)null);
 
                     b.HasData(
                         new
@@ -6693,7 +6693,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasIndex("BottleId");
 
-                    b.ToTable("CapToBottles");
+                    b.ToTable("CapToBottles", (string)null);
 
                     b.HasData(
                         new
@@ -7415,7 +7415,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasIndex("TextColorId");
 
-                    b.ToTable("CapToTextColors");
+                    b.ToTable("CapToTextColors", (string)null);
 
                     b.HasData(
                         new
@@ -8558,7 +8558,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Colors");
+                    b.ToTable("Colors", (string)null);
 
                     b.HasData(
                         new
@@ -8672,7 +8672,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
 
                     b.HasData(
                         new
@@ -9711,7 +9711,28 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("LocalIdentityUsers");
+                    b.ToTable("LocalIdentityUsers", (string)null);
+                });
+
+            modelBuilder.Entity("CapEnjoyer.DAL.Entities.MiddlewareLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Action")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Log")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MiddlewareLogs", (string)null);
                 });
 
             modelBuilder.Entity("CapEnjoyer.DAL.Entities.Producer", b =>
@@ -9747,7 +9768,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasIndex("IsEditForId");
 
-                    b.ToTable("Producers");
+                    b.ToTable("Producers", (string)null);
 
                     b.HasData(
                         new
@@ -9970,7 +9991,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -10033,7 +10054,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityRole");
+                    b.ToTable("IdentityRole", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -10055,7 +10076,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityRoleClaim<string>");
+                    b.ToTable("IdentityRoleClaim<string>", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -10077,7 +10098,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityUserClaim<string>");
+                    b.ToTable("IdentityUserClaim<string>", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -10098,7 +10119,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("IdentityUserLogin<string>");
+                    b.ToTable("IdentityUserLogin<string>", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -10111,7 +10132,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasKey("UserId", "RoleId");
 
-                    b.ToTable("IdentityUserRole<string>");
+                    b.ToTable("IdentityUserRole<string>", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -10132,7 +10153,7 @@ namespace CapEnjoyer.DAL.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("IdentityUserToken<string>");
+                    b.ToTable("IdentityUserToken<string>", (string)null);
                 });
 
             modelBuilder.Entity("CapEnjoyer.DAL.Entities.Album", b =>
