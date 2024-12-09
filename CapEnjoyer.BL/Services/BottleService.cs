@@ -103,7 +103,7 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
             DrinkType = Enum.Parse<DrinkType>(bottle.DrinkType),
             ProducerId = bottle.Producer,
             Producer = producer,
-            CapLinks = new List<CapToBottle>(),
+            CapLinks = [],
             IsEditForId = bottle.IsEditFor
         };
 
@@ -138,36 +138,36 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
         };
     }
 
-   public async Task<BottleDto> UpdateBottle(Guid id, BottleDto bottle)
-{
-    var existingBottle = await context.Bottles
-        .Include(b => b.CapLinks)
-        .FirstOrDefaultAsync(b => b.Id == id) ?? throw new ArgumentException($"Bottle with ID {id} not found.");
-
-    existingBottle.Name = bottle.Name;
-    existingBottle.Description = bottle.Description;
-    existingBottle.Voltage = bottle.Voltage;
-    existingBottle.BottlePicture = bottle.BottlePicture;
-    existingBottle.DrinkType = Enum.Parse<DrinkType>(bottle.DrinkType);
-    existingBottle.ProducerId = bottle.Producer;
-
-    if (bottle.Caps == null)
+    public async Task<BottleDto> UpdateBottle(Guid id, BottleDto bottle)
     {
-        existingBottle.CapLinks = new List<CapToBottle>();
-    }
-    else
-    {
-        existingBottle.CapLinks = await context.Caps
-            .Where(c => bottle.Caps.Contains(c.Id))
-            .Select(c => new CapToBottle
-            {
-                BottleId = id,
-                CapId = c.Id,
-                Cap = c,
-                Bottle = existingBottle
-            })
-            .ToListAsync();
-    }
+        var existingBottle = await context.Bottles
+            .Include(b => b.CapLinks)
+            .FirstOrDefaultAsync(b => b.Id == id) ?? throw new ArgumentException($"Bottle with ID {id} not found.");
+
+        existingBottle.Name = bottle.Name;
+        existingBottle.Description = bottle.Description;
+        existingBottle.Voltage = bottle.Voltage;
+        existingBottle.BottlePicture = bottle.BottlePicture;
+        existingBottle.DrinkType = Enum.Parse<DrinkType>(bottle.DrinkType);
+        existingBottle.ProducerId = bottle.Producer;
+
+        if (bottle.Caps == null)
+        {
+            existingBottle.CapLinks = [];
+        }
+        else
+        {
+            existingBottle.CapLinks = await context.Caps
+                .Where(c => bottle.Caps.Contains(c.Id))
+                .Select(c => new CapToBottle
+                {
+                    BottleId = id,
+                    CapId = c.Id,
+                    Cap = c,
+                    Bottle = existingBottle
+                })
+                .ToListAsync();
+        }
 
         context.Bottles.Update(existingBottle);
         await context.SaveChangesAsync();

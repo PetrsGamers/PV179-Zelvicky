@@ -147,15 +147,15 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
 
             currentCap.TextColorLinks.Clear();
             currentCap.TextColorLinks = capRequest.TextColorLinks
-                .Select(textColorLink => new CapToTextColor{CapId = currentCap.Id, Cap = currentCap, TextColorId = textColorLink.TextColorId, TextColor = textColorLink.TextColor})
+                .Select(textColorLink => new CapToTextColor { CapId = currentCap.Id, Cap = currentCap, TextColorId = textColorLink.TextColorId, TextColor = textColorLink.TextColor })
                 .ToList();
 
             currentCap.BackgroundColorLinks = capRequest.BackgroundColorLinks
-                .Select(backgroundColorLink => new CapToBackgroundColor{CapId = currentCap.Id, Cap = currentCap, BackgroundColorId = backgroundColorLink.BackgroundColorId, BackgroundColor = backgroundColorLink.BackgroundColor})
+                .Select(backgroundColorLink => new CapToBackgroundColor { CapId = currentCap.Id, Cap = currentCap, BackgroundColorId = backgroundColorLink.BackgroundColorId, BackgroundColor = backgroundColorLink.BackgroundColor })
                 .ToList();
 
             currentCap.BottleLinks = capRequest.BottleLinks
-                .Select(bottleLink => new CapToBottle{CapId = currentCap.Id,Cap = currentCap,BottleId = bottleLink.BottleId,Bottle = bottleLink.Bottle})
+                .Select(bottleLink => new CapToBottle { CapId = currentCap.Id, Cap = currentCap, BottleId = bottleLink.BottleId, Bottle = bottleLink.Bottle })
                 .ToList();
 
             context.Caps.Update(currentCap);
@@ -186,7 +186,7 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
             currentBottle.CapLinks.Clear();
             foreach (var capLink in bottleRequest.CapLinks)
             {
-                currentBottle.CapLinks.Add(new CapToBottle{CapId = capLink.CapId, Cap = capLink.Cap, BottleId = currentBottle.Id, Bottle = currentBottle});
+                currentBottle.CapLinks.Add(new CapToBottle { CapId = capLink.CapId, Cap = capLink.Cap, BottleId = currentBottle.Id, Bottle = currentBottle });
             }
 
             context.Bottles.Update(currentBottle);

@@ -199,7 +199,10 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
             .Where(bc => capInsertDto.BgColors.Contains(bc.Id))
             .Select(bc => new CapToBackgroundColor
             {
-                BackgroundColor = bc, Cap = oldCap, BackgroundColorId = bc.Id, CapId = oldCap.Id
+                BackgroundColor = bc,
+                Cap = oldCap,
+                BackgroundColorId = bc.Id,
+                CapId = oldCap.Id
             })
             .ToListAsync();
 
@@ -246,23 +249,26 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
             IsEditForId = capInsertDto.IsEditFor
         };
 
-         cap.TextColorLinks = await context.Colors
-                    .Where(tc => capInsertDto.TextColors.Contains(tc.Id))
-                    .Select(tc => new CapToTextColor { TextColorId = tc.Id, TextColor = tc, Cap = cap, CapId = cap.Id })
-                    .ToListAsync();
+        cap.TextColorLinks = await context.Colors
+                   .Where(tc => capInsertDto.TextColors.Contains(tc.Id))
+                   .Select(tc => new CapToTextColor { TextColorId = tc.Id, TextColor = tc, Cap = cap, CapId = cap.Id })
+                   .ToListAsync();
 
-         cap.BackgroundColorLinks = await context.Colors
-                    .Where(bc => capInsertDto.BgColors.Contains(bc.Id))
-                    .Select(bc => new CapToBackgroundColor
-                    {
-                        BackgroundColor = bc, Cap = cap, BackgroundColorId = bc.Id, CapId = cap.Id
-                    })
-                    .ToListAsync();
+        cap.BackgroundColorLinks = await context.Colors
+                   .Where(bc => capInsertDto.BgColors.Contains(bc.Id))
+                   .Select(bc => new CapToBackgroundColor
+                   {
+                       BackgroundColor = bc,
+                       Cap = cap,
+                       BackgroundColorId = bc.Id,
+                       CapId = cap.Id
+                   })
+                   .ToListAsync();
 
-                cap.BottleLinks = await context.Bottles
-                    .Where(b => capInsertDto.Bottles.Contains(b.Id))
-                    .Select(b => new CapToBottle { Bottle = b, Cap = cap, BottleId = b.Id, CapId = cap.Id })
-                    .ToListAsync();
+        cap.BottleLinks = await context.Bottles
+            .Where(b => capInsertDto.Bottles.Contains(b.Id))
+            .Select(b => new CapToBottle { Bottle = b, Cap = cap, BottleId = b.Id, CapId = cap.Id })
+            .ToListAsync();
 
         await context.Caps.AddAsync(cap);
         await context.AuditLogs.AddAsync(new AuditLog

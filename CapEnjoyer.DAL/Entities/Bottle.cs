@@ -14,9 +14,9 @@ public class Bottle
     public required Guid ProducerId { get; set; }
     [ForeignKey("ProducerId")]
     public required Producer Producer { get; set; }
-    public List<CapToBottle> CapLinks { get; set; } = new List<CapToBottle>();
+    public List<CapToBottle> CapLinks { get; set; } = [];
     public Guid? IsEditForId { get; set; }
     [ForeignKey("IsEditForId")]
     public Bottle? IsEditFor { get; set; }
-    public List<Bottle> Edits { get; set; } = new List<Bottle>();
+    public List<Bottle> Edits { get; set; } = [];
 }

@@ -13,5 +13,5 @@ public class Producer
     public Producer? IsEditFor { get; set; }
     [ForeignKey("IsEditForId")]
     public Guid? IsEditForId { get; set; }
-    public List<Producer> Edits { get; set; } = new List<Producer>();
+    public List<Producer> Edits { get; set; } = [];
 }

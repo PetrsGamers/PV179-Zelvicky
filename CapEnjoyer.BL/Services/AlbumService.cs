@@ -102,7 +102,7 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumServiceAsync
         existingAlbum.UserId = album.User;
         if (album.Caps == null)
         {
-            existingAlbum.CapLinks = new List<CapToAlbum>();
+            existingAlbum.CapLinks = [];
         }
         else
         {
