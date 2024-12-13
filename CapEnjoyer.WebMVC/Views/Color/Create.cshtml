@@ -1,0 +1,22 @@
+@model ColorCreateViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Add Color";
+}
+
+<h2>Add New Color</h2>
+
+<form asp-action="Create" method="post">
+    <div>
+        <label>Name</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <div>
+        <label>Hex Value</label>
+        <input asp-for="HexValue" class="form-control" placeholder="#FFFFFF" />
+    </div>
+    <button type="submit" class="btn btn-success">Create</button>
+</form>
+
+<a asp-action="Index" asp-controller="Color" class="btn btn-secondary">Back to List</a>

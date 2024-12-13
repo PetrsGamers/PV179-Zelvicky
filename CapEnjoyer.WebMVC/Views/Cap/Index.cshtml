@@ -1,0 +1,32 @@
+@model IEnumerable<CapViewModel>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Cap List";
+}
+
+<h2>Cap List</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Text On Cap</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cap in Model)
+        {
+            <tr>
+                <td>@cap.TextOnCap</td>
+                <td>@cap.Description</td>
+                <td>
+                    <a href="@Url.Action("Details", "Cap", new { id = cap.Id })">Details</a> |
+                    <a href="@Url.Action("Edit", "Cap", new { id = cap.Id })">Edit</a> |
+                    <a href="@Url.Action("Delete", "Cap", new { id = cap.Id })">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

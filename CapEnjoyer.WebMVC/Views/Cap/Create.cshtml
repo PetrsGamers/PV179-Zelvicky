@@ -1,0 +1,38 @@
+@model CapCreateViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Create Cap";
+}
+
+<h2>Create Cap</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div>
+        <label>Text On Cap</label>
+        <input asp-for="TextOnCap" />
+    </div>
+    <div>
+        <label>Description</label>
+        <textarea asp-for="Description"></textarea>
+    </div>
+    <div>
+        <label>Text Colors</label>
+        <input asp-for="TextColors" />
+    </div>
+    <div>
+        <label>Background Colors</label>
+        <input asp-for="BgColors" />
+    </div>
+    <div>
+        <label>Bottles</label>
+        <input asp-for="Bottles" />
+    </div>
+    <div>
+        <label>Cap Picture</label>
+        <input asp-for="CapPicture" type="file" />
+    </div>
+    <button type="submit">Create</button>
+</form>
+
+<a asp-action="Index" asp-controller="Cap">Back to List</a>

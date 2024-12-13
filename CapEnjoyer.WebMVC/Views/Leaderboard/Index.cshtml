@@ -1,0 +1,28 @@
+@model IEnumerable<LeaderboardViewModel>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Leaderboard";
+}
+
+<h2>Leaderboard</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Rank</th>
+        <th>Username</th>
+        <th>Distinct Cap Count</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var entry in Model)
+    {
+        <tr>
+            <td>@entry.Rank</td>
+            <td>@entry.Username</td>
+            <td>@entry.DistinctCapCount</td>
+        </tr>
+    }
+    </tbody>
+</table>

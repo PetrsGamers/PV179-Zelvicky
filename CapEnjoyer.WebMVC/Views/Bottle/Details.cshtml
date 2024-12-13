@@ -1,0 +1,20 @@
+@model BottleViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Bottle Details";
+}
+
+<h2>Bottle Details</h2>
+
+<div>
+    <h4>@Model.Name</h4>
+    <p>Description: @Model.Description</p>
+    <p>Voltage: @Model.Voltage</p>
+    <p>Drink Type: @Model.DrinkType</p>
+    <p>Producer: @Model.Producer</p>
+    <p>Is Edit For: @(Model.IsEditFor.HasValue ? Model.IsEditFor.ToString() : "None")</p>
+    <img src="@Model.BottlePicture" alt="@Model.Name" />
+</div>
+
+<a asp-action="Index" asp-controller="Bottle">Back to List</a>

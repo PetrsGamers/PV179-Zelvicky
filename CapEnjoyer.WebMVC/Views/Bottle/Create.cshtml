@@ -1,0 +1,44 @@
+@model BottleCreateViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Create Bottle";
+}
+
+<h2>Create Bottle</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div>
+        <label>Name</label>
+        <input asp-for="Name" />
+    </div>
+    <div>
+        <label>Description</label>
+        <textarea asp-for="Description"></textarea>
+    </div>
+    <div>
+        <label>Voltage</label>
+        <input asp-for="Voltage" type="number" step="0.01" />
+    </div>
+    <div>
+        <label>Drink Type</label>
+        <input asp-for="DrinkType" />
+    </div>
+    <div>
+        <label>Producer</label>
+        <select asp-for="Producer">
+            <!-- Producer options -->
+        </select>
+    </div>
+    <div>
+        <label>Caps</label>
+        <input asp-for="Caps" />
+    </div>
+    <div>
+        <label>Bottle Picture</label>
+        <input asp-for="BottlePicture" type="file" />
+    </div>
+    <button type="submit">Create</button>
+</form>
+
+<a asp-action="Index" asp-controller="Bottle">Back to List</a>

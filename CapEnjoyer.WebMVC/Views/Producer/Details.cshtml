@@ -1,0 +1,18 @@
+@model ProducerViewModel
+
+    @{
+    Layout = "_Layout";
+    ViewData["Title"] = "Producer Details";
+}
+
+<h2>Producer Details</h2>
+
+    <div>
+    <h4>@Model.Name</h4>
+    <p>City: @Model.City</p>
+    <p>Description: @Model.Description</p>
+    <p>Country: @Model.Country</p>
+    <p>Is Edit For: @(Model.IsEditFor.HasValue ? Model.IsEditFor.ToString() : "None")</p>
+    </div>
+
+    <a asp-action="Index" asp-controller="Producer">Back to List</a>

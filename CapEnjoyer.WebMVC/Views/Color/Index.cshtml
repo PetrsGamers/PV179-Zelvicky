@@ -1,0 +1,33 @@
+@model IEnumerable<ColorViewModel>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Colors";
+}
+
+<h2>Colors</h2>
+
+<a asp-action="Create" asp-controller="Color" class="btn btn-primary">Add New Color</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Hex Value</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var color in Model)
+        {
+            <tr>
+                <td>@color.Name</td>
+                <td style="background-color:@color.HexValue; color: white;">@color.HexValue</td>
+                <td>
+                    <a href="@Url.Action("Edit", "Color", new { id = color.Id })">Edit</a> |
+                    <a href="@Url.Action("Delete", "Color", new { id = color.Id })">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

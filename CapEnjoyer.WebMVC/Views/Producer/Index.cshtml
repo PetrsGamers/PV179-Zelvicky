@@ -1,0 +1,32 @@
+@model IEnumerable<ProducerViewModel>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Producer List";
+}
+
+<h2>Producer List</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>City</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var producer in Model)
+    {
+        <tr>
+            <td>@producer.Name</td>
+            <td>@producer.City</td>
+            <td>
+                <a href="@Url.Action("Details", "Producer", new { id = producer.Id })">Details</a> |
+                <a href="@Url.Action("Edit", "Producer", new { id = producer.Id })">Edit</a> |
+                <a href="@Url.Action("Delete", "Producer", new { id = producer.Id })">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
