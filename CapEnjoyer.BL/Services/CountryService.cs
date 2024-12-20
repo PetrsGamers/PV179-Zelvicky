@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 public class CountryService(CapEnjoyerDbContext context) : ICountryService
 {
-    public async Task<IEnumerable<CountryDto>> GetCountriesAsync()
+    public async Task<List<CountryDto>> GetCountriesAsync()
     {
         var countries = await context.Countries
             .Select(c => c.Adapt<CountryDto>())

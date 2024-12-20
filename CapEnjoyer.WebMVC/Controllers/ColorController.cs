@@ -23,17 +23,17 @@ public class ColorController(IColorService colorService) : Controller
     public IActionResult Create() => View();
 
     [HttpPost]
-    public async Task<IActionResult> Create(ColorCreateViewModel viewModel)
+    public async Task<IActionResult> Create(ColorCreateReturnModel returnModel)
     {
         if (!ModelState.IsValid)
         {
-            return View(viewModel);
+            return View(returnModel);
         }
 
         var colorDto = new ColorDto
         {
-            Name = viewModel.Name,
-            HexValue = viewModel.HexValue
+            Name = returnModel.Name,
+            HexValue = returnModel.HexValue
         };
 
         await colorService.CreateColorAsync(colorDto);

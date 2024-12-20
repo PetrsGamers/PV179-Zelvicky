@@ -4,6 +4,6 @@ using DTOs;
 
 public interface ICountryService
 {
-    public Task<IEnumerable<CountryDto>> GetCountriesAsync();
+    public Task<List<CountryDto>> GetCountriesAsync();
     public Task<CountryDto?> GetCountryByIdAsync(Guid id);
 }

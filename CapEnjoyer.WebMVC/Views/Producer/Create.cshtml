@@ -11,26 +11,22 @@
     <div>
         <label>Name</label>
         <input asp-for="Name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div>
         <label>City</label>
         <input asp-for="City" />
+        <span asp-validation-for="City" class="text-danger"></span>
     </div>
     <div>
         <label>Description</label>
         <textarea asp-for="Description"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
     <div>
         <label>Country</label>
-        <select asp-for="Country">
-            <!-- Country options here -->
-        </select>
-    </div>
-    <div>
-        <label>Is Edit For</label>
-        <input asp-for="IsEditFor" />
+        <select asp-for="CountryId" asp-items="Model.Countries"></select>
+        <span asp-validation-for="CountryId" class="text-danger"></span>
     </div>
     <button type="submit">Create</button>
 </form>
-
-<a asp-action="Index" asp-controller="Producer">Back to List</a>

@@ -2,10 +2,10 @@ namespace Cap.Enjoyer.WebMVC.Models;
 
 public class ProducerViewModel
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-    public string City { get; set; }
-    public string Description { get; set; }
-    public Guid Country { get; set; }
+    public required Guid Id { get; set; }
+    public required string Name { get; set; }
+    public required string City { get; set; }
+    public required string Description { get; set; }
+    public required Guid Country { get; set; }
     public Guid? IsEditFor { get; set; }
 }
