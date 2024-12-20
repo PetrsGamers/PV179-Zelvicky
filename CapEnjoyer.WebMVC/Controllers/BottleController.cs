@@ -5,7 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cap.Enjoyer.WebMVC.Controllers;
 
-public class BottleController(IBottleService bottleService) : Controller
+using CapEnjoyer.DAL.Constants;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+public class BottleController(IBottleService bottleService, IProducerService producerService, ICapService capService) : Controller
 {
     public async Task<IActionResult> Index()
     {
@@ -44,36 +47,64 @@ public class BottleController(IBottleService bottleService) : Controller
     }
 
     [HttpGet]
-    public IActionResult Create() =>
-        View();
+    public async Task<IActionResult> Create()
+    {
+        var producers = await producerService.GetAllProducersAsync();
+        var caps = await capService.GetAllCapsFilteredAsync();
+
+        var drinkTypes = Enum.GetValues(typeof(DrinkType))
+            .Cast<DrinkType>()
+            .Select(d => new SelectListItem
+            {
+                Value = d.ToString(),
+                Text = d.ToString()
+            }).ToList();
+
+        ViewBag.Producers = new SelectList(producers, "Id", "Name");
+        ViewBag.Caps = new MultiSelectList(caps, "Id", "TextOnCap");
+        ViewBag.DrinkTypes = new SelectList(drinkTypes, "Value", "Text");
+
+        return View();
+    }
 
     [HttpPost]
-    public async Task<IActionResult> Create(BottleCreateViewModel viewModel, IFormFile image)
+    public async Task<IActionResult> Create(BottleCreateReturnModel model)
     {
         if (!ModelState.IsValid)
         {
-            return View(viewModel);
+            var producers = await producerService.GetAllProducersAsync();
+            var caps = await capService.GetAllCapsFilteredAsync();
+
+            var drinkTypes = Enum.GetValues(typeof(DrinkType))
+                .Cast<DrinkType>()
+                .Select(d => new SelectListItem
+                {
+                    Value = d.ToString(),
+                    Text = d.ToString()
+                }).ToList();
+
+            ViewBag.Producers = new SelectList(producers, "Id", "Name");
+            ViewBag.Caps = new MultiSelectList(caps, "Id", "TextOnCap");
+            ViewBag.DrinkTypes = new SelectList(drinkTypes, "Value", "Text");
+
+            return View();
         }
 
         var bottleDto = new BottleDto
         {
-            Name = viewModel.Name,
-            Description = viewModel.Description,
-            Voltage = viewModel.Voltage,
-            DrinkType = viewModel.DrinkType,
-            Producer = viewModel.Producer,
-            Caps = viewModel.Caps,
-            IsEditFor = viewModel.IsEditFor
+            Name = model.Name,
+            Description = model.Description,
+            Voltage = model.Voltage,
+            DrinkType = model.DrinkType,
+            Producer = model.ProducerId,
+            Caps = model.CapIds ?? [],
+            BottlePicture = "placeholder"
         };
 
-        var createdBottle = await bottleService.CreateBottle(bottleDto);
-        if (image != null)
-        {
-            await bottleService.UploadImageForBottleAsync(createdBottle.Id, image);
-        }
-
+        await bottleService.CreateBottle(bottleDto);
         return RedirectToAction(nameof(Index));
     }
+
 
     [HttpGet]
     public async Task<IActionResult> Edit(Guid id)
