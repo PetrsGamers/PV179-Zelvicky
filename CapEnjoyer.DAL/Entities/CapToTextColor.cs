@@ -10,5 +10,5 @@ public class CapToTextColor
 
     public required Guid TextColorId { get; set; }
     [ForeignKey("TextColorId")]
-    public required Color TextColor { get; set; }
+    public Color? TextColor { get; set; }
 }

@@ -10,5 +10,5 @@ public class CapToBottle
 
     public required Guid BottleId { get; set; }
     [ForeignKey("BottleId")]
-    public required Bottle Bottle { get; set; }
+    public Bottle? Bottle { get; set; }
 }

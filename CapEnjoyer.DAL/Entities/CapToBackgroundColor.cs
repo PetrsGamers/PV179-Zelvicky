@@ -10,5 +10,5 @@ public class CapToBackgroundColor
 
     public required Guid BackgroundColorId { get; set; }
     [ForeignKey("BackgroundColorId")]
-    public required Color BackgroundColor { get; set; }
+    public Color? BackgroundColor { get; set; }
 }

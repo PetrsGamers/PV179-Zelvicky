@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 public class CapToAlbum
 {
-    public Guid CapId { get; set; }
+    public required Guid CapId { get; set; }
     [ForeignKey("CapId")]
-    public Cap Cap { get; set; }
+    public required Cap Cap { get; set; }
 
-    public Guid AlbumId { get; set; }
+    public required Guid AlbumId { get; set; }
     [ForeignKey("AlbumId")]
     public Album Album { get; set; }
 }

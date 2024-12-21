@@ -92,10 +92,10 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
             throw new ArgumentException("Name or description is missing");
         }
         var producer = await context.Producers.FindAsync(bottle.Producer) ?? throw new ArgumentException("Producer not found.");
-
+        var id = Guid.NewGuid();
         var newBottle = new Bottle
         {
-            Id = Guid.NewGuid(),
+            Id = id,
             Name = bottle.Name,
             Description = bottle.Description,
             Voltage = bottle.Voltage,
@@ -103,23 +103,20 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
             DrinkType = Enum.Parse<DrinkType>(bottle.DrinkType),
             ProducerId = bottle.Producer,
             Producer = producer,
-            CapLinks = [],
+            CapLinks =
+            [
+                .. context.Caps
+                                .Where(c => bottle.Caps != null && bottle.Caps.Contains(c.Id))
+                                .Select(c => new CapToBottle
+                                {
+                                    CapId = c.Id,
+                                    Cap = c,
+                                    BottleId = id,
+                                })
+,
+            ],
             IsEditForId = bottle.IsEditFor
         };
-
-        if (bottle.Caps != null)
-        {
-            newBottle.CapLinks = await context.Caps
-                .Where(c => bottle.Caps.Contains(c.Id))
-                .Select(c => new CapToBottle
-                {
-                    BottleId = newBottle.Id,
-                    CapId = c.Id,
-                    Cap = c,
-                    Bottle = newBottle
-                })
-                .ToListAsync();
-        }
 
         await context.Bottles.AddAsync(newBottle);
         await context.SaveChangesAsync();
@@ -171,7 +168,6 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
 
         context.Bottles.Update(existingBottle);
         await context.SaveChangesAsync();
-
         return new BottleDto
         {
             Id = existingBottle.Id,
@@ -184,6 +180,7 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
             Caps = existingBottle.CapLinks.Select(cl => cl.CapId).ToList(),
             IsEditFor = existingBottle.IsEditForId
         };
+
     }
 
     public async Task DeleteBottle(Guid id)

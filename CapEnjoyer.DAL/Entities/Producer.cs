@@ -9,7 +9,8 @@ public class Producer
     public required string City { get; set; }
     public required string Description { get; set; }
     public required Guid CountryId { get; set; }
-    public required Country Country { get; set; }
+    [ForeignKey("CountryId")]
+    public Country? Country { get; set; }
     public Producer? IsEditFor { get; set; }
     [ForeignKey("IsEditForId")]
     public Guid? IsEditForId { get; set; }

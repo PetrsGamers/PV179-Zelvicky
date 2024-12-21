@@ -39,13 +39,14 @@ public class LeaderboardServiceTests : IDisposable
         var cap2 = new Cap { Id = Guid.NewGuid(), TextOnCap = "Cap2", CapPicture = "Cap2picture", Description = "Cap2description" };
         var cap3 = new Cap { Id = Guid.NewGuid(), TextOnCap = "Cap3", CapPicture = "Cap3picture", Description = "Cap3description" };
 
+        var album1id = Guid.NewGuid();
         user1.Albums.Add(new Album
         {
-            Id = Guid.NewGuid(),
+            Id = album1id,
             CapLinks =
             [
-                new CapToAlbum { Cap = cap1 },
-                new CapToAlbum { Cap = cap2 }
+                new CapToAlbum { Cap = cap1, CapId = cap1.Id, AlbumId = album1id },
+                new CapToAlbum { Cap = cap2, CapId = cap2.Id, AlbumId = album1id }
             ],
             Description = "Description1",
             Name = "Name1",
@@ -54,13 +55,14 @@ public class LeaderboardServiceTests : IDisposable
             UserId = user1.Id
 
         });
+        var album2id = Guid.NewGuid();
         user1.Albums.Add(new Album
         {
-            Id = Guid.NewGuid(),
+            Id = album2id,
             CapLinks =
             [
-                new CapToAlbum { Cap = cap2 },
-                new CapToAlbum { Cap = cap3 }
+                new CapToAlbum { Cap = cap2, CapId = cap2.Id, AlbumId = album2id },
+                new CapToAlbum { Cap = cap3, CapId = cap3.Id, AlbumId = album2id }
             ],
             Description = "Description1",
             Name = "Name1",
@@ -69,10 +71,11 @@ public class LeaderboardServiceTests : IDisposable
             UserId = user1.Id
         });
 
+        var album3id = Guid.NewGuid();
         user2.Albums.Add(new Album
         {
             Id = Guid.NewGuid(),
-            CapLinks = [new CapToAlbum { Cap = cap1 }],
+            CapLinks = [new CapToAlbum { Cap = cap1, CapId = cap1.Id, AlbumId = album3id }],
             Description = "Description2",
             Name = "Name2",
             Public = true,
@@ -137,13 +140,14 @@ public class LeaderboardServiceTests : IDisposable
         var cap1 = new Cap { Id = Guid.NewGuid(), TextOnCap = "Cap1", CapPicture = "Cap1picture", Description = "Cap1description" };
         var cap2 = new Cap { Id = Guid.NewGuid(), TextOnCap = "Cap2", CapPicture = "Cap2picture", Description = "Cap2description" };
 
+        var album1id = Guid.NewGuid();
         user1.Albums.Add(new Album
         {
-            Id = Guid.NewGuid(),
+            Id = album1id,
             CapLinks =
             [
-                new CapToAlbum { Cap = cap1 },
-                new CapToAlbum { Cap = cap2 }
+                new CapToAlbum { Cap = cap1, CapId = cap1.Id, AlbumId = album1id },
+                new CapToAlbum { Cap = cap2, CapId = cap2.Id, AlbumId = album1id }
             ],
             Description = "Description1",
             Name = "Name1",
@@ -152,13 +156,15 @@ public class LeaderboardServiceTests : IDisposable
             UserId = user1.Id
         });
 
+
+        var album2id = Guid.NewGuid();
         user2.Albums.Add(new Album
         {
             Id = Guid.NewGuid(),
             CapLinks =
             [
-                new CapToAlbum { Cap = cap1 },
-                new CapToAlbum { Cap = cap2 }
+                new CapToAlbum { Cap = cap1, CapId = cap1.Id, AlbumId = album2id },
+                new CapToAlbum { Cap = cap2, CapId = cap2.Id, AlbumId = album2id }
             ],
             Description = "Description2",
             Name = "Name2",

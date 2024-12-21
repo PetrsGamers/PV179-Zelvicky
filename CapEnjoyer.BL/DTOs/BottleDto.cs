@@ -9,6 +9,6 @@ public class BottleDto
     public string BottlePicture { get; set; }
     public string DrinkType { get; set; }
     public Guid Producer { get; set; }
-    public List<Guid> Caps { get; set; }
+    public List<Guid>? Caps { get; set; }
     public Guid? IsEditFor { get; set; }
 }
