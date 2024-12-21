@@ -42,7 +42,7 @@ public class ColorServiceTests : IDisposable
         Assert.NotNull(result);
         Assert.Equal(colorId, result?.Id);
         Assert.Equal("Blue", result?.Name);
-        Assert.Equal("#0000FF", result?.HexValue);
+        Assert.Equal("#0000FF", result?.HexCode);
     }
 
     [Fact]
@@ -66,13 +66,13 @@ public class ColorServiceTests : IDisposable
     {
         var colorService = new ColorService(this.context);
 
-        var newColor = new ColorDto { Name = "Green", HexValue = "#00FF00" };
+        var newColor = new ColorDto { Name = "Green", HexCode = "#00FF00" };
 
         var result = await colorService.CreateColorAsync(newColor);
 
         Assert.NotNull(result);
         Assert.Equal("Green", result.Name);
-        Assert.Equal("#00FF00", result.HexValue);
+        Assert.Equal("#00FF00", result.HexCode);
 
         var createdColor = this.context.Colors.FirstOrDefault(c => c.Name == "Green");
         Assert.NotNull(createdColor);
@@ -107,13 +107,13 @@ public class ColorServiceTests : IDisposable
         this.context.Colors.Add(originalColor);
         await this.context.SaveChangesAsync();
 
-        var updatedColorDto = new ColorDto { Name = "Dark Orange", HexValue = "#FF8C00" };
+        var updatedColorDto = new ColorDto { Name = "Dark Orange", HexCode = "#FF8C00" };
 
         var result = await colorService.UpdateColorAsync(colorId, updatedColorDto);
 
         Assert.NotNull(result);
         Assert.Equal("Dark Orange", result.Name);
-        Assert.Equal("#FF8C00", result.HexValue);
+        Assert.Equal("#FF8C00", result.HexCode);
 
         var updatedColor = await this.context.Colors.FindAsync(colorId);
         Assert.NotNull(updatedColor);

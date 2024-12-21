@@ -3,6 +3,7 @@ namespace CapEnjoyer.BL.Services;
 using DAL;
 using DTOs;
 using Interfaces;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 public class CountryService(CapEnjoyerDbContext context) : ICountryService
@@ -10,7 +11,7 @@ public class CountryService(CapEnjoyerDbContext context) : ICountryService
     public async Task<IEnumerable<CountryDto>> GetCountriesAsync()
     {
         var countries = await context.Countries
-            .Select(c => new CountryDto { Id = c.Id, Name = c.Name })
+            .Select(c => c.Adapt<CountryDto>())
             .ToListAsync();
 
         return countries;
@@ -20,9 +21,8 @@ public class CountryService(CapEnjoyerDbContext context) : ICountryService
     {
         var country = await context.Countries
             .Where(c => c.Id == id)
-            .Select(c => new CountryDto { Id = c.Id, Name = c.Name })
             .FirstOrDefaultAsync();
 
-        return country;
+        return country.Adapt<CountryDto>();
     }
 }

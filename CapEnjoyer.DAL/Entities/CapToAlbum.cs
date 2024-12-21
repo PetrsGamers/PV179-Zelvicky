@@ -6,9 +6,9 @@ public class CapToAlbum
 {
     public required Guid CapId { get; set; }
     [ForeignKey("CapId")]
-    public required Cap Cap { get; set; }
+    public Cap? Cap { get; set; }
 
     public required Guid AlbumId { get; set; }
     [ForeignKey("AlbumId")]
-    public Album Album { get; set; }
+    public Album? Album { get; set; }
 }

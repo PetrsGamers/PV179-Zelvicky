@@ -2,7 +2,6 @@ namespace CapEnjoyer.DAL.Entities;
 
 using System.ComponentModel.DataAnnotations.Schema;
 using Constants;
-using Riok.Mapperly.Abstractions;
 
 public class Bottle
 {
@@ -14,7 +13,7 @@ public class Bottle
     public required string BottlePicture { get; set; }
     public required Guid ProducerId { get; set; }
     [ForeignKey("ProducerId")]
-    [MapperIgnore]
+
     public required Producer Producer { get; set; }
     public List<CapToBottle> CapLinks { get; set; } = [];
 

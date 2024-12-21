@@ -43,6 +43,7 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumServiceAsync
         return album;
     }
 
+
     public async Task<AlbumDto> CreateAlbum(AlbumInsertDto album)
     {
         if (string.IsNullOrEmpty(album.Name) || string.IsNullOrEmpty(album.Description))

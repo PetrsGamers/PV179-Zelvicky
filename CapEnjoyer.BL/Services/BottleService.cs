@@ -57,7 +57,7 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
                 Voltage = b.Voltage,
                 BottlePicture = b.BottlePicture,
                 DrinkType = b.DrinkType.ToString(),
-                Producer = b.ProducerId,
+                ProducerId = b.ProducerId,
                 Caps = b.CapLinks.Select(cl => cl.CapId).ToList(),
                 IsEditFor = b.IsEditForId
             })
@@ -77,7 +77,7 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
                 Voltage = b.Voltage,
                 BottlePicture = b.BottlePicture,
                 DrinkType = b.DrinkType.ToString(),
-                Producer = b.ProducerId,
+                ProducerId = b.ProducerId,
                 Caps = b.CapLinks.Select(cl => cl.CapId).ToList(),
                 IsEditFor = b.IsEditForId
             })
@@ -91,7 +91,7 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
         {
             throw new ArgumentException("Name or description is missing");
         }
-        var producer = await context.Producers.FindAsync(bottle.Producer) ?? throw new ArgumentException("Producer not found.");
+        var producer = await context.Producers.FindAsync(bottle.ProducerId) ?? throw new ArgumentException("Producer not found.");
         var id = Guid.NewGuid();
         var newBottle = new Bottle
         {
@@ -101,7 +101,7 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
             Voltage = bottle.Voltage,
             BottlePicture = bottle.BottlePicture,
             DrinkType = Enum.Parse<DrinkType>(bottle.DrinkType),
-            ProducerId = bottle.Producer,
+            ProducerId = bottle.ProducerId,
             Producer = producer,
             CapLinks =
             [
@@ -129,7 +129,7 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
             Voltage = newBottle.Voltage,
             BottlePicture = newBottle.BottlePicture,
             DrinkType = newBottle.DrinkType.ToString(),
-            Producer = newBottle.ProducerId,
+            ProducerId = newBottle.ProducerId,
             Caps = newBottle.CapLinks.Select(cl => cl.CapId).ToList(),
             IsEditFor = newBottle.IsEditForId
         };
@@ -146,7 +146,7 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
         existingBottle.Voltage = bottle.Voltage;
         existingBottle.BottlePicture = bottle.BottlePicture;
         existingBottle.DrinkType = Enum.Parse<DrinkType>(bottle.DrinkType);
-        existingBottle.ProducerId = bottle.Producer;
+        existingBottle.ProducerId = bottle.ProducerId;
 
         if (bottle.Caps == null)
         {
@@ -176,7 +176,7 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
             Voltage = existingBottle.Voltage,
             BottlePicture = existingBottle.BottlePicture,
             DrinkType = existingBottle.DrinkType.ToString(),
-            Producer = existingBottle.ProducerId,
+            ProducerId = existingBottle.ProducerId,
             Caps = existingBottle.CapLinks.Select(cl => cl.CapId).ToList(),
             IsEditFor = existingBottle.IsEditForId
         };

@@ -1,9 +1,11 @@
 using CapEnjoyer.API.Helpers;
 using CapEnjoyer.API.Middleware;
+using CapEnjoyer.BL.Mappers;
 using CapEnjoyer.BL.Services;
 using CapEnjoyer.BL.Services.Interfaces;
 using CapEnjoyer.DAL;
 using DotNetEnv;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -52,6 +54,9 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+builder.Services.AddMapster();
+TypeAdapterConfig.GlobalSettings.ConfigureAlbumMapping();
+TypeAdapterConfig.GlobalSettings.EnableImmutableMapping();
 
 var app = builder.Build();
 

@@ -39,7 +39,7 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
                 Voltage = b.Voltage,
                 BottlePicture = b.BottlePicture,
                 DrinkType = b.DrinkType.ToString(),
-                Producer = b.ProducerId,
+                ProducerId = b.ProducerId,
                 Caps = b.CapLinks.Select(cb => cb.CapId).ToList(),
                 IsEditFor = b.IsEditForId
             })
@@ -86,7 +86,7 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
                     Voltage = b.Voltage,
                     BottlePicture = b.BottlePicture,
                     DrinkType = b.DrinkType.ToString(),
-                    Producer = b.ProducerId,
+                    ProducerId = b.ProducerId,
                     Caps = b.CapLinks.Select(cb => cb.CapId).ToList(),
                     IsEditFor = b.IsEditForId
                 })

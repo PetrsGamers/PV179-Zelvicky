@@ -4,6 +4,7 @@ using DAL;
 using DAL.Entities;
 using DTOs;
 using Interfaces;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 public class ColorService(CapEnjoyerDbContext context) : IColorService
@@ -11,7 +12,7 @@ public class ColorService(CapEnjoyerDbContext context) : IColorService
     public async Task<IEnumerable<ColorDto>> GetColorsAsync()
     {
         var colors = await context.Colors
-            .Select(c => new ColorDto { Id = c.Id, Name = c.Name, HexValue = c.HexCode })
+            .Select(c => c.Adapt<ColorDto>())
             .ToListAsync();
         return colors;
     }
@@ -20,14 +21,13 @@ public class ColorService(CapEnjoyerDbContext context) : IColorService
     {
         var color = await context.Colors
             .Where(c => c.Id == id)
-            .Select(c => new ColorDto { Id = c.Id, Name = c.Name, HexValue = c.HexCode })
             .FirstOrDefaultAsync();
-        return color;
+        return color.Adapt<ColorDto>();
     }
 
     public async Task<ColorDto> CreateColorAsync(ColorDto colorDto)
     {
-        var color = new Color { Id = Guid.NewGuid(), Name = colorDto.Name, HexCode = colorDto.HexValue };
+        var color = colorDto.Adapt<Color>();
         await context.Colors.AddAsync(color);
         await context.SaveChangesAsync();
         return colorDto;
@@ -38,7 +38,7 @@ public class ColorService(CapEnjoyerDbContext context) : IColorService
         var color = await context.Colors.FindAsync(id) ?? throw new ArgumentException($"Color with ID {id} not found.");
 
         color.Name = colorDto.Name;
-        color.HexCode = colorDto.HexValue;
+        color.HexCode = colorDto.HexCode;
         context.Colors.Update(color);
         await context.SaveChangesAsync();
         return colorDto;
