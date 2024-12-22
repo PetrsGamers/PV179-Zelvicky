@@ -5,6 +5,7 @@ using DAL.Constants;
 using DAL.Entities;
 using DTOs;
 using Interfaces;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 public class BottleService(CapEnjoyerDbContext context) : IBottleService
@@ -48,41 +49,18 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
 
     public async Task<BottleDto> GetBottleById(Guid id)
     {
-        var bottle = await context.Bottles
-            .Select(b => new BottleDto
-            {
-                Id = b.Id,
-                Name = b.Name,
-                Description = b.Description,
-                Voltage = b.Voltage,
-                BottlePicture = b.BottlePicture,
-                DrinkType = b.DrinkType.ToString(),
-                ProducerId = b.ProducerId,
-                Caps = b.CapLinks.Select(cl => cl.CapId).ToList(),
-                IsEditFor = b.IsEditForId
-            })
+        var bottle = await context.Bottles.Include(b => b.CapLinks)
             .FirstOrDefaultAsync(b => b.Id == id) ?? throw new ArgumentException($"Bottle with {id} not found.");
 
-        return bottle;
+        return bottle.Adapt<BottleDto>();
     }
 
     public async Task<IEnumerable<BottleDto>> GetAllBottles()
     {
         var bottles = await context.Bottles
-            .Select(b => new BottleDto
-            {
-                Id = b.Id,
-                Name = b.Name,
-                Description = b.Description,
-                Voltage = b.Voltage,
-                BottlePicture = b.BottlePicture,
-                DrinkType = b.DrinkType.ToString(),
-                ProducerId = b.ProducerId,
-                Caps = b.CapLinks.Select(cl => cl.CapId).ToList(),
-                IsEditFor = b.IsEditForId
-            })
+            .Include(b => b.CapLinks)
             .ToListAsync();
-        return bottles;
+        return bottles.Adapt<IEnumerable<BottleDto>>();
     }
 
     public async Task<BottleDto> CreateBottle(BottleDto bottle)
@@ -115,24 +93,13 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
                                 })
 ,
             ],
-            IsEditForId = bottle.IsEditFor
+            IsEditForId = bottle.IsEditForId
         };
 
         await context.Bottles.AddAsync(newBottle);
         await context.SaveChangesAsync();
 
-        return new BottleDto
-        {
-            Id = newBottle.Id,
-            Name = newBottle.Name,
-            Description = newBottle.Description,
-            Voltage = newBottle.Voltage,
-            BottlePicture = newBottle.BottlePicture,
-            DrinkType = newBottle.DrinkType.ToString(),
-            ProducerId = newBottle.ProducerId,
-            Caps = newBottle.CapLinks.Select(cl => cl.CapId).ToList(),
-            IsEditFor = newBottle.IsEditForId
-        };
+        return newBottle.Adapt<BottleDto>();
     }
 
     public async Task<BottleDto> UpdateBottle(Guid id, BottleDto bottle)
@@ -168,18 +135,7 @@ public class BottleService(CapEnjoyerDbContext context) : IBottleService
 
         context.Bottles.Update(existingBottle);
         await context.SaveChangesAsync();
-        return new BottleDto
-        {
-            Id = existingBottle.Id,
-            Name = existingBottle.Name,
-            Description = existingBottle.Description,
-            Voltage = existingBottle.Voltage,
-            BottlePicture = existingBottle.BottlePicture,
-            DrinkType = existingBottle.DrinkType.ToString(),
-            ProducerId = existingBottle.ProducerId,
-            Caps = existingBottle.CapLinks.Select(cl => cl.CapId).ToList(),
-            IsEditFor = existingBottle.IsEditForId
-        };
+        return existingBottle.Adapt<BottleDto>();
 
     }
 

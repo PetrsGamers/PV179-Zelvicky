@@ -25,7 +25,7 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
                 TextColors = c.TextColorLinks.Select(ctc => ctc.TextColorId).ToList(),
                 BgColors = c.BackgroundColorLinks.Select(cbc => cbc.BackgroundColorId).ToList(),
                 Bottles = c.BottleLinks.Select(cb => cb.BottleId).ToList(),
-                IsEditFor = c.IsEditForId
+                IsEditForId = c.IsEditForId
             })
             .FirstOrDefaultAsync();
 
@@ -41,7 +41,7 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
                 DrinkType = b.DrinkType.ToString(),
                 ProducerId = b.ProducerId,
                 Caps = b.CapLinks.Select(cb => cb.CapId).ToList(),
-                IsEditFor = b.IsEditForId
+                IsEditForId = b.IsEditForId
             })
             .FirstOrDefaultAsync();
 
@@ -53,14 +53,14 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
                 Name = p.Name,
                 City = p.City,
                 Description = p.Description,
-                Country = p.CountryId,
-                IsEditFor = p.IsEditForId
+                CountryId = p.CountryId,
+                IsEditForId = p.IsEditForId
             })
             .FirstOrDefaultAsync();
 
-        var currentCap = firstCapEditRequest?.IsEditFor != null
+        var currentCap = firstCapEditRequest?.IsEditForId != null
             ? await context.Caps
-                .Where(c => c.Id == firstCapEditRequest.IsEditFor)
+                .Where(c => c.Id == firstCapEditRequest.IsEditForId)
                 .Select(c => new CapDto
                 {
                     Id = c.Id,
@@ -70,14 +70,14 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
                     TextColors = c.TextColorLinks.Select(ctc => ctc.TextColorId).ToList(),
                     BgColors = c.BackgroundColorLinks.Select(cbc => cbc.BackgroundColorId).ToList(),
                     Bottles = c.BottleLinks.Select(cb => cb.BottleId).ToList(),
-                    IsEditFor = c.IsEditForId
+                    IsEditForId = c.IsEditForId
                 })
                 .FirstOrDefaultAsync()
             : null;
 
-        var currentBottle = firstBottleEditRequest?.IsEditFor != null
+        var currentBottle = firstBottleEditRequest?.IsEditForId != null
             ? await context.Bottles
-                .Where(b => b.Id == firstBottleEditRequest.IsEditFor)
+                .Where(b => b.Id == firstBottleEditRequest.IsEditForId)
                 .Select(b => new BottleDto
                 {
                     Id = b.Id,
@@ -88,22 +88,22 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
                     DrinkType = b.DrinkType.ToString(),
                     ProducerId = b.ProducerId,
                     Caps = b.CapLinks.Select(cb => cb.CapId).ToList(),
-                    IsEditFor = b.IsEditForId
+                    IsEditForId = b.IsEditForId
                 })
                 .FirstOrDefaultAsync()
             : null;
 
-        var currentProducer = firstProducerEditRequest?.IsEditFor != null
+        var currentProducer = firstProducerEditRequest?.IsEditForId != null
             ? await context.Producers
-                .Where(p => p.Id == firstProducerEditRequest.IsEditFor)
+                .Where(p => p.Id == firstProducerEditRequest.IsEditForId)
                 .Select(p => new ProducerDto
                 {
                     Id = p.Id,
                     Name = p.Name,
                     City = p.City,
                     Description = p.Description,
-                    Country = p.CountryId,
-                    IsEditFor = p.IsEditForId
+                    CountryId = p.CountryId,
+                    IsEditForId = p.IsEditForId
                 })
                 .FirstOrDefaultAsync()
             : null;

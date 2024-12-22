@@ -6,6 +6,6 @@ public class AlbumDto
     public string Name { get; set; }
     public string Description { get; set; }
     public bool Public { get; set; }
-    public Guid User { get; set; }
+    public Guid UserId { get; set; }
     public List<Guid> Caps { get; set; }
 }

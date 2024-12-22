@@ -30,18 +30,17 @@ public class ColorService(CapEnjoyerDbContext context) : IColorService
         var color = colorDto.Adapt<Color>();
         await context.Colors.AddAsync(color);
         await context.SaveChangesAsync();
-        return colorDto;
+        return color.Adapt<ColorDto>();
     }
 
     public async Task<ColorDto> UpdateColorAsync(Guid id, ColorDto colorDto)
     {
         var color = await context.Colors.FindAsync(id) ?? throw new ArgumentException($"Color with ID {id} not found.");
-
         color.Name = colorDto.Name;
         color.HexCode = colorDto.HexCode;
         context.Colors.Update(color);
         await context.SaveChangesAsync();
-        return colorDto;
+        return color.Adapt<ColorDto>();
     }
 
     public async Task DeleteColorAsync(Guid id)

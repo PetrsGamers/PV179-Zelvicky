@@ -4,6 +4,7 @@ using DAL;
 using DAL.Entities;
 using DTOs;
 using Interfaces;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 public class AlbumService(CapEnjoyerDbContext context) : IAlbumServiceAsync
@@ -12,35 +13,17 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumServiceAsync
     public async Task<IEnumerable<AlbumDto>> GetAllAlbums()
     {
         var albums = await context.Albums
-            .Select(a => new AlbumDto
-            {
-                Id = a.Id,
-                Name = a.Name,
-                Description = a.Description,
-                Public = a.Public,
-                User = a.UserId,
-                Caps = a.CapLinks.Select(cl => cl.CapId).ToList()
-            })
+            .Include(a => a.CapLinks)
             .ToListAsync();
 
-        return albums;
+        return albums.Adapt<IEnumerable<AlbumDto>>();
     }
 
     public async Task<AlbumDto> GetAlbumById(Guid id)
     {
-        var album = await context.Albums
-            .Select(a => new AlbumDto
-            {
-                Id = a.Id,
-                Name = a.Name,
-                Description = a.Description,
-                Public = a.Public,
-                User = a.UserId,
-                Caps = a.CapLinks.Select(cl => cl.CapId).ToList()
-            })
+        var album = await context.Albums.Include(a => a.CapLinks)
             .FirstOrDefaultAsync(a => a.Id == id) ?? throw new ArgumentException($"Album with ID {id} not found.");
-
-        return album;
+        return album.Adapt<AlbumDto>();
     }
 
 
@@ -81,14 +64,7 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumServiceAsync
         await context.CapToAlbums.AddRangeAsync(capLinks);
         await context.SaveChangesAsync();
 
-        return new AlbumDto
-        {
-            Id = newAlbum.Id,
-            Name = newAlbum.Name,
-            Description = newAlbum.Description,
-            Public = newAlbum.Public,
-            User = newAlbum.UserId,
-        };
+        return newAlbum.Adapt<AlbumDto>();
     }
 
     public async Task<AlbumDto> UpdateAlbum(Guid id, AlbumInsertDto album)
@@ -123,14 +99,7 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumServiceAsync
 
         await context.SaveChangesAsync();
 
-        return new AlbumDto
-        {
-            Id = existingAlbum.Id,
-            Name = existingAlbum.Name,
-            Description = existingAlbum.Description,
-            Public = existingAlbum.Public,
-            User = existingAlbum.UserId,
-        };
+        return existingAlbum.Adapt<AlbumDto>();
     }
 
     public async Task DeleteAlbum(Guid id)

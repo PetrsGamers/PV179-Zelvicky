@@ -4,6 +4,7 @@ using DAL;
 using DAL.Entities;
 using DTOs;
 using Interfaces;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 public class ProducerService(CapEnjoyerDbContext context) : IProducerServiceAsync
@@ -11,35 +12,17 @@ public class ProducerService(CapEnjoyerDbContext context) : IProducerServiceAsyn
     public async Task<IEnumerable<ProducerDto>> GetAllProducersAsync()
     {
         var producers = await context.Producers
-            .Select(p => new ProducerDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                City = p.City,
-                Description = p.Description,
-                Country = p.CountryId,
-                IsEditFor = p.IsEditForId
-            })
             .ToListAsync();
 
-        return producers;
+        return producers.Adapt<IEnumerable<ProducerDto>>();
     }
 
     public async Task<ProducerDto> GetProducerByIdAsync(Guid id)
     {
         var producer = await context.Producers
-            .Select(p => new ProducerDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                City = p.City,
-                Description = p.Description,
-                Country = p.CountryId,
-                IsEditFor = p.IsEditForId
-            })
             .FirstOrDefaultAsync(p => p.Id == id) ?? throw new ArgumentException($"Producer with ID {id} not found.");
 
-        return producer;
+        return producer.Adapt<ProducerDto>();
     }
 
 
@@ -79,15 +62,7 @@ public class ProducerService(CapEnjoyerDbContext context) : IProducerServiceAsyn
         await context.Producers.AddAsync(producer);
         await context.SaveChangesAsync();
 
-        return new ProducerDto
-        {
-            Id = producer.Id,
-            Name = producer.Name,
-            City = producer.City,
-            Description = producer.Description,
-            Country = producer.CountryId,
-            IsEditFor = producer.IsEditForId
-        };
+        return producer.Adapt<ProducerDto>();
     }
 
     public async Task<ProducerDto> UpdateProducerAsync(Guid id, ProducerInsertDto producerDto)
@@ -118,14 +93,6 @@ public class ProducerService(CapEnjoyerDbContext context) : IProducerServiceAsyn
         oldProducer.IsEditForId = producerDto.IsEditFor;
 
         await context.SaveChangesAsync();
-        return new ProducerDto
-        {
-            Id = oldProducer.Id,
-            Name = oldProducer.Name,
-            City = oldProducer.City,
-            Description = oldProducer.Description,
-            Country = oldProducer.CountryId,
-            IsEditFor = oldProducer.IsEditForId
-        };
+        return oldProducer.Adapt<ProducerDto>();
     }
 }
