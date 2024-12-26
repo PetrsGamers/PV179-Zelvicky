@@ -13,14 +13,14 @@ before_script:
 
 lint-job:
   tags:
-    - shared-fi
+    - ted
   stage: lint
   script:
     - dotnet format  --verify-no-changes --exclude CapEnjoyer.DAL/Migrations
 
 build-job:
   tags:
-    - shared-fi
+    - ted
   stage: build
   script:
     - dotnet restore
@@ -28,7 +28,7 @@ build-job:
 
 test-job:
   tags:
-    - shared-fi
+    - ted
   stage: test
   script:
     - dotnet test Tests --collect="XPlat Code Coverage" --logger:"junit;LogFilePath=testresult.xml" --results-directory:./Coverage
