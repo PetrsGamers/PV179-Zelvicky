@@ -6,79 +6,44 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProducerController(IProducerServiceAsync producerServiceAsync) : ControllerBase
+public class ProducerController(IProducerService producerService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllProducers()
     {
-        try
-        {
-            var producers = await producerServiceAsync.GetAllProducersAsync();
-            return Ok(producers);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e);
-        }
+        var producers = await producerService.GetAllProducersAsync();
+        return Ok(producers);
     }
 
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetProducerById(Guid id)
     {
-        try
-        {
-            var producer = await producerServiceAsync.GetProducerByIdAsync(id);
-            return Ok(producer);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e);
-        }
+        var producer = await producerService.GetProducerByIdAsync(id);
+        return Ok(producer);
     }
 
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteProducer(Guid id)
     {
-        try
-        {
-            await producerServiceAsync.DeleteProducerAsync(id);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e);
-        }
+        await producerService.DeleteProducerAsync(id);
+        return Ok();
     }
 
 
     [HttpPost]
     public async Task<IActionResult> CreateProducer([FromBody] ProducerInsertDto producerDto)
     {
-        try
-        {
-            var producer = await producerServiceAsync.CreateProducerAsync(producerDto);
-            return Ok(producer);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e);
-        }
+        var producer = await producerService.CreateProducerAsync(producerDto);
+        return Ok(producer);
     }
 
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateProducer(Guid id, [FromBody] ProducerInsertDto producerDto)
     {
-        try
-        {
-            var producer = await producerServiceAsync.UpdateProducerAsync(id, producerDto);
-            return Ok(producer);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e);
-        }
+        var producer = await producerService.UpdateProducerAsync(id, producerDto);
+        return Ok(producer);
     }
 }
