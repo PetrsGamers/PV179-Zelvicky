@@ -1,4 +1,4 @@
-﻿namespace CapEnjoyer.DAL.Constants;
+﻿namespace CapEnjoyer.BL.Constants;
 
 public static class ImageConstants
 {
