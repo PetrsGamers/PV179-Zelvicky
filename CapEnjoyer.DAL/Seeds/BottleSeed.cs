@@ -1,126 +1,121 @@
 namespace CapEnjoyer.DAL.Seeds;
 
+using System.Globalization;
+using System.Text;
+using Bogus;
 using Constants;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 
 public static class BottleSeed
 {
-    private static readonly Random Random = new();
+    private const string BottleSeedString = "default_bottle_seed";
+    private const string DefaultBottlePicture = "default_picture_url.jpg";
+    private static readonly CompositeFormat DescriptionTemplate = CompositeFormat.Parse("A {0} for various beverages.");
+
+
+    private static readonly List<string> FirstProperties =
+    [
+        "Small",
+        "Large",
+        "Beautiful",
+        "Elegant",
+        "Fancy",
+        "Rustic",
+        "Modern",
+        "Antique",
+        "Vibrant",
+        "Classic",
+        "Dark",
+        "Light",
+        "Sleek",
+        "Bold",
+        "Quaint",
+        "Exotic",
+        "Unique",
+        "Delicate",
+        "Sturdy",
+        "Shiny",
+        "Charming",
+        "Glamorous",
+        "Sapphire",
+        "Emerald",
+        "Crystal",
+        "Amber",
+        "Ceramic",
+        "Glass",
+        "Wooden"
+    ];
+
+    private static readonly List<string> SecondProperties =
+    [
+        "Baroque",
+        "Pirate",
+        "Vintage",
+        "Royal",
+        "Mystic",
+        "Funky",
+        "Elegant",
+        "Bold",
+        "Chic",
+        "Rustic",
+        "Traditional",
+        "Artisan",
+        "Cultural",
+        "Futuristic",
+        "Tropical",
+        "Gothic",
+        "Cosmic",
+        "Zen",
+        "Urban",
+        "Majestic",
+        "Serene",
+        "Passionate",
+        "Epic",
+        "Legendary",
+        "Whimsical",
+        "Enchanting",
+        "Daring",
+        "Nautical",
+        "Rugged",
+        "Sophisticated"
+    ];
 
     public static List<Bottle> Seed(ModelBuilder modelBuilder, List<Producer> producers)
     {
         var bottles = new List<Bottle>();
-        var uniqueNames = new HashSet<string>();
 
-        for (var i = 0; i < 150; i++)
+        Randomizer.Seed = SeedUtils.GetRandom(BottleSeedString);
+        var bottleFaker = new Faker<Bottle>()
+            .RuleFor(b => b.Id, f => f.Random.Guid())
+            .RuleFor(b => b.Voltage, f => Math.Round(f.Random.Float(3, 8), 2))
+            .RuleFor(b => b.Name, f => f.PickRandom(FirstProperties) + " " + f.PickRandom(SecondProperties) + " bottle")
+            .RuleFor(b => b.BottlePicture, _ => DefaultBottlePicture)
+            .RuleFor(b => b.Description,
+                (_, b) => string.Format(CultureInfo.InvariantCulture, DescriptionTemplate, b.Name))
+            .RuleFor(b => b.DrinkType, f => f.PickRandom<DrinkType>())
+            .RuleFor(b => b.ProducerId, f => f.PickRandom(producers).Id);
+
+
+        for (var i = 0; i < 50; i++)
         {
-            bottles.Add(GenerateBottle(producers, uniqueNames));
+            var bottle = bottleFaker.Generate();
+            if (bottles.Any(b => b.Name == bottle.Name))
+            {
+                i--;
+                continue;
+            }
+
+            bottles.Add(bottle);
         }
 
-        foreach (var bottle in bottles)
+        for (var i = 10; i < 14; i++)
         {
-            modelBuilder.Entity<Bottle>().HasData(bottle);
+            bottles[i].Description = $"Updated description {i}";
+            bottles[i].IsEditForId = bottles[1].Id;
         }
 
+        modelBuilder.Entity<Bottle>().HasData(bottles);
         return bottles;
-    }
-
-    private static Bottle GenerateBottle(List<Producer> producers, HashSet<string> uniqueNames)
-    {
-        string[] firstProperties =
-        [
-            "Small",
-            "Large",
-            "Beautiful",
-            "Elegant",
-            "Fancy",
-            "Rustic",
-            "Modern",
-            "Antique",
-            "Vibrant",
-            "Classic",
-            "Dark",
-            "Light",
-            "Sleek",
-            "Bold",
-            "Quaint",
-            "Exotic",
-            "Unique",
-            "Delicate",
-            "Sturdy",
-            "Shiny",
-            "Charming",
-            "Glamorous",
-            "Sapphire",
-            "Emerald",
-            "Crystal",
-            "Amber",
-            "Ceramic",
-            "Glass",
-            "Wooden"
-        ];
-
-        string[] secondProperties =
-        [
-            "Baroque",
-            "Pirate",
-            "Vintage",
-            "Royal",
-            "Mystic",
-            "Funky",
-            "Elegant",
-            "Bold",
-            "Chic",
-            "Rustic",
-            "Traditional",
-            "Artisan",
-            "Cultural",
-            "Futuristic",
-            "Tropical",
-            "Gothic",
-            "Cosmic",
-            "Zen",
-            "Urban",
-            "Majestic",
-            "Serene",
-            "Passionate",
-            "Epic",
-            "Legendary",
-            "Whimsical",
-            "Enchanting",
-            "Daring",
-            "Nautical",
-            "Rugged",
-            "Sophisticated"
-        ];
-
-        string name;
-        do
-        {
-            var first = firstProperties[Random.Next(firstProperties.Length)];
-            var second = secondProperties[Random.Next(secondProperties.Length)];
-            name = $"{first} {second} bottle";
-        } while (uniqueNames.Contains(name));
-
-        uniqueNames.Add(name);
-
-        return new Bottle
-        {
-            Id = Guid.NewGuid(),
-            Name = name,
-            Description = $"A {name.ToLowerInvariant()} for various beverages.",
-            Voltage = Math.Round(Random.NextDouble() * 12, 2),
-            BottlePicture = "default_picture_url.jpg",
-            DrinkType = GetRandomDrinkType(),
-            ProducerId = producers[Random.Next(producers.Count)].Id
-        };
-    }
-
-
-    private static DrinkType GetRandomDrinkType()
-    {
-        var values = Enum.GetValues(typeof(DrinkType));
-        return (DrinkType)(values.GetValue(Random.Next(values.Length)) ?? throw new InvalidOperationException());
     }
 }

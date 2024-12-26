@@ -1,156 +1,98 @@
 namespace CapEnjoyer.DAL.Seeds;
 
+using Bogus;
+using Constants;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 
 public static class AlbumSeed
 {
+    private const string DavidAlbumSeedString = "david_album_seed";
+    private const string SenatorAlbumSeedString = "senator_album_seed";
+    private const string GoretexakAlbumSeedString = "goretexak_album_seed";
+    private const string TedAlbumSeedString = "ted_album_seed";
+    private const string MonkeSeedString = "monke_album_seed";
+
+    private static readonly List<(string Name, string Description)> BivaDAlbums =
+    [
+        ("Czech caps", "A collection of czech beer caps."),
+        ("Foreign caps", "A collection of foreign caps."),
+        ("Soft drinks", "It's miracle, but sometimes i drink even some non-alcoholic drinks.")
+    ];
+
+    private static readonly List<(string Name, string Description)> SenatorAlbums =
+    [
+        ("I DONT DRINK BEER", "Demonstrative protesting blank album."),
+        ("TS", "Bottle caps with naked pictures of Taylor Swift.")
+    ];
+
+    private static readonly List<(string Name, string Description)> GoretexakAlbums =
+    [
+        ("Norge caps", "Private norge bottle cap collection."),
+        ("GORE-TEX collection", "Caps with waterproof goretex™ membrate."),
+        ("Ove's album", "My host's collection.")
+    ];
+
+    private static readonly List<(string Name, string Description)> TedAlbums =
+    [
+        ("ISIC tour album", "Caps looted at ISIC tour event."),
+        ("Society album of the Friends of PDF MUNI", "Everything that hes been drunk on teambuilding.")
+    ];
+
+    private static readonly List<(string Name, string Description)> MonkeAlbums =
+    [
+        ("Tea bottle caps", "These don't exist, but my girlfriend (which also dont exist wanted her own album."),
+        ("Patagonia Beers", "Private cap album from patagonia"),
+        ("Norge girlfriend collection", "Secret collection of expensive beer cups to impress my future Norge wife."),
+        ("Zo Žiliny", "Collection of local breweries from Žilina.")
+    ];
+
+    private static readonly
+        List<(string Username, string SeedString, List<(string Name, string Description)> AlbumInfos)> UsersAlbumData =
+        [
+            ("bivaD", DavidAlbumSeedString, BivaDAlbums),
+            ("goretexak", GoretexakAlbumSeedString, GoretexakAlbums),
+            ("Ted", TedAlbumSeedString, TedAlbums),
+            ("Senator", SenatorAlbumSeedString, SenatorAlbums),
+            ("Monke", MonkeSeedString, MonkeAlbums)
+        ];
+
     public static List<Album> Seed(ModelBuilder modelBuilder, List<User> users)
     {
-        var bivadId = users.Find(user => user.Username == "bivaD")?.Id ??
-                      throw new Exception("User 'bivaD' not found.");
-        var goretexakId = users.Find(user => user.Username == "goretexák")?.Id ??
-                          throw new Exception("User 'goretexák' not found.");
-        var tedId = users.Find(user => user.Username == "ucitelkaLover69")?.Id ??
-                    throw new Exception("User 'ucitelkaLover69' not found.");
-        var petaId = users.Find(user => user.Username == "koviďák")?.Id ??
-                     throw new Exception("User 'koviďák' not found.");
-        var monkeId = users.Find(user => user.Username == "Igorko")?.Id ??
-                      throw new Exception("User 'Igorko' not found.");
+        users = users.Where(u => u.Role == Role.User).ToList();
 
+        var albumFaker = new Faker<Album>()
+            .RuleFor(a => a.Id, f => f.Random.Guid())
+            .RuleFor(a => a.Public, f => f.Random.Bool());
 
-        var albums = new List<Album>([
-            new Album
-            {
-                Id = Guid.NewGuid(),
-                Name = "Czech caps",
-                Description = "A collection of czech beer caps.",
-                Public = false,
-                UserId = bivadId
-            },
-            new Album
-            {
-                Id = Guid.NewGuid(),
-                Name = "Foreign caps",
-                Description = "A collection of foreign caps.",
-                Public = true,
-                UserId = bivadId
-            },
-            new Album
-            {
-                Id = Guid.NewGuid(),
-                Name = "Soft drinks",
-                Description = "It's miracle, but sometimes i drink even some non-alcoholic drinks.",
-                Public = true,
-                UserId = bivadId
-            },
+        var albums = new List<Album>();
 
-            new Album
-            {
-                Id = Guid.NewGuid(),
-                Name = "Covid caps",
-                Description = "Who can drink more types of bottled beers while covid than me?",
-                Public = true,
-                UserId = petaId
-            },
-            new Album
-            {
-                Id = Guid.NewGuid(),
-                Name = "I DONT DRINK BEER",
-                Description = "Demonstrative protesting blank album.",
-                Public = true,
-                UserId = petaId
-            },
-            new Album
-            {
-                Id = Guid.NewGuid(),
-                Name = "TS",
-                Description = "Bottle caps with naked pictures of Taylor Swift.",
-                Public = false,
-                UserId = petaId
-            },
-
-            new Album
-            {
-                Id = Guid.NewGuid(),
-                Name = "Norge caps",
-                Description = "Private norge bottle cap collection.",
-                Public = false,
-                UserId = goretexakId
-            },
-            new Album
-            {
-                Id = Guid.NewGuid(),
-                Name = "GORE-TEX collection",
-                Description = "Caps with waterproof goretex\u2122 membrate.",
-                Public = true,
-                UserId = goretexakId
-            },
-            new Album
-            {
-                Id = Guid.NewGuid(),
-                Name = "Ove's album",
-                Description = "My host's collection.",
-                Public = false,
-                UserId = goretexakId
-            },
-
-            new Album
-            {
-                Id = Guid.NewGuid(),
-                Name = "ISIC tour album",
-                Description = "Caps looted at ISIC tour event.",
-                Public = false,
-                UserId = tedId
-            },
-            new Album
-            {
-                Id = Guid.NewGuid(),
-                Name = "Society album of the Friends of PDF MUNI",
-                Description = "Everything that hes been drunk on teambuilding.",
-                Public = true,
-                UserId = tedId
-            },
-            new Album
-            {
-                Id = Guid.NewGuid(),
-                Name = "Tea bottle caps",
-                Description = "These don't exist, but my girlfriend wanted her own album.",
-                Public = true,
-                UserId = tedId
-            },
-
-            new Album
-            {
-                Id = Guid.NewGuid(),
-                Name = "Patagonia Beers",
-                Description = "Private cap album from patagonia",
-                Public = false,
-                UserId = monkeId
-            },
-            new Album
-            {
-                Id = Guid.NewGuid(),
-                Name = "Norge girlfriend collection",
-                Description = "Secret collection of expensive beer cups to impress my future Norge wife.",
-                Public = false,
-                UserId = monkeId
-            },
-            new Album
-            {
-                Id = Guid.NewGuid(),
-                Name = "Zo Žiliny",
-                Description = "Collection of local breweries from Žilina.",
-                Public = true,
-                UserId = monkeId
-            }
-        ]);
-
-        foreach (var album in albums)
+        foreach (var (username, seedString, albumInfos) in UsersAlbumData)
         {
-            modelBuilder.Entity<Album>().HasData(album);
+            Randomizer.Seed = SeedUtils.GetRandom(seedString);
+            var userId = SeedUtils.GetUserId(username, users);
+            albums.AddRange(GenerateAlbumsForUser(userId, albumInfos, albumFaker));
         }
 
+        modelBuilder.Entity<Album>().HasData(albums);
         return albums;
+    }
+
+    private static List<Album> GenerateAlbumsForUser(Guid userId, List<(string Name, string Description)> albumInfos,
+        Faker<Album> albumFaker)
+    {
+        var generatedAlbums = new List<Album>();
+
+        foreach (var (name, description) in albumInfos)
+        {
+            var album = albumFaker.Generate();
+            album.Name = name;
+            album.Description = description;
+            album.UserId = userId;
+
+            generatedAlbums.Add(album);
+        }
+
+        return generatedAlbums;
     }
 }

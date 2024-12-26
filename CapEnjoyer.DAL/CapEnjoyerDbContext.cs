@@ -1,6 +1,7 @@
 namespace CapEnjoyer.DAL;
 
 using Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Seeds;
 
@@ -13,12 +14,26 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
     public DbSet<Bottle> Bottles { get; set; }
     public DbSet<Producer> Producers { get; set; }
     public DbSet<Country> Countries { get; set; }
+    public DbSet<CapToAlbum> CapToAlbums { get; set; }
+    public DbSet<CapToBottle> CapToBottles { get; set; }
+    public DbSet<CapToBackgroundColor> CapToBackgroundColors { get; set; }
+    public DbSet<CapToTextColor> CapToTextColors { get; set; }
+    public DbSet<LocalIdentityUser> LocalIdentityUsers { get; set; }
+    public DbSet<AuditLog> AuditLogs { get; set; }
+    public DbSet<MiddlewareLog> MiddlewareLogs { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ConfigureRelationships(modelBuilder);
         ConfigureEntities(modelBuilder);
         SeedData(modelBuilder);
+        modelBuilder.Entity<IdentityUserClaim<string>>().HasKey(p => new { p.Id });
+        modelBuilder.Entity<IdentityUserRole<string>>().HasKey(p => new { p.UserId, p.RoleId });
+        modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(p => new { p.UserId });
+        modelBuilder.Entity<IdentityUserToken<string>>().HasKey(p => new { p.UserId });
+        modelBuilder.Entity<IdentityRoleClaim<string>>().HasKey(p => new { p.Id });
+        modelBuilder.Entity<IdentityRole>().HasKey(p => new { p.Id });
     }
 
     private static void ConfigureRelationships(ModelBuilder modelBuilder)
@@ -30,30 +45,11 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
             .HasForeignKey(a => a.UserId)
             .IsRequired();
 
-        // Album >o---o< Cap
-        modelBuilder.Entity<Album>()
-            .HasMany(a => a.Caps)
-            .WithMany(c => c.Albums);
-
         // Cap >o---|| Cap (self-referencing)
         modelBuilder.Entity<Cap>()
             .HasOne(c => c.IsEditFor)
             .WithMany(c => c.Edits)
             .HasForeignKey(c => c.IsEditForId);
-
-        // Cap >o---o< Color (text and background colors)
-        modelBuilder.Entity<Cap>()
-            .HasMany(c => c.TextColors)
-            .WithMany(c => c.CapTexts);
-
-        modelBuilder.Entity<Cap>()
-            .HasMany(c => c.BgColors)
-            .WithMany(c => c.CapBackgrounds);
-
-        // Cap >o---o< Bottle
-        modelBuilder.Entity<Cap>()
-            .HasMany(c => c.Bottles)
-            .WithMany(b => b.Caps);
 
         modelBuilder.Entity<Producer>()
             .HasOne(p => p.Country)
@@ -78,6 +74,62 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
             .WithMany(c => c.Producers)
             .HasForeignKey(p => p.CountryId)
             .IsRequired();
+
+        // CapToTextColor
+        modelBuilder.Entity<CapToTextColor>()
+            .HasKey(ct => new { ct.CapId, ct.TextColorId });
+
+        modelBuilder.Entity<CapToTextColor>()
+            .HasOne(ct => ct.Cap)
+            .WithMany(c => c.TextColorLinks)
+            .HasForeignKey(ct => ct.CapId);
+
+        modelBuilder.Entity<CapToTextColor>()
+            .HasOne(ct => ct.TextColor)
+            .WithMany()
+            .HasForeignKey(ct => ct.TextColorId);
+
+        // CapToBackgroundColor
+        modelBuilder.Entity<CapToBackgroundColor>()
+            .HasKey(cb => new { cb.CapId, cb.BackgroundColorId });
+
+        modelBuilder.Entity<CapToBackgroundColor>()
+            .HasOne(cb => cb.Cap)
+            .WithMany(c => c.BackgroundColorLinks)
+            .HasForeignKey(cb => cb.CapId);
+
+        modelBuilder.Entity<CapToBackgroundColor>()
+            .HasOne(cb => cb.BackgroundColor)
+            .WithMany()
+            .HasForeignKey(cb => cb.BackgroundColorId);
+
+        // CapToAlbum
+        modelBuilder.Entity<CapToAlbum>()
+            .HasKey(ca => new { ca.CapId, ca.AlbumId });
+
+        modelBuilder.Entity<CapToAlbum>()
+            .HasOne(ca => ca.Cap)
+            .WithMany(c => c.AlbumLinks)
+            .HasForeignKey(ca => ca.CapId);
+
+        modelBuilder.Entity<CapToAlbum>()
+            .HasOne(ca => ca.Album)
+            .WithMany(a => a.CapLinks)
+            .HasForeignKey(ca => ca.AlbumId);
+
+        // CapToBottle
+        modelBuilder.Entity<CapToBottle>()
+            .HasKey(cb => new { cb.CapId, cb.BottleId });
+
+        modelBuilder.Entity<CapToBottle>()
+            .HasOne(cb => cb.Cap)
+            .WithMany(c => c.BottleLinks)
+            .HasForeignKey(cb => cb.CapId);
+
+        modelBuilder.Entity<CapToBottle>()
+            .HasOne(cb => cb.Bottle)
+            .WithMany(b => b.CapLinks)
+            .HasForeignKey(cb => cb.BottleId);
     }
 
     private static void ConfigureEntities(ModelBuilder modelBuilder)
@@ -89,10 +141,6 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
                 .HasMaxLength(255);
 
             entity.Property(u => u.Email)
-                .IsRequired()
-                .HasMaxLength(255);
-
-            entity.Property(u => u.Password)
                 .IsRequired()
                 .HasMaxLength(255);
 
@@ -124,7 +172,6 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
                 .HasMaxLength(2047);
 
             entity.Property(c => c.CapPicture)
-                .IsRequired()
                 .HasMaxLength(255);
         });
 
@@ -153,6 +200,9 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
 
             entity.Property(b => b.DrinkType)
                 .IsRequired()
+                .HasMaxLength(255);
+
+            entity.Property(b => b.BottlePicture)
                 .HasMaxLength(255);
         });
 
@@ -193,6 +243,10 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
         var producers = ProducerSeed.Seed(modelBuilder, countries);
         var bottles = BottleSeed.Seed(modelBuilder, producers);
 
-        var caps = CapSeed.Seed(modelBuilder, colors, albums, bottles);
+        var caps = CapSeed.Seed(modelBuilder);
+        CapToTextColorSeed.Seed(modelBuilder, caps, colors);
+        CapToBackgroundColorSeed.Seed(modelBuilder, caps, colors);
+        CapToAlbumSeed.Seed(modelBuilder, caps, albums);
+        CapToBottleSeed.Seed(modelBuilder, caps, bottles);
     }
 }

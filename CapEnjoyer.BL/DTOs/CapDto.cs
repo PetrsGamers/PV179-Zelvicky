@@ -9,5 +9,5 @@ public class CapDto
     public List<Guid> TextColors { get; set; }
     public List<Guid> BgColors { get; set; }
     public List<Guid> Bottles { get; set; }
-    public Guid? IsEditFor { get; set; }
+    public Guid? IsEditForId { get; set; }
 }

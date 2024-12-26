@@ -1,16 +1,18 @@
 namespace CapEnjoyer.DAL.Entities;
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 public class Producer
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-    public string City { get; set; }
-    public string Description { get; set; }
-    public Guid CountryId { get; set; }
-    public Country Country { get; set; }
-
-
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public required string Name { get; set; }
+    public required string City { get; set; }
+    public required string Description { get; set; }
+    public required Guid CountryId { get; set; }
+    [ForeignKey("CountryId")]
+    public Country? Country { get; set; }
     public Producer? IsEditFor { get; set; }
+    [ForeignKey("IsEditForId")]
     public Guid? IsEditForId { get; set; }
-    public List<Producer> Edits { get; set; }
+    public List<Producer> Edits { get; set; } = [];
 }

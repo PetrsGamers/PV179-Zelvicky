@@ -135,3 +135,7 @@ $RECYCLE.BIN/
 _NCrunch*
 
 .idea
+.env
+
+API image upload
+CapEnjoyer.API/wwwroot/images/

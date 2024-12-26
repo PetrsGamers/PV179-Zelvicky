@@ -1,18 +1,37 @@
-using CapEnjoyer.BL.Middleware;
+using CapEnjoyer.API.Helpers;
+using CapEnjoyer.API.Middleware;
+using CapEnjoyer.BL.Mappers;
+using CapEnjoyer.BL.Services;
+using CapEnjoyer.BL.Services.Interfaces;
 using CapEnjoyer.DAL;
+using DotNetEnv;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-const string ConnectionString = "Host=localhost;Port=5432;Username=postgres;Password=password;Database=postgres";
+Env.Load();
 
-builder.Services.AddControllers();
-builder.Services.AddDbContext<CapEnjoyerDbContext>(options =>
-    options.UseNpgsql(ConnectionString));
+Helpers.CheckIfEnvironmentVariablesAreSet();
+var connectionString = Helpers.GetConnectionString();
 
+builder.Services.AddControllers(options => options.RespectBrowserAcceptHeader = true).AddXmlSerializerFormatters();
+
+builder.Services.AddDbContextFactory<CapEnjoyerDbContext>(
+    options => options.UseNpgsql(connectionString));
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IBottleService, BottleService>();
+builder.Services.AddScoped<IAlbumServiceAsync, AlbumService>();
+builder.Services.AddScoped<ICapService, CapService>();
+builder.Services.AddScoped<IColorService, ColorService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<IMiddlewareLoggingService, MiddlewareLoggingService>();
+builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
+builder.Services.AddScoped<IEditRequestService, EditRequestService>();
+builder.Services.AddScoped<IProducerServiceAsync, ProducerService>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer",
@@ -35,17 +54,24 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+builder.Services.AddMapster();
+TypeAdapterConfig.GlobalSettings.ConfigureAlbumMapping();
+TypeAdapterConfig.GlobalSettings.EnableImmutableMapping();
 
 var app = builder.Build();
+
+// in case the database is not reachable or not created, throw an error
+Helpers.CheckIfDatabaseServerReachableAndCreated(app);
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseMiddleware<LoggerMiddleware>();
-
+app.UseMiddleware<ErrorLoggingMiddleware>();
 app.UseMiddleware<AuthenticationMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.UseStaticFiles();
 app.Run();

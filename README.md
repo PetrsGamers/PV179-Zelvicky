@@ -11,11 +11,11 @@ Tento projekt je databází pro sběratele pivních víček, která slouží k t
 
 ### Role
 + Uživatel: Spravuje svou sbírku, zobrazuje statistiky, využívá vyhledávání a porovnává svou sbírku s ostatními.
-+ Admin: Spravuje platformu, přidává funkce, moderuje obsah a zajišťuje bezproblémový chod.
++ Admin: Moderuje obsah, zajišťuje tak, aby nikdo nemohl zničit dataset
 
 ---
 
-Tento projekt pomáhá sběratelům udržet přehled o jejich sbírce a zefektivnit jejich rozhodování při rozšiřování sbírky.
+Tento projekt pomáhá sběratelům udržet přehled o jejich sbírce a zjednodušit rozšiřování sbírky.
 
 
 ## Getting started
@@ -23,7 +23,7 @@ Tento projekt pomáhá sběratelům udržet přehled o jejich sbírce a zefektiv
 ### Setup DB
 Spuštění databáze
 ```
-docker compose up
+docker compose up -d
 ```
 
 Vytvoření migrace, spuštění migrace
@@ -40,11 +40,16 @@ dotnet build
 dotnet run
 ```
 
+Je potřeba po setupu potřeba vytvořit .env souboru z .evn.example a doplnit do něj potřebné proměnné.
+
+
 Používej formatter před každým commitem. Jinak neprojde CR.
 
 ```
  dotnet format ../CapEnjoyer.sln
 ```
+
+
 ## Technický pohled
 
 ![ERD diagram](erd.png)
