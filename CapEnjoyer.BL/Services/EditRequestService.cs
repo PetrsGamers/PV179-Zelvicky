@@ -4,6 +4,7 @@ using CapEnjoyer.DAL.Entities;
 using DAL;
 using DTOs;
 using Interfaces;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestService
@@ -14,97 +15,39 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
         var bottleEditCount = await context.Bottles.CountAsync(b => b.IsEditFor != null);
         var producerEditCount = await context.Producers.CountAsync(p => p.IsEditFor != null);
 
-        var firstCapEditRequest = await context.Caps
+        var firstCapEditRequest = await context.Caps.Include(ctc => ctc.TextColorLinks).Include(cbc => cbc.BackgroundColorLinks).Include(cb => cb.BottleLinks)
             .Where(c => c.IsEditFor != null)
-            .Select(c => new CapDto
-            {
-                Id = c.Id,
-                TextOnCap = c.TextOnCap,
-                Description = c.Description,
-                CapPicture = c.CapPicture,
-                TextColors = c.TextColorLinks.Select(ctc => ctc.TextColorId).ToList(),
-                BgColors = c.BackgroundColorLinks.Select(cbc => cbc.BackgroundColorId).ToList(),
-                Bottles = c.BottleLinks.Select(cb => cb.BottleId).ToList(),
-                IsEditFor = c.IsEditForId
-            })
+            .ProjectToType<CapDto>()
             .FirstOrDefaultAsync();
 
-        var firstBottleEditRequest = await context.Bottles
+        var firstBottleEditRequest = await context.Bottles.Include(b => b.CapLinks)
             .Where(b => b.IsEditFor != null)
-            .Select(b => new BottleDto
-            {
-                Id = b.Id,
-                Name = b.Name,
-                Description = b.Description,
-                Voltage = b.Voltage,
-                BottlePicture = b.BottlePicture,
-                DrinkType = b.DrinkType.ToString(),
-                Producer = b.ProducerId,
-                Caps = b.CapLinks.Select(cb => cb.CapId).ToList(),
-                IsEditFor = b.IsEditForId
-            })
+            .ProjectToType<BottleDto>()
             .FirstOrDefaultAsync();
 
         var firstProducerEditRequest = await context.Producers
             .Where(p => p.IsEditFor != null)
-            .Select(p => new ProducerDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                City = p.City,
-                Description = p.Description,
-                Country = p.CountryId,
-                IsEditFor = p.IsEditForId
-            })
+            .ProjectToType<ProducerDto>()
             .FirstOrDefaultAsync();
 
-        var currentCap = firstCapEditRequest?.IsEditFor != null
-            ? await context.Caps
-                .Where(c => c.Id == firstCapEditRequest.IsEditFor)
-                .Select(c => new CapDto
-                {
-                    Id = c.Id,
-                    TextOnCap = c.TextOnCap,
-                    Description = c.Description,
-                    CapPicture = c.CapPicture,
-                    TextColors = c.TextColorLinks.Select(ctc => ctc.TextColorId).ToList(),
-                    BgColors = c.BackgroundColorLinks.Select(cbc => cbc.BackgroundColorId).ToList(),
-                    Bottles = c.BottleLinks.Select(cb => cb.BottleId).ToList(),
-                    IsEditFor = c.IsEditForId
-                })
+        var currentCap = firstCapEditRequest?.IsEditForId != null
+            ? await context.Caps.Include(ctc => ctc.TextColorLinks).Include(cbc => cbc.BackgroundColorLinks).Include(cb => cb.BottleLinks)
+                .Where(c => c.Id == firstCapEditRequest.IsEditForId)
+                .ProjectToType<CapDto>()
                 .FirstOrDefaultAsync()
             : null;
 
-        var currentBottle = firstBottleEditRequest?.IsEditFor != null
-            ? await context.Bottles
-                .Where(b => b.Id == firstBottleEditRequest.IsEditFor)
-                .Select(b => new BottleDto
-                {
-                    Id = b.Id,
-                    Name = b.Name,
-                    Description = b.Description,
-                    Voltage = b.Voltage,
-                    BottlePicture = b.BottlePicture,
-                    DrinkType = b.DrinkType.ToString(),
-                    Producer = b.ProducerId,
-                    Caps = b.CapLinks.Select(cb => cb.CapId).ToList(),
-                    IsEditFor = b.IsEditForId
-                })
+        var currentBottle = firstBottleEditRequest?.IsEditForId != null
+            ? await context.Bottles.Include(cb => cb.CapLinks)
+                .Where(b => b.Id == firstBottleEditRequest.IsEditForId)
+                .ProjectToType<BottleDto>()
                 .FirstOrDefaultAsync()
             : null;
 
-        var currentProducer = firstProducerEditRequest?.IsEditFor != null
+        var currentProducer = firstProducerEditRequest?.IsEditForId != null
             ? await context.Producers
-                .Where(p => p.Id == firstProducerEditRequest.IsEditFor)
-                .Select(p => new ProducerDto
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    City = p.City,
-                    Description = p.Description,
-                    Country = p.CountryId,
-                    IsEditFor = p.IsEditForId
-                })
+                .Where(p => p.Id == firstProducerEditRequest.IsEditForId)
+                .ProjectToType<ProducerDto>()
                 .FirstOrDefaultAsync()
             : null;
 
@@ -146,21 +89,17 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
             currentCap.CapPicture = capRequest.CapPicture;
 
             currentCap.TextColorLinks.Clear();
-            foreach (var textColorLink in capRequest.TextColorLinks)
-            {
-                currentCap.TextColorLinks.Add(new CapToTextColor(currentCap.Id, currentCap, textColorLink.TextColorId, textColorLink.TextColor));
-            }
+            currentCap.TextColorLinks = capRequest.TextColorLinks
+                .Select(textColorLink => new CapToTextColor { CapId = currentCap.Id, Cap = currentCap, TextColorId = textColorLink.TextColorId, TextColor = textColorLink.TextColor })
+                .ToList();
 
-            currentCap.BackgroundColorLinks.Clear();
-            foreach (var backgroundColorLink in capRequest.BackgroundColorLinks)
-            {
-                currentCap.BackgroundColorLinks.Add(new CapToBackgroundColor(currentCap.Id, currentCap, backgroundColorLink.BackgroundColorId, backgroundColorLink.BackgroundColor));
-            }
-            currentCap.BottleLinks.Clear();
-            foreach (var bottleLink in capRequest.BottleLinks)
-            {
-                currentCap.BottleLinks.Add(new CapToBottle(currentCap.Id, currentCap, bottleLink.BottleId, bottleLink.Bottle));
-            }
+            currentCap.BackgroundColorLinks = capRequest.BackgroundColorLinks
+                .Select(backgroundColorLink => new CapToBackgroundColor { CapId = currentCap.Id, Cap = currentCap, BackgroundColorId = backgroundColorLink.BackgroundColorId, BackgroundColor = backgroundColorLink.BackgroundColor })
+                .ToList();
+
+            currentCap.BottleLinks = capRequest.BottleLinks
+                .Select(bottleLink => new CapToBottle { CapId = currentCap.Id, Cap = currentCap, BottleId = bottleLink.BottleId, Bottle = bottleLink.Bottle })
+                .ToList();
 
             context.Caps.Update(currentCap);
         }
@@ -190,7 +129,7 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
             currentBottle.CapLinks.Clear();
             foreach (var capLink in bottleRequest.CapLinks)
             {
-                currentBottle.CapLinks.Add(new CapToBottle(capLink.CapId, capLink.Cap, currentBottle.Id, currentBottle));
+                currentBottle.CapLinks.Add(new CapToBottle { CapId = capLink.CapId, Cap = capLink.Cap, BottleId = currentBottle.Id, Bottle = currentBottle });
             }
 
             context.Bottles.Update(currentBottle);

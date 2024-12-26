@@ -5,6 +5,7 @@ using DAL.Constants;
 using DAL.Entities;
 using DTOs;
 using Interfaces;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -57,21 +58,13 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
     public async Task<CapDto> GetCapByIdAsync(Guid id)
     {
         var cap = await context.Caps
-            .Where(c => c.Id == id)
-            .Select(c => new CapDto
-            {
-                Id = c.Id,
-                TextOnCap = c.TextOnCap,
-                Description = c.Description,
-                CapPicture = c.CapPicture,
-                TextColors = c.TextColorLinks.Select(tc => tc.TextColorId).ToList(),
-                BgColors = c.BackgroundColorLinks.Select(bc => bc.BackgroundColorId).ToList(),
-                Bottles = c.BottleLinks.Select(bl => bl.BottleId).ToList(),
-                IsEditFor = c.IsEditForId
-            })
-            .FirstOrDefaultAsync() ?? throw new ArgumentException($"Cap with ID {id} not found.");
+            .Include(c => c.TextColorLinks)
+            .Include(c => c.BackgroundColorLinks)
+            .Include(c => c.BottleLinks)
+            .Include(c => c.AlbumLinks)
+            .FirstOrDefaultAsync(c => c.Id == id) ?? throw new ArgumentException($"Cap with ID {id} not found.");
 
-        return cap;
+        return cap.Adapt<CapDto>();
     }
 
     public async Task DeleteCapAsync(Guid id)
@@ -102,22 +95,14 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
 
     public async Task<IEnumerable<CapDto>> GetAllCapsByAlbumIdAsync(Guid albumId)
     {
-        var caps = await context.Caps
+        var caps = await context.Caps.Include(c => c.TextColorLinks)
+            .Include(c => c.BackgroundColorLinks)
+            .Include(c => c.BottleLinks)
+            .Include(c => c.AlbumLinks)
             .Where(c => c.AlbumLinks.Any(al => al.AlbumId == albumId))
-            .Select(c => new CapDto
-            {
-                Id = c.Id,
-                TextOnCap = c.TextOnCap,
-                Description = c.Description,
-                CapPicture = c.CapPicture,
-                TextColors = c.TextColorLinks.Select(tc => tc.TextColorId).ToList(),
-                BgColors = c.BackgroundColorLinks.Select(bc => bc.BackgroundColorId).ToList(),
-                Bottles = c.BottleLinks.Select(bl => bl.BottleId).ToList(),
-                IsEditFor = c.IsEditForId
-            })
             .ToListAsync();
 
-        return caps.Count == 0 ? [] : caps;
+        return caps.Count == 0 ? [] : caps.Adapt<IEnumerable<CapDto>>();
     }
 
     public async Task<IEnumerable<CapDto>> GetAllCapsFilteredAsync(
@@ -155,18 +140,10 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
             query = query.Where(c => c.BottleLinks.Any(b => countryIds.Contains(b.Bottle.Producer.CountryId)));
         }
 
-        var caps = await query
-            .Select(c => new CapDto
-            {
-                Id = c.Id,
-                TextOnCap = c.TextOnCap,
-                Description = c.Description,
-                CapPicture = c.CapPicture,
-                TextColors = c.TextColorLinks.Select(tc => tc.TextColorId).ToList(),
-                BgColors = c.BackgroundColorLinks.Select(bc => bc.BackgroundColorId).ToList(),
-                Bottles = c.BottleLinks.Select(bl => bl.BottleId).ToList(),
-                IsEditFor = c.IsEditForId
-            })
+        var caps = await query.Include(c => c.TextColorLinks)
+            .Include(c => c.BackgroundColorLinks)
+            .Include(c => c.BottleLinks)
+            .Include(c => c.AlbumLinks)
             .ToListAsync();
 
         if (caps.Count == 0)
@@ -174,7 +151,7 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
             throw new ArgumentException("No caps found matching the specified criteria.");
         }
 
-        return caps;
+        return caps.Adapt<IEnumerable<CapDto>>();
     }
 
     public async Task<CapDto> UpdateCapAsync(Guid id, [FromBody] CapInsertDto capInsertDto)
@@ -190,34 +167,38 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
         oldCap.Description = capInsertDto.Description;
         oldCap.CapPicture = capInsertDto.CapPicture;
 
-        oldCap.TextColorLinks = capInsertDto.TextColors
-            .Select(colorId => new CapToTextColor { TextColorId = colorId }).ToList();
-        oldCap.BackgroundColorLinks = capInsertDto.BgColors
-            .Select(colorId => new CapToBackgroundColor { BackgroundColorId = colorId }).ToList();
-        oldCap.BottleLinks = capInsertDto.Bottles
-            .Select(bottleId => new CapToBottle { BottleId = bottleId }).ToList();
+        oldCap.TextColorLinks = await context.Colors
+            .Where(tc => capInsertDto.TextColors.Contains(tc.Id))
+            .Select(tc => new CapToTextColor { TextColorId = tc.Id, TextColor = tc, Cap = oldCap, CapId = oldCap.Id })
+            .ToListAsync();
+
+        oldCap.BackgroundColorLinks = await context.Colors
+            .Where(bc => capInsertDto.BgColors.Contains(bc.Id))
+            .Select(bc => new CapToBackgroundColor
+            {
+                BackgroundColor = bc,
+                Cap = oldCap,
+                BackgroundColorId = bc.Id,
+                CapId = oldCap.Id
+            })
+            .ToListAsync();
+
+        oldCap.BottleLinks = await context.Bottles
+            .Where(b => capInsertDto.Bottles.Contains(b.Id))
+            .Select(b => new CapToBottle { Bottle = b, Cap = oldCap, BottleId = b.Id, CapId = oldCap.Id })
+            .ToListAsync();
         oldCap.IsEditForId = oldCap.Id;
 
         await context.AuditLogs.AddAsync(new AuditLog
         {
-            Action = AuditLogAction.Create,
+            Action = AuditLogAction.Update,
             EditedAt = DateTime.Now.ToUniversalTime(),
             Log = $"Update cap with {oldCap.Id} ID",
             CapId = oldCap.Id
         });
 
         await context.SaveChangesAsync();
-        return new CapDto
-        {
-            Id = oldCap.Id,
-            TextOnCap = oldCap.TextOnCap,
-            Description = oldCap.Description,
-            CapPicture = oldCap.CapPicture,
-            TextColors = oldCap.TextColorLinks.Select(tc => tc.TextColorId).ToList(),
-            BgColors = oldCap.BackgroundColorLinks.Select(bc => bc.BackgroundColorId).ToList(),
-            Bottles = oldCap.BottleLinks.Select(bl => bl.BottleId).ToList(),
-            IsEditFor = oldCap.IsEditForId
-        };
+        return oldCap.Adapt<CapDto>();
     }
 
     public async Task<CapDto> CreateCapAsync([FromBody] CapInsertDto capInsertDto)
@@ -228,12 +209,33 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
             TextOnCap = capInsertDto.TextOnCap,
             Description = capInsertDto.Description,
             CapPicture = capInsertDto.CapPicture,
-            TextColorLinks = capInsertDto.TextColors.Select(id => new CapToTextColor { TextColorId = id }).ToList(),
+            TextColorLinks = [],
             BackgroundColorLinks =
-                capInsertDto.BgColors.Select(id => new CapToBackgroundColor { BackgroundColorId = id }).ToList(),
-            BottleLinks = capInsertDto.Bottles.Select(id => new CapToBottle { BottleId = id }).ToList(),
+                [],
+            BottleLinks = [],
             IsEditForId = capInsertDto.IsEditFor
         };
+
+        cap.TextColorLinks = await context.Colors
+                   .Where(tc => capInsertDto.TextColors.Contains(tc.Id))
+                   .Select(tc => new CapToTextColor { TextColorId = tc.Id, TextColor = tc, Cap = cap, CapId = cap.Id })
+                   .ToListAsync();
+
+        cap.BackgroundColorLinks = await context.Colors
+                   .Where(bc => capInsertDto.BgColors.Contains(bc.Id))
+                   .Select(bc => new CapToBackgroundColor
+                   {
+                       BackgroundColor = bc,
+                       Cap = cap,
+                       BackgroundColorId = bc.Id,
+                       CapId = cap.Id
+                   })
+                   .ToListAsync();
+
+        cap.BottleLinks = await context.Bottles
+            .Where(b => capInsertDto.Bottles.Contains(b.Id))
+            .Select(b => new CapToBottle { Bottle = b, Cap = cap, BottleId = b.Id, CapId = cap.Id })
+            .ToListAsync();
 
         await context.Caps.AddAsync(cap);
         await context.AuditLogs.AddAsync(new AuditLog
@@ -246,16 +248,6 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
 
         await context.SaveChangesAsync();
 
-        return new CapDto
-        {
-            Id = cap.Id,
-            TextOnCap = cap.TextOnCap,
-            Description = cap.Description,
-            CapPicture = cap.CapPicture,
-            TextColors = cap.TextColorLinks.Select(tc => tc.TextColorId).ToList(),
-            BgColors = cap.BackgroundColorLinks.Select(bc => bc.BackgroundColorId).ToList(),
-            Bottles = cap.BottleLinks.Select(bl => bl.BottleId).ToList(),
-            IsEditFor = cap.IsEditForId
-        };
+        return cap.Adapt<CapDto>();
     }
 }

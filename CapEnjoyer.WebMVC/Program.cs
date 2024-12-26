@@ -1,6 +1,8 @@
+using CapEnjoyer.BL.Mappers;
 using CapEnjoyer.DAL;
 using CapEnjoyer.DAL.Entities;
 using DotNetEnv;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,9 +36,10 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredLength = 0;
     options.Password.RequiredUniqueChars = 0;
 });
+builder.Services.AddMapster();
+TypeAdapterConfig.GlobalSettings.ConfigureAlbumMapping();
 
 builder.Services.ConfigureApplicationCookie(options => options.LoginPath = "/Login");
-
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {

@@ -86,7 +86,7 @@ public class CapController(ICapService capService) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCap([FromBody] CapDto capDto)
+    public async Task<IActionResult> CreateCap([FromBody] CapInsertDto capDto)
     {
         try
         {
@@ -100,7 +100,7 @@ public class CapController(ICapService capService) : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateCap(Guid id, [FromBody] CapDto capDto)
+    public async Task<IActionResult> UpdateCap(Guid id, [FromBody] CapInsertDto capDto)
     {
         try
         {

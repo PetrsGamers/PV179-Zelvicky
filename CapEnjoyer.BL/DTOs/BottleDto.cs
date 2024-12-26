@@ -8,7 +8,7 @@ public class BottleDto
     public double Voltage { get; set; }
     public string BottlePicture { get; set; }
     public string DrinkType { get; set; }
-    public Guid Producer { get; set; }
-    public List<Guid> Caps { get; set; }
-    public Guid? IsEditFor { get; set; }
+    public Guid ProducerId { get; set; }
+    public List<Guid>? Caps { get; set; }
+    public Guid? IsEditForId { get; set; }
 }

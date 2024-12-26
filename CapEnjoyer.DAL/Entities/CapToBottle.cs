@@ -1,22 +1,14 @@
 namespace CapEnjoyer.DAL.Entities;
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 public class CapToBottle
 {
-    public CapToBottle()
-    {
-    }
+    public required Guid CapId { get; set; }
+    [ForeignKey("CapId")]
+    public required Cap Cap { get; set; }
 
-    public CapToBottle(Guid capId, Cap cap, Guid bottleId, Bottle bottle)
-    {
-        this.CapId = capId;
-        this.Cap = cap;
-        this.BottleId = bottleId;
-        this.Bottle = bottle;
-    }
-
-    public Guid CapId { get; set; }
-    public Cap Cap { get; set; }
-
-    public Guid BottleId { get; set; }
-    public Bottle Bottle { get; set; }
+    public required Guid BottleId { get; set; }
+    [ForeignKey("BottleId")]
+    public Bottle? Bottle { get; set; }
 }

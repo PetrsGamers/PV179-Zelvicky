@@ -1,22 +1,14 @@
 namespace CapEnjoyer.DAL.Entities;
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 public class CapToTextColor
 {
-    public CapToTextColor()
-    {
-    }
+    public required Guid CapId { get; set; }
+    [ForeignKey("CapId")]
+    public required Cap Cap { get; set; }
 
-    public CapToTextColor(Guid capId, Cap cap, Guid textColorId, Color textColor)
-    {
-        this.CapId = capId;
-        this.Cap = cap;
-        this.TextColorId = textColorId;
-        this.TextColor = textColor;
-    }
-
-    public Guid CapId { get; set; }
-    public Cap Cap { get; set; }
-
-    public Guid TextColorId { get; set; }
-    public Color TextColor { get; set; }
+    public required Guid TextColorId { get; set; }
+    [ForeignKey("TextColorId")]
+    public Color? TextColor { get; set; }
 }
