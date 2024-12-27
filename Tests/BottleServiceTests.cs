@@ -32,6 +32,16 @@ public class BottleServiceTests : IDisposable
     {
         // Arrange
         var bottleId = Guid.NewGuid();
+        var producerId = Guid.NewGuid();
+        var producer = new Producer
+        {
+            Id = producerId,
+            Name = "Producer1",
+            Description = "Description1",
+            City = "Pelhrimov",
+            CountryId = default
+        };
+
         var bottle = new Bottle
         {
             Id = bottleId,
@@ -41,7 +51,8 @@ public class BottleServiceTests : IDisposable
             CapLinks = [],
             Voltage = 4.2,
             DrinkType = DrinkType.BeerLager,
-            ProducerId = new Guid()
+            ProducerId = producerId,
+            Producer = producer
         };
         context.Bottles.Add(bottle);
         await context.SaveChangesAsync();
@@ -59,6 +70,17 @@ public class BottleServiceTests : IDisposable
     {
         // Arrange
         var bottleService = new BottleService(context);
+        var producerId = Guid.NewGuid();
+        var producer = new Producer
+        {
+            Id = producerId,
+            Name = "Producer1",
+            Description = "Description1",
+            City = "Pelhrimov",
+            CountryId = default
+        };
+        context.Producers.Add(producer);
+        await context.SaveChangesAsync();
         var newBottle = new BottleDto
         {
             Name = "Awesome Bottle",
@@ -66,7 +88,8 @@ public class BottleServiceTests : IDisposable
             BottlePicture = "",
             Voltage = 4.2,
             DrinkType = "BeerLager",
-            Caps = []
+            Caps = [],
+            ProducerId = producerId
         };
 
         // Act
@@ -84,6 +107,15 @@ public class BottleServiceTests : IDisposable
         // Arrange
         var bottleService = new BottleService(context);
         var bottleId = Guid.NewGuid();
+        var producerId = Guid.NewGuid();
+        var producer = new Producer
+        {
+            Id = producerId,
+            Name = "Producer1",
+            Description = "Description1",
+            City = "Pelhrimov",
+            CountryId = default
+        };
         var bottle = new Bottle
         {
             Id = bottleId,
@@ -93,7 +125,8 @@ public class BottleServiceTests : IDisposable
             CapLinks = [],
             Voltage = 4.2,
             DrinkType = DrinkType.BeerLager,
-            ProducerId = new Guid()
+            ProducerId = producerId,
+            Producer = producer
         };
         context.Bottles.Add(bottle);
         await context.SaveChangesAsync();
@@ -120,7 +153,8 @@ public class BottleServiceTests : IDisposable
             CapLinks = [],
             Voltage = 4.2,
             DrinkType = DrinkType.BeerLager,
-            ProducerId = new Guid()
+            ProducerId = new Guid(),
+            Producer = null
         };
         context.Bottles.Add(bottle);
         await context.SaveChangesAsync();
@@ -150,6 +184,15 @@ public class BottleServiceTests : IDisposable
     {
         // Arrange
         var bottleService = new BottleService(context);
+        var producerId = Guid.NewGuid();
+        var producer = new Producer
+        {
+            Id = producerId,
+            Name = "Producer1",
+            Description = "Description1",
+            City = "Pelhrimov",
+            CountryId = default
+        };
         context.Bottles.AddRange(
             new Bottle
             {
@@ -159,7 +202,9 @@ public class BottleServiceTests : IDisposable
                 Voltage = 4.2,
                 DrinkType = DrinkType.BeerLager,
                 BottlePicture = "",
-                CapLinks = []
+                CapLinks = [],
+                ProducerId = producerId,
+                Producer = producer
             },
             new Bottle
             {
@@ -169,7 +214,9 @@ public class BottleServiceTests : IDisposable
                 Voltage = 4.2,
                 DrinkType = DrinkType.BeerLager,
                 BottlePicture = "",
-                CapLinks = []
+                CapLinks = [],
+                ProducerId = producerId,
+                Producer = producer
             }
         );
         await context.SaveChangesAsync();
