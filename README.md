@@ -21,6 +21,10 @@ Tento projekt pomáhá sběratelům udržet přehled o jejich sbírce a zjednodu
 ## Getting started
 
 ### Setup DB
+Prvně je potřeba mít nainstalovaný Docker.
+V rootu projektu je soubor .env.example, který s default postgres kontejnerem stačí přejmenovat na `.env`
+.env soubor se používá pro nastavení proměnných pro docker. Aplikace samotná používá `appsettings.json`.
+
 Spuštění databáze
 ```
 docker compose up -d
