@@ -95,18 +95,16 @@ public class BottleController(IBottleService bottleService, IProducerService pro
         return RedirectToAction(nameof(Index));
     }
 
-
     [HttpGet]
     public async Task<IActionResult> Edit(Guid id)
     {
         var bottle = await bottleService.GetBottleById(id);
 
-        var viewModel = new BottleCreateViewModel
+        var model = new BottleCreateViewModel
         {
             Name = bottle.Name,
             Description = bottle.Description,
             Voltage = bottle.Voltage,
-            BottlePicture = null,
             DrinkType = bottle.DrinkType,
             ProducerId = bottle.Producer,
             CapIds = bottle.Caps,
@@ -115,8 +113,9 @@ public class BottleController(IBottleService bottleService, IProducerService pro
             CapsOptions = await capService.GetCapOptionsAsync()
         };
 
-        return View(viewModel);
+        return View(model);
     }
+
 
 
     [HttpPost]
