@@ -1,9 +1,8 @@
+namespace Cap.Enjoyer.WebMVC.Controllers;
 using Cap.Enjoyer.WebMVC.Models;
 using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-
-namespace Cap.Enjoyer.WebMVC.Controllers;
 
 public class ColorController(IColorService colorService) : Controller
 {

@@ -56,6 +56,6 @@ public class CountryServiceTests : IDisposable
 
         var result = await countryService.GetCountriesAsync();
 
-        Assert.Equal(2, result.Count());
+        Assert.Equal(2, result.Count);
     }
 }

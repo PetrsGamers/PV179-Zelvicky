@@ -1,7 +1,6 @@
 namespace Cap.Enjoyer.WebMVC.Models;
 
 using System.ComponentModel.DataAnnotations;
-using CapEnjoyer.DAL.Entities;
 
 public class ProducerCreateReturnModel
 {
