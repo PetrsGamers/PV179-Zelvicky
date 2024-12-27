@@ -1,158 +1,186 @@
 namespace Tests;
 
 using CapEnjoyer.BL.DTOs;
-using CapEnjoyer.BL.Services.Interfaces;
-using Moq;
+using CapEnjoyer.BL.Services;
+using CapEnjoyer.DAL;
+using CapEnjoyer.DAL.Constants;
+using CapEnjoyer.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 
-public class BottleServiceTests
+public class BottleServiceTests : IDisposable
 {
-    private readonly Mock<IBottleService> bottleServiceMock = new();
+    private readonly CapEnjoyerDbContext context;
+
+    public BottleServiceTests()
+    {
+        var options = new DbContextOptionsBuilder<CapEnjoyerDbContext>()
+            .UseInMemoryDatabase("TestBottleDatabase")
+            .Options;
+
+        context = new CapEnjoyerDbContext(options);
+    }
+
+    public void Dispose()
+    {
+        context.Database.EnsureDeleted();
+        context.Dispose();
+        GC.SuppressFinalize(this);
+    }
 
     [Fact]
-    public async Task GetBottleByIdReturnsBottle()
+    public async Task GetBottleByIdAsyncExistingIdReturnsBottle()
     {
         // Arrange
         var bottleId = Guid.NewGuid();
-        var expectedBottle = new BottleDto
+        var bottle = new Bottle
         {
-            Id = bottleId, Name = "Test Bottle", Description = "A test bottle description"
+            Id = bottleId,
+            Name = "Test Bottle",
+            Description = "A really cool bottle",
+            BottlePicture = "",
+            CapLinks = [],
+            Voltage = 4.2,
+            DrinkType = DrinkType.BeerLager,
+            ProducerId = new Guid()
         };
-
-        bottleServiceMock
-            .Setup(service => service.GetBottleById(bottleId))
-            .ReturnsAsync(expectedBottle);
+        context.Bottles.Add(bottle);
+        await context.SaveChangesAsync();
 
         // Act
-        var bottle = await bottleServiceMock.Object.GetBottleById(bottleId);
+        var result = await new BottleService(context).GetBottleById(bottleId);
 
         // Assert
-        Assert.NotNull(bottle);
-        Assert.Equal(expectedBottle.Id, bottle.Id);
-        Assert.Equal(expectedBottle.Name, bottle.Name);
+        Assert.Equal(bottleId, result.Id);
+        Assert.Equal("Test Bottle", result.Name);
     }
 
     [Fact]
-    public async Task GetAllBottlesReturnsListOfBottles()
+    public async Task CreateBottleAsyncAddsNewBottle()
     {
         // Arrange
-        var bottles = new List<BottleDto>
+        var bottleService = new BottleService(context);
+        var newBottle = new BottleDto
         {
-            new() { Id = Guid.NewGuid(), Name = "Bottle 1", Description = "Description 1" },
-            new() { Id = Guid.NewGuid(), Name = "Bottle 2", Description = "Description 2" }
+            Name = "Awesome Bottle",
+            Description = "An awesome bottle with amazing design",
+            BottlePicture = "",
+            Voltage = 4.2,
+            DrinkType = "BeerLager",
+            Caps = []
         };
 
-        bottleServiceMock
-            .Setup(service => service.GetAllBottles())
-            .ReturnsAsync(bottles);
-
         // Act
-        var result = await bottleServiceMock.Object.GetAllBottles();
+        await bottleService.CreateBottle(newBottle);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(2, result.Count());
+        Assert.Equal(1, context.Bottles.Count());
+        Assert.Equal("Awesome Bottle", context.Bottles.First().Name);
+        Assert.Equal(newBottle.DrinkType, context.Bottles.First().DrinkType.ToString());
     }
 
     [Fact]
-    public async Task CreateBottleReturnsCreatedBottle()
+    public async Task DeleteBottleAsyncRemovesBottle()
     {
         // Arrange
-        var newBottle = new BottleDto { Name = "New Bottle", Description = "A new bottle description" };
-        var createdBottle = new BottleDto
-        {
-            Id = Guid.NewGuid(), Name = "New Bottle", Description = "A new bottle description"
-        };
-
-        bottleServiceMock
-            .Setup(service => service.CreateBottle(newBottle))
-            .ReturnsAsync(createdBottle);
-
-        // Act
-        var result = await bottleServiceMock.Object.CreateBottle(newBottle);
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(createdBottle.Id, result.Id);
-        Assert.Equal(createdBottle.Name, result.Name);
-    }
-
-    [Fact]
-    public async Task UpdateBottleReturnsUpdatedBottle()
-    {
-        // Arrange
+        var bottleService = new BottleService(context);
         var bottleId = Guid.NewGuid();
+        var bottle = new Bottle
+        {
+            Id = bottleId,
+            Name = "Test Bottle",
+            Description = "A really cool bottle",
+            BottlePicture = "",
+            CapLinks = [],
+            Voltage = 4.2,
+            DrinkType = DrinkType.BeerLager,
+            ProducerId = new Guid()
+        };
+        context.Bottles.Add(bottle);
+        await context.SaveChangesAsync();
+
+        // Act
+        await bottleService.DeleteBottle(bottleId);
+
+        // Assert
+        Assert.Equal(0, context.Bottles.Count());
+    }
+
+    [Fact]
+    public async Task UpdateBottleAsyncUpdatesBottle()
+    {
+        // Arrange
+        var bottleService = new BottleService(context);
+        var bottleId = Guid.NewGuid();
+        var bottle = new Bottle
+        {
+            Id = bottleId,
+            Name = "Test Bottle",
+            Description = "A really cool bottle",
+            BottlePicture = "",
+            CapLinks = [],
+            Voltage = 4.2,
+            DrinkType = DrinkType.BeerLager,
+            ProducerId = new Guid()
+        };
+        context.Bottles.Add(bottle);
+        await context.SaveChangesAsync();
+
         var updatedBottle = new BottleDto
         {
-            Id = bottleId, Name = "Updated Bottle", Description = "An updated bottle description"
+            Id = bottleId,
+            Name = "Updated Bottle",
+            Description = "An updated bottle",
+            BottlePicture = "",
+            Voltage = 4.2,
+            DrinkType = "BeerLager",
+            Caps = []
         };
 
-        bottleServiceMock
-            .Setup(service => service.UpdateBottle(bottleId, updatedBottle))
-            .ReturnsAsync(updatedBottle);
-
         // Act
-        var result = await bottleServiceMock.Object.UpdateBottle(bottleId, updatedBottle);
+        await bottleService.UpdateBottle(bottleId, updatedBottle);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(updatedBottle.Id, result.Id);
-        Assert.Equal(updatedBottle.Name, result.Name);
+        Assert.Equal(1, context.Bottles.Count());
+        Assert.Equal("Updated Bottle", context.Bottles.First().Name);
+        Assert.Equal("An updated bottle", context.Bottles.First().Description);
     }
 
     [Fact]
-    public async Task DeleteBottleCallsServiceOnce()
+    public async Task GetBottlesAsyncReturnsAllBottles()
     {
         // Arrange
-        var bottleId = Guid.NewGuid();
-
-        bottleServiceMock
-            .Setup(service => service.DeleteBottle(bottleId))
-            .Returns(Task.CompletedTask)
-            .Verifiable();
+        var bottleService = new BottleService(context);
+        context.Bottles.AddRange(
+            new Bottle
+            {
+                Id = Guid.NewGuid(),
+                Name = "Bottle1",
+                Description = "Description1",
+                Voltage = 4.2,
+                DrinkType = DrinkType.BeerLager,
+                BottlePicture = "",
+                CapLinks = []
+            },
+            new Bottle
+            {
+                Id = Guid.NewGuid(),
+                Name = "Bottle2",
+                Description = "Description2",
+                Voltage = 4.2,
+                DrinkType = DrinkType.BeerLager,
+                BottlePicture = "",
+                CapLinks = []
+            }
+        );
+        await context.SaveChangesAsync();
 
         // Act
-        await bottleServiceMock.Object.DeleteBottle(bottleId);
+        var result = await bottleService.GetAllBottles();
 
         // Assert
-        bottleServiceMock.Verify(service => service.DeleteBottle(bottleId), Times.Once);
-    }
-
-    [Fact]
-    public async Task CreateBottleThrowsExceptionWhenRequiredFieldsAreMissing()
-    {
-        var invalidBottle = new BottleDto { Name = "", Description = "" };
-
-        bottleServiceMock
-            .Setup(service => service.CreateBottle(invalidBottle))
-            .ThrowsAsync(new ArgumentException("Name or description is missing"));
-
-        // Act
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-            bottleServiceMock.Object.CreateBottle(invalidBottle));
-
-        // Assert
-        Assert.Equal("Name or description is missing", exception.Message);
-    }
-
-    [Fact]
-    public async Task UpdateBottleThrowsExceptionWhenBottleDoesNotExist()
-    {
-        // Arrange
-        var nonExistentBottleId = Guid.NewGuid();
-        var updatedBottle = new BottleDto
-        {
-            Id = nonExistentBottleId, Name = "Updated Bottle", Description = "Updated description"
-        };
-
-        bottleServiceMock
-            .Setup(service => service.UpdateBottle(nonExistentBottleId, updatedBottle))
-            .ThrowsAsync(new ArgumentException($"Bottle with ID {nonExistentBottleId} not found."));
-
-        // Act
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-            bottleServiceMock.Object.UpdateBottle(nonExistentBottleId, updatedBottle));
-
-        //Assert
-        Assert.Equal($"Bottle with ID {nonExistentBottleId} not found.", exception.Message);
+        var bottleDtos = result.ToList();
+        Assert.Equal(2, bottleDtos.Count);
+        Assert.Equal("Bottle1", bottleDtos.First().Name);
+        Assert.Equal("Bottle2", bottleDtos.Last().Name);
     }
 }
