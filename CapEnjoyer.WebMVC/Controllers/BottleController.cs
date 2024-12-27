@@ -153,4 +153,18 @@ public class BottleController(IBottleService bottleService, IProducerService pro
 
         return RedirectToAction(nameof(Index));
     }
+    [HttpPost]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        try
+        {
+            await bottleService.DeleteBottle(id);
+        }
+        catch (ArgumentException)
+        {
+            return NotFound();
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
 }

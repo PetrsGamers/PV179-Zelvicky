@@ -117,4 +117,19 @@ public class CapController(ICapService capService) : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        try
+        {
+            await capService.DeleteCapAsync(id);
+        }
+        catch (ArgumentException)
+        {
+            return NotFound();
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
 }

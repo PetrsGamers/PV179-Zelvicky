@@ -128,4 +128,18 @@ public class ProducerController(IProducerService producerService, ICountryServic
         await producerService.UpdateProducerAsync(viewModel.Id, producerDto);
         return RedirectToAction(nameof(Index));
     }
+    [HttpPost]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        try
+        {
+            await producerService.DeleteProducerAsync(id);
+        }
+        catch (ArgumentException)
+        {
+            return NotFound();
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
 }

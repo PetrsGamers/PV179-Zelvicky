@@ -7,6 +7,8 @@
 
 <h2>Producer List</h2>
 
+<a asp-action="Create" asp-controller="Producer" class="btn btn-primary">Add New Producer</a>
+
 <table class="table">
     <thead>
     <tr>
@@ -22,9 +24,17 @@
             <td>@producer.Name</td>
             <td>@producer.City</td>
             <td>
-                <a href="@Url.Action("Details", "Producer", new { id = producer.Id })">Details</a> |
-                <a href="@Url.Action("Edit", "Producer", new { id = producer.Id })">Edit</a> |
-                <a href="@Url.Action("Delete", "Producer", new { id = producer.Id })">Delete</a>
+                <a href="@Url.Action("Details", "Producer", new { id = producer.Id })" class="btn btn-info btn-sm">
+                    <i class="fas fa-info"></i> Details
+                </a> |
+                <a href="@Url.Action("Edit", "Producer", new { id = producer.Id })" class="btn btn-info btn-sm">
+                    <i class="fas fa-edit"></i> Edit
+                </a> |
+                <form action="@Url.Action("Delete", "Producer", new { id = producer.Id })" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this producer?')">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                </form>
             </td>
         </tr>
     }
