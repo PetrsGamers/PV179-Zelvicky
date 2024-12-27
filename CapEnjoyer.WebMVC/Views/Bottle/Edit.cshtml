@@ -1,5 +1,13 @@
+@model BottleCreateViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Edit Bottle";
+}
+
+<h2>Edit Bottle</h2>
+
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="Id" />
     <div>
         <label>Name</label>
         <input asp-for="Name" />
@@ -31,7 +39,7 @@
     </div>
     <div>
         <label>Caps</label>
-        <select asp-for="CapIds" asp-items="ViewBag.Caps" multiple></select>
+        <select asp-for="CapIds" asp-items="ViewBag.Caps" class="selectpicker" multiple></select>
         <span asp-validation-for="CapIds" class="text-danger"></span>
     </div>
     <div>
@@ -42,3 +50,5 @@
 </form>
 
 <a asp-action="Index" asp-controller="Bottle">Back to List</a>
+
+
