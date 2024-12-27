@@ -4,7 +4,6 @@ using CapEnjoyer.BL.Mappers;
 using CapEnjoyer.BL.Services;
 using CapEnjoyer.BL.Services.Interfaces;
 using CapEnjoyer.DAL;
-using DotNetEnv;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -59,7 +58,6 @@ TypeAdapterConfig.GlobalSettings.EnableImmutableMapping();
 
 var app = builder.Build();
 
-// in case the database is not reachable or not created, throw an error
 app.ValidateConnection();
 
 app.UseSwagger();

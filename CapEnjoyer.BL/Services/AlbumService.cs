@@ -7,9 +7,8 @@ using Interfaces;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
-public class AlbumService(CapEnjoyerDbContext context) : IAlbumServiceAsync
+public class AlbumService(CapEnjoyerDbContext context) : IAlbumService
 {
-
     public async Task<IEnumerable<AlbumDto>> GetAllAlbums()
     {
         var albums = await context.Albums
@@ -51,15 +50,10 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumServiceAsync
         {
             capLinks = await context.Caps
                 .Where(c => album.Caps.Contains(c.Id))
-                .Select(c => new CapToAlbum
-                {
-                    AlbumId = newAlbum.Id,
-                    CapId = c.Id,
-                    Cap = c,
-                    Album = newAlbum
-                })
+                .Select(c => new CapToAlbum { AlbumId = newAlbum.Id, CapId = c.Id, Cap = c, Album = newAlbum })
                 .ToListAsync();
         }
+
         await context.Albums.AddAsync(newAlbum);
         await context.CapToAlbums.AddRangeAsync(capLinks);
         await context.SaveChangesAsync();
@@ -85,13 +79,7 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumServiceAsync
         {
             existingAlbum.CapLinks = await context.Caps
                 .Where(c => album.Caps.Contains(c.Id))
-                .Select(c => new CapToAlbum
-                {
-                    AlbumId = id,
-                    CapId = c.Id,
-                    Cap = c,
-                    Album = existingAlbum
-                })
+                .Select(c => new CapToAlbum { AlbumId = id, CapId = c.Id, Cap = c, Album = existingAlbum })
                 .ToListAsync();
         }
 
