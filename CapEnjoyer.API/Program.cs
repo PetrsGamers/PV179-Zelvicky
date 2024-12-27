@@ -11,21 +11,13 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Env.Load();
-
-var postgreValidator = new PostgresOptionValidator
-{
-    Host = Environment.GetEnvironmentVariable("DB_HOST"),
-    Port = Environment.GetEnvironmentVariable("DB_PORT"),
-    Username = Environment.GetEnvironmentVariable("DB_USERNAME"),
-    Password = Environment.GetEnvironmentVariable("DB_PASSWORD"),
-    Database = Environment.GetEnvironmentVariable("DB_NAME")
-};
+var connectionString = builder.Configuration.GetConnectionString("LocalPostgres");
+var postgresOptionValidator = new PostgresOptionValidator { ConnectionString = connectionString };
 
 builder.Services.AddControllers(options => options.RespectBrowserAcceptHeader = true).AddXmlSerializerFormatters();
 
 builder.Services.AddDbContextFactory<CapEnjoyerDbContext>(
-    options => options.UseNpgsql(postgreValidator.ConnectionString));
+    options => options.UseNpgsql(postgresOptionValidator.ConnectionString));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -68,7 +60,7 @@ TypeAdapterConfig.GlobalSettings.EnableImmutableMapping();
 var app = builder.Build();
 
 // in case the database is not reachable or not created, throw an error
-app.ValidateConnection(postgreValidator);
+app.ValidateConnection();
 
 app.UseSwagger();
 app.UseSwaggerUI();

@@ -4,16 +4,23 @@ using DAL;
 
 public class PostgresOptionValidator
 {
-    public required string? Host { get; set; }
-    public required string? Port { get; set; }
-    public required string? Username { get; set; }
-    public required string? Password { get; set; }
-    public required string? Database { get; set; }
+    private readonly string? connectionString;
 
-    public string ConnectionString =>
-        $"Host={Host};Port={Port};Username={Username};Password={Password};Database={Database}";
+    public required string? ConnectionString
+    {
+        get => connectionString;
+        init
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentNullException(nameof(ConnectionString), "Connection string cannot be null or empty.");
+            }
 
-    public bool IsValid(WebApplication webApplication)
+            connectionString = value;
+        }
+    }
+
+    public static bool IsValid(WebApplication webApplication)
     {
         using var scope = webApplication.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<CapEnjoyerDbContext>();
@@ -31,15 +38,11 @@ public class PostgresOptionValidator
 
 public static class PostgresOptionValidatorExtensions
 {
-    public static void ValidateConnection(this WebApplication webApplication, PostgresOptionValidator validator)
+    public static void ValidateConnection(this WebApplication webApplication)
     {
-        if (!validator.IsValid(webApplication))
+        if (!PostgresOptionValidator.IsValid(webApplication))
         {
             throw new HttpRequestException("Database validation failed.");
         }
     }
 }
-
-// Then in program.cs all you need to do is:
-// var mssqlValidator = new MssqlOptionValidator { ... set the data here ... }
-// app.ValidateConnection(mssqlValidator);
