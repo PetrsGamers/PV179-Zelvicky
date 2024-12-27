@@ -1,45 +1,44 @@
-@model BottleViewModel
-
-@{
-    Layout = "_Layout";
-    ViewData["Title"] = "Edit Bottle";
-}
-
-<h2>Edit Bottle</h2>
-
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="Id" />
     <div>
         <label>Name</label>
         <input asp-for="Name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div>
         <label>Description</label>
         <textarea asp-for="Description"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
     <div>
         <label>Voltage</label>
         <input asp-for="Voltage" type="number" step="0.01" />
+        <span asp-validation-for="Voltage" class="text-danger"></span>
     </div>
     <div>
         <label>Drink Type</label>
-        <input asp-for="DrinkType" />
+        <select asp-for="DrinkType" asp-items="ViewBag.DrinkTypes">
+            <option value="">--Select a Drink Type--</option>
+        </select>
+        <span asp-validation-for="DrinkType" class="text-danger"></span>
     </div>
     <div>
         <label>Producer</label>
-        <select asp-for="Producer">
-            <!-- Producer options -->
+        <select asp-for="ProducerId" asp-items="ViewBag.Producers">
+            <option value="">--Select a Producer--</option>
         </select>
+        <span asp-validation-for="ProducerId" class="text-danger"></span>
     </div>
     <div>
         <label>Caps</label>
-        <input asp-for="Caps" />
+        <select asp-for="CapIds" asp-items="ViewBag.Caps" multiple></select>
+        <span asp-validation-for="CapIds" class="text-danger"></span>
     </div>
     <div>
         <label>Bottle Picture</label>
         <input asp-for="BottlePicture" type="file" />
     </div>
-    <button type="submit" onclick="return confirm('To maintain data quality, the bottle cannot be edited directly. Our team will review your edit request soon, and if approved, the changes will be updated in the database.')">Save</button>
+    <button type="submit">Save</button>
 </form>
 
 <a asp-action="Index" asp-controller="Bottle">Back to List</a>

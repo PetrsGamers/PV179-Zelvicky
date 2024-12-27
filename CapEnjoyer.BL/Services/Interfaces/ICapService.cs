@@ -1,6 +1,7 @@
 namespace CapEnjoyer.BL.Services.Interfaces;
 
 using DTOs;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 public interface ICapService
 {
@@ -17,4 +18,6 @@ public interface ICapService
 
     public Task<CapDto> UpdateCapAsync(Guid id, CapInsertDto capInsertDto);
     public Task DeleteCapAsync(Guid id);
+    Task<List<SelectListItem>> GetCapOptionsAsync();
+
 }

@@ -5,6 +5,7 @@ using DAL.Constants;
 using DAL.Entities;
 using DTOs;
 using Interfaces;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
@@ -108,5 +109,16 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
 
         context.Bottles.Remove(bottle);
         await context.SaveChangesAsync();
+    }
+
+    public List<SelectListItem> GetDrinkTypeOptions()
+    {
+        return Enum.GetValues(typeof(DrinkType))
+            .Cast<DrinkType>()
+            .Select(d => new SelectListItem
+            {
+                Value = d.ToString(),
+                Text = d.ToString()
+            }).ToList();
     }
 }

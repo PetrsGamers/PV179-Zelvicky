@@ -1,6 +1,7 @@
 namespace CapEnjoyer.BL.Services.Interfaces;
 
 using DTOs;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 public interface IProducerService
 {
@@ -9,4 +10,6 @@ public interface IProducerService
     Task DeleteProducerAsync(Guid id);
     Task<ProducerDto> CreateProducerAsync(ProducerInsertDto producerDto);
     Task<ProducerDto> UpdateProducerAsync(Guid id, ProducerInsertDto producerDto);
+    Task<List<SelectListItem>> GetProducerOptionsAsync();
+
 }

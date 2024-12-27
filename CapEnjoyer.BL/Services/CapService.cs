@@ -7,6 +7,7 @@ using DTOs;
 using Interfaces;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 public class CapService(CapEnjoyerDbContext context, IImageService imageService) : ICapService
@@ -215,5 +216,15 @@ public class CapService(CapEnjoyerDbContext context, IImageService imageService)
         }
 
         return cap.Adapt<CapDto>();
+    }
+
+    public async Task<List<SelectListItem>> GetCapOptionsAsync()
+    {
+        var caps = await context.Caps.Where(cap => cap.IsEditForId == null).ToListAsync();
+        return caps.Select(c => new SelectListItem
+        {
+            Value = c.Id.ToString(),
+            Text = c.TextOnCap
+        }).ToList();
     }
 }

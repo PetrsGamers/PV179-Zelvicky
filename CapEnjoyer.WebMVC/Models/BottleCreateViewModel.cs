@@ -13,5 +13,6 @@ public class BottleCreateViewModel
     public List<Guid>? CapIds { get; set; }
 
     public required List<SelectListItem>? ProducersOptions { get; set; }
+    public required List<SelectListItem>? DrinkTypes { get; set; }
     public required List<SelectListItem>? CapsOptions { get; set; }
 }
