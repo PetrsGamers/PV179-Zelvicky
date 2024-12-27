@@ -1,9 +1,9 @@
 namespace Cap.Enjoyer.WebMVC.Controllers;
+
 using Cap.Enjoyer.WebMVC.Models;
 using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 public class ProducerController(IProducerService producerService, ICountryService countryService) : Controller
@@ -40,10 +40,7 @@ public class ProducerController(IProducerService producerService, ICountryServic
     public async Task<IActionResult> Create()
     {
         var countries = await countryService.GetCountriesAsync();
-
-        var defaultCountry = countries.FirstOrDefault(c => c.Name == "Czech Republic");
-
-        var defaultCountryId = defaultCountry?.Id ?? Guid.Empty;
+        var defaultCountryId = countries.FirstOrDefault(c => c.Name == "Czech Republic")?.Id ?? Guid.Empty;
 
         var viewModel = new ProducerCreateViewModel
         {
@@ -57,7 +54,6 @@ public class ProducerController(IProducerService producerService, ICountryServic
 
         return View(viewModel);
     }
-
 
     [HttpPost]
     public async Task<IActionResult> Create(ProducerCreateReturnModel returnModel)
@@ -97,36 +93,57 @@ public class ProducerController(IProducerService producerService, ICountryServic
     public async Task<IActionResult> Edit(Guid id)
     {
         var producer = await producerService.GetProducerByIdAsync(id);
-        var viewModel = new ProducerViewModel
+        var countries = await countryService.GetCountriesAsync();
+
+        var viewModel = new ProducerCreateViewModel
         {
-            Id = producer.Id,
             Name = producer.Name,
             City = producer.City,
             Description = producer.Description,
-            Country = producer.Country,
+            CountryId = producer.Country,
+            Countries = countries.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList()
         };
+
         return View(viewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(ProducerViewModel viewModel)
+    public async Task<IActionResult> Edit(Guid id, ProducerCreateReturnModel returnModel)
     {
         if (!ModelState.IsValid)
         {
+            var countries = await countryService.GetCountriesAsync();
+            var viewModel = new ProducerCreateViewModel
+            {
+                Name = returnModel.Name,
+                City = returnModel.City,
+                Description = returnModel.Description,
+                CountryId = returnModel.CountryId,
+                Countries = countries.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList()
+            };
             return View(viewModel);
         }
 
         var producerDto = new ProducerInsertDto
         {
-            Name = viewModel.Name,
-            City = viewModel.City,
-            Description = viewModel.Description,
-            Country = viewModel.Country,
+            Name = returnModel.Name,
+            City = returnModel.City,
+            Description = returnModel.Description,
+            Country = returnModel.CountryId,
         };
 
-        await producerService.UpdateProducerAsync(viewModel.Id, producerDto);
+        await producerService.UpdateProducerAsync(id, producerDto);
         return RedirectToAction(nameof(Index));
     }
+
     [HttpPost]
     public async Task<IActionResult> Delete(Guid id)
     {

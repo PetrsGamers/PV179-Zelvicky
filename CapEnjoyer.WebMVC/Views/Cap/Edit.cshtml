@@ -33,7 +33,7 @@
         <label>Cap Picture</label>
         <input asp-for="CapPicture" type="file" />
     </div>
-    <button type="submit">Save</button>
+    <button type="submit" onclick="return confirm('To maintain data quality, the cap cannot be edited directly. Our team will review your edit request soon, and if approved, the changes will be updated in the database.')">Save</button>
 </form>
 
 <a asp-action="Index" asp-controller="Cap">Back to List</a>

@@ -1,4 +1,4 @@
-@model ProducerViewModel
+@model ProducerCreateViewModel
 
 @{
     Layout = "_Layout";
@@ -8,30 +8,27 @@
 <h2>Edit Producer</h2>
 
 <form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
     <div>
         <label>Name</label>
         <input asp-for="Name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div>
         <label>City</label>
         <input asp-for="City" />
+        <span asp-validation-for="City" class="text-danger"></span>
     </div>
     <div>
         <label>Description</label>
         <textarea asp-for="Description"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
     <div>
         <label>Country</label>
-        <select asp-for="Country">
-            <!-- Country options here -->
-        </select>
+        <select asp-for="CountryId" asp-items="Model.Countries"></select>
+        <span asp-validation-for="CountryId" class="text-danger"></span>
     </div>
-    <div>
-        <label>Is Edit For</label>
-        <input asp-for="IsEditFor" />
-    </div>
-    <button type="submit">Save</button>
+    <button type="submit" onclick="return confirm('To maintain data quality, the producer cannot be edited directly. Our team will review your edit request soon, and if approved, the changes will be updated in the database.')">Save</button>
 </form>
 
 <a asp-action="Index" asp-controller="Producer">Back to List</a>
