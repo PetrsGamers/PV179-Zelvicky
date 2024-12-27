@@ -1,4 +1,4 @@
-﻿namespace CapEnjoyer.BL.Services;
+namespace CapEnjoyer.BL.Services;
 
 using Constants;
 using DAL;

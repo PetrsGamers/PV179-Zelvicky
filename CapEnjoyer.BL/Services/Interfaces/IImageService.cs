@@ -1,4 +1,4 @@
-﻿namespace CapEnjoyer.BL.Services.Interfaces;
+namespace CapEnjoyer.BL.Services.Interfaces;
 
 public interface IImageService
 {
