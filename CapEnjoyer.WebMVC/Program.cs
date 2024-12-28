@@ -27,6 +27,7 @@ builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
 // builder.Services.AddScoped<IEditRequestService, EditRequestService>();
 builder.Services.AddScoped<IProducerService, ProducerService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddIdentity<LocalIdentityUser, IdentityRole>()

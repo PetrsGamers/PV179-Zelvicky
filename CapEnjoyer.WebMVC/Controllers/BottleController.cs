@@ -7,7 +7,7 @@ using Models;
 
 public class BottleController(
     IBottleService bottleService,
-    IProducerServiceAsync producerService,
+    IProducerService producerService,
     ICapService capService) : Controller
 {
     public async Task<IActionResult> Index()
@@ -40,7 +40,7 @@ public class BottleController(
             BottlePicture = bottle.BottlePicture,
             DrinkType = bottle.DrinkType,
             Producer = bottle.ProducerId,
-            Caps = bottle.Caps,
+            Caps = bottle.Caps ?? [],
             IsEditFor = bottle.IsEditForId
         };
         return View(viewModel);
@@ -89,8 +89,8 @@ public class BottleController(
             Voltage = model.Voltage,
             DrinkType = model.DrinkType,
             ProducerId = model.ProducerId,
-            CapsIds = model.CapIds ?? [],
-            BottlePicture = "placeholder"
+            Caps = model.CapIds ?? [],
+            BottlePictureFile = model.BottlePicture
         };
 
         await bottleService.CreateBottle(bottleDto);
@@ -148,7 +148,7 @@ public class BottleController(
             Voltage = model.Voltage,
             DrinkType = model.DrinkType,
             ProducerId = model.ProducerId,
-            CapsIds = model.CapIds ?? []
+            Caps = model.CapIds ?? []
         };
 
         await bottleService.UpdateBottle(id, bottleDto);

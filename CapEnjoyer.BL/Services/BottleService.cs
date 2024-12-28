@@ -43,7 +43,6 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
             Name = bottle.Name,
             Description = bottle.Description,
             Voltage = bottle.Voltage,
-            BottlePicture = bottle.BottlePicture,
             DrinkType = Enum.Parse<DrinkType>(bottle.DrinkType),
             ProducerId = bottle.ProducerId,
             Producer = producer,

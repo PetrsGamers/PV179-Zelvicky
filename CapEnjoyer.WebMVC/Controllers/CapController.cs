@@ -126,7 +126,7 @@ public class CapController(ICapService capService, IBottleService bottleService,
         {
             TextOnCap = model.TextOnCap,
             Description = model.Description,
-            CapPicture = "null", //TODO obrazek
+            CapPictureFile = model.CapPicture,
             TextColors = model.TextColorsIds,
             BgColors = model.BgColorsIds,
             Bottles = model.BottlesIds ?? []

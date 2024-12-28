@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
 
-public class ProducerController(IProducerServiceAsync producerService, ICountryService countryService) : Controller
+public class ProducerController(IProducerService producerService, ICountryService countryService) : Controller
 {
     public async Task<IActionResult> Index()
     {
