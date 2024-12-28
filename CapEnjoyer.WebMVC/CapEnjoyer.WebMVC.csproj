@@ -38,4 +38,8 @@
     <AdditionalFiles Include="Views\Color\Index.cshtml"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\bottles\" />
+  </ItemGroup>
+
 </Project>
