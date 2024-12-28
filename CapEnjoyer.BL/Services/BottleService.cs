@@ -120,4 +120,18 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
         await context.Bottles
             .Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name })
             .ToListAsync();
+
+    public async Task<List<BottleDto>> GetBottlesByIdsAsync(List<Guid> ids)
+    {
+        if (ids.Count == 0)
+        {
+            return [];
+        }
+
+        var colors = await context.Bottles
+            .Where(c => ids.Contains(c.Id))
+            .ToListAsync();
+
+        return colors.Select(c => c.Adapt<BottleDto>()).ToList();
+    }
 }

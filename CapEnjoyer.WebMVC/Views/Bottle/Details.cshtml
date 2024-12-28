@@ -27,7 +27,7 @@
         @foreach (var cap in Model.CapDetails)
         {
             <li>
-                <a asp-controller="Cap" asp-action="Details" asp-route-id="@cap.Id">@cap.Name</a>
+                <a asp-controller="Cap" asp-action="Details" asp-route-id="@cap.Id">@cap.TextOnCap</a>
             </li>
         }
     </ul>

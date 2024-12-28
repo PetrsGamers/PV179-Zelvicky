@@ -37,13 +37,7 @@ public class BottleController(
         var producer = await producerService.GetProducerByIdAsync(bottle.ProducerId);
 
         var capIds = bottle.Caps ?? [];
-        List<CapDetail> caps = [];
-
-        foreach (var capId in capIds)
-        {
-            var cap = await capService.GetCapByIdAsync(capId);
-            caps.Add(new CapDetail { Id = cap.Id, Name = cap.TextOnCap, Description = cap.Description });
-        }
+        var caps = await capService.GetCapsByIdsAsync(bottle.Caps ?? []);
 
         var viewModel = new BottleDetailViewModel
         {
@@ -87,7 +81,7 @@ public class BottleController(
                 Name = model.Name,
                 Description = model.Description,
                 Voltage = model.Voltage,
-                BottlePicture = null, //TODO image input
+                BottlePicture = model.BottlePicture,
                 DrinkType = model.DrinkType,
                 ProducerId = model.ProducerId,
                 CapIds = model.CapIds,

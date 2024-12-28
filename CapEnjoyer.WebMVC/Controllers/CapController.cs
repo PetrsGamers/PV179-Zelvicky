@@ -26,38 +26,13 @@ public class CapController(ICapService capService, IBottleService bottleService,
     }
 
     [HttpGet]
-    [HttpGet]
     public async Task<IActionResult> Details(Guid id)
     {
         var cap = await capService.GetCapByIdAsync(id);
 
-        // Fetch text colors sequentially
-        var textColors = new List<ColorDetail>();
-        foreach (var colorId in cap.TextColors)
-        {
-            var color = await colorService.GetColorByIdAsync(colorId);
-            if (color == null)
-            { continue; }
-
-            textColors.Add(new ColorDetail { Id = color.Id, Name = color.Name, HexCode = color.HexCode });
-        }
-
-        var bgColors = new List<ColorDetail>();
-        foreach (var colorId in cap.BgColors)
-        {
-            var color = await colorService.GetColorByIdAsync(colorId);
-            if (color == null)
-            { continue; }
-
-            bgColors.Add(new ColorDetail { Id = color.Id, Name = color.Name, HexCode = color.HexCode });
-        }
-
-        var bottles = new List<BottleDetail>();
-        foreach (var bottleId in cap.Bottles)
-        {
-            var bottle = await bottleService.GetBottleById(bottleId);
-            bottles.Add(new BottleDetail { Id = bottle.Id, Name = bottle.Name });
-        }
+        var textColors = await colorService.GetColorsByIdsAsync(cap.TextColors);
+        var bgColors = await colorService.GetColorsByIdsAsync(cap.BgColors);
+        var bottles = await bottleService.GetBottlesByIdsAsync(cap.Bottles);
 
         var viewModel = new CapDetailViewModel
         {
