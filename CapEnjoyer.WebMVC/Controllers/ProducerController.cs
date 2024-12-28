@@ -4,6 +4,7 @@ using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Models;
 
 public class ProducerController(IProducerService producerService, ICountryService countryService) : Controller
@@ -11,14 +12,13 @@ public class ProducerController(IProducerService producerService, ICountryServic
     public async Task<IActionResult> Index()
     {
         var producers = await producerService.GetAllProducersAsync();
-        var viewModel = producers.Select(p => new ProducerViewModel
+        var viewModel = producers.Where(p => p.IsEditForId == null).Select(p => new ProducerListViewModel
         {
             Id = p.Id,
             Name = p.Name,
             City = p.City,
             Description = p.Description,
             Country = p.CountryId,
-            IsEditFor = p.IsEditForId
         });
         return View(viewModel);
     }
@@ -26,13 +26,15 @@ public class ProducerController(IProducerService producerService, ICountryServic
     public async Task<IActionResult> Details(Guid id)
     {
         var producer = await producerService.GetProducerByIdAsync(id);
-        var viewModel = new ProducerViewModel
+        var country = await countryService.GetCountryByIdAsync(producer.CountryId);
+
+        var viewModel = new ProducerDetailViewModel()
         {
             Id = producer.Id,
             Name = producer.Name,
             City = producer.City,
             Description = producer.Description,
-            Country = producer.CountryId
+            Country = country?.Name ?? "Failed to load country"
         };
         return View(viewModel);
     }
@@ -77,7 +79,7 @@ public class ProducerController(IProducerService producerService, ICountryServic
             Name = returnModel.Name,
             City = returnModel.City,
             Description = returnModel.Description,
-            Country = returnModel.CountryId
+            CountryId = returnModel.CountryId
         };
 
         await producerService.CreateProducerAsync(producerDto);
@@ -126,10 +128,11 @@ public class ProducerController(IProducerService producerService, ICountryServic
             Name = returnModel.Name,
             City = returnModel.City,
             Description = returnModel.Description,
-            Country = returnModel.CountryId
+            CountryId = returnModel.CountryId,
+            IsEditForId = id
         };
 
-        await producerService.UpdateProducerAsync(id, producerDto);
+        await producerService.CreateProducerAsync(producerDto);
         return RedirectToAction(nameof(Index));
     }
 
@@ -143,6 +146,10 @@ public class ProducerController(IProducerService producerService, ICountryServic
         catch (ArgumentException)
         {
             return NotFound();
+        }
+        catch(DbUpdateException)
+        {
+            //TODO hlaska
         }
 
         return RedirectToAction(nameof(Index));

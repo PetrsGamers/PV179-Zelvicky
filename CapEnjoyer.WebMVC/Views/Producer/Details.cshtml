@@ -1,4 +1,4 @@
-@model ProducerViewModel
+@model ProducerDetailViewModel
 
 @{
     Layout = "_Layout";
@@ -12,7 +12,6 @@
     <p>City: @Model.City</p>
     <p>Description: @Model.Description</p>
     <p>Country: @Model.Country</p>
-    <p>Is Edit For: @(Model.IsEditFor.HasValue ? Model.IsEditFor.ToString() : "None")</p>
 </div>
 
 <a asp-action="Index" asp-controller="Producer">Back to List</a>
