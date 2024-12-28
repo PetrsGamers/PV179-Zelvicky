@@ -50,15 +50,24 @@ public class LeaderboardServiceTests : IDisposable
         };
         var cap1 = new Cap
         {
-            Id = Guid.NewGuid(), TextOnCap = "Cap1", CapPicture = "Cap1picture", Description = "Cap1description"
+            Id = Guid.NewGuid(),
+            TextOnCap = "Cap1",
+            CapPicture = "Cap1picture",
+            Description = "Cap1description"
         };
         var cap2 = new Cap
         {
-            Id = Guid.NewGuid(), TextOnCap = "Cap2", CapPicture = "Cap2picture", Description = "Cap2description"
+            Id = Guid.NewGuid(),
+            TextOnCap = "Cap2",
+            CapPicture = "Cap2picture",
+            Description = "Cap2description"
         };
         var cap3 = new Cap
         {
-            Id = Guid.NewGuid(), TextOnCap = "Cap3", CapPicture = "Cap3picture", Description = "Cap3description"
+            Id = Guid.NewGuid(),
+            TextOnCap = "Cap3",
+            CapPicture = "Cap3picture",
+            Description = "Cap3description"
         };
 
         var album1id = Guid.NewGuid();
@@ -188,11 +197,17 @@ public class LeaderboardServiceTests : IDisposable
         };
         var cap1 = new Cap
         {
-            Id = Guid.NewGuid(), TextOnCap = "Cap1", CapPicture = "Cap1picture", Description = "Cap1description"
+            Id = Guid.NewGuid(),
+            TextOnCap = "Cap1",
+            CapPicture = "Cap1picture",
+            Description = "Cap1description"
         };
         var cap2 = new Cap
         {
-            Id = Guid.NewGuid(), TextOnCap = "Cap2", CapPicture = "Cap2picture", Description = "Cap2description"
+            Id = Guid.NewGuid(),
+            TextOnCap = "Cap2",
+            CapPicture = "Cap2picture",
+            Description = "Cap2description"
         };
 
         var album1id = Guid.NewGuid();

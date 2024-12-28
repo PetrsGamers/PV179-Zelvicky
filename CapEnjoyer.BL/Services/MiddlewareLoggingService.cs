@@ -11,7 +11,10 @@ public class MiddlewareLoggingService(CapEnjoyerDbContext context) : IMiddleware
     {
         var middlewareLog = new MiddlewareLog
         {
-            Id = Guid.NewGuid(), CreatedAt = DateTime.Now.ToUniversalTime(), Action = action, Log = log
+            Id = Guid.NewGuid(),
+            CreatedAt = DateTime.Now.ToUniversalTime(),
+            Action = action,
+            Log = log
         };
         await context.MiddlewareLogs.AddAsync(middlewareLog);
         await context.SaveChangesAsync();

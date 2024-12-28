@@ -36,7 +36,8 @@ public class CapController(ICapService capService, IBottleService bottleService,
         foreach (var colorId in cap.TextColors)
         {
             var color = await colorService.GetColorByIdAsync(colorId);
-            if (color == null) { continue; }
+            if (color == null)
+            { continue; }
 
             textColors.Add(new ColorDetail { Id = color.Id, Name = color.Name, HexCode = color.HexCode });
         }
@@ -45,7 +46,8 @@ public class CapController(ICapService capService, IBottleService bottleService,
         foreach (var colorId in cap.BgColors)
         {
             var color = await colorService.GetColorByIdAsync(colorId);
-            if (color == null) { continue; }
+            if (color == null)
+            { continue; }
 
             bgColors.Add(new ColorDetail { Id = color.Id, Name = color.Name, HexCode = color.HexCode });
         }

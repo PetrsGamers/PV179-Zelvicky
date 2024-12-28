@@ -156,7 +156,10 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
             {
                 currentBottle.CapLinks.Add(new CapToBottle
                 {
-                    CapId = capLink.CapId, Cap = capLink.Cap, BottleId = currentBottle.Id, Bottle = currentBottle
+                    CapId = capLink.CapId,
+                    Cap = capLink.Cap,
+                    BottleId = currentBottle.Id,
+                    Bottle = currentBottle
                 });
             }
 
