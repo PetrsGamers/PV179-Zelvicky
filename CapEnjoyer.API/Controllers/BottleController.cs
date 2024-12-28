@@ -8,57 +8,38 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 public class BottleController(IBottleService bottleService) : ControllerBase
 {
-    [HttpPost("/upload-image/{bottleId:guid}")]
-    public async Task<IActionResult> UploadImageForBottle(Guid bottleId, IFormFile image)
-    {
-
-        await bottleService.UploadImageForBottleAsync(bottleId, image);
-        return Ok("Image uploaded successfully.");
-
-    }
-
     [HttpGet]
     public async Task<IActionResult> GetAllBottles()
     {
-
         var bottles = await bottleService.GetAllBottles();
-        return this.Ok(bottles);
-
+        return Ok(bottles);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetBottleById(Guid id)
     {
-
         var bottle = await bottleService.GetBottleById(id);
-        return this.Ok(bottle);
-
+        return Ok(bottle);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateBottle([FromBody] BottleDto bottleDto)
+    public async Task<IActionResult> CreateBottle(BottleInsertDto bottleDto)
     {
-
         var createdBottle = await bottleService.CreateBottle(bottleDto);
-        return this.CreatedAtAction(nameof(this.GetBottleById), new { id = createdBottle.Id }, createdBottle);
-
+        return Ok(createdBottle);
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateBottle(Guid id, [FromBody] BottleDto bottle)
+    public async Task<IActionResult> UpdateBottle(Guid id, BottleInsertDto bottle)
     {
-
         var updatedBottle = await bottleService.UpdateBottle(id, bottle);
-        return this.Ok(updatedBottle);
-
+        return Ok(updatedBottle);
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteBottle(Guid id)
     {
-
         await bottleService.DeleteBottle(id);
-        return this.Ok();
-
+        return Ok();
     }
 }

@@ -2,7 +2,7 @@ namespace CapEnjoyer.BL.Services.Interfaces;
 
 using DTOs;
 
-public interface IProducerServiceAsync
+public interface IProducerService
 {
     Task<IEnumerable<ProducerDto>> GetAllProducersAsync();
     Task<ProducerDto> GetProducerByIdAsync(Guid id);

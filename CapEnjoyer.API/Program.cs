@@ -4,34 +4,32 @@ using CapEnjoyer.BL.Mappers;
 using CapEnjoyer.BL.Services;
 using CapEnjoyer.BL.Services.Interfaces;
 using CapEnjoyer.DAL;
-using DotNetEnv;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Env.Load();
-
-Helpers.CheckIfEnvironmentVariablesAreSet();
-var connectionString = Helpers.GetConnectionString();
+var connectionString = builder.Configuration.GetConnectionString("LocalPostgres");
+var postgresOptionValidator = new PostgresOptionValidator { ConnectionString = connectionString };
 
 builder.Services.AddControllers(options => options.RespectBrowserAcceptHeader = true).AddXmlSerializerFormatters();
 
 builder.Services.AddDbContextFactory<CapEnjoyerDbContext>(
-    options => options.UseNpgsql(connectionString));
+    options => options.UseNpgsql(postgresOptionValidator.ConnectionString));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBottleService, BottleService>();
-builder.Services.AddScoped<IAlbumServiceAsync, AlbumService>();
+builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<ICapService, CapService>();
 builder.Services.AddScoped<IColorService, ColorService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IMiddlewareLoggingService, MiddlewareLoggingService>();
 builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
 builder.Services.AddScoped<IEditRequestService, EditRequestService>();
-builder.Services.AddScoped<IProducerServiceAsync, ProducerService>();
+builder.Services.AddScoped<IProducerService, ProducerService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer",
@@ -60,8 +58,7 @@ TypeAdapterConfig.GlobalSettings.EnableImmutableMapping();
 
 var app = builder.Build();
 
-// in case the database is not reachable or not created, throw an error
-Helpers.CheckIfDatabaseServerReachableAndCreated(app);
+app.ValidateConnection();
 
 app.UseSwagger();
 app.UseSwaggerUI();

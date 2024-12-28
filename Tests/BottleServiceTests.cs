@@ -1,253 +1,244 @@
 namespace Tests;
 
-using System.Text;
 using CapEnjoyer.BL.DTOs;
-using CapEnjoyer.BL.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Moq;
+using CapEnjoyer.BL.Services;
+using CapEnjoyer.DAL;
+using CapEnjoyer.DAL.Constants;
+using CapEnjoyer.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 
-public class BottleServiceTests
+public class BottleServiceTests : IDisposable
 {
-    private readonly Mock<IBottleService> bottleServiceMock = new();
+    private readonly CapEnjoyerDbContext context;
+
+    public BottleServiceTests()
+    {
+        var options = new DbContextOptionsBuilder<CapEnjoyerDbContext>()
+            .UseInMemoryDatabase("TestBottleDatabase")
+            .Options;
+
+        context = new CapEnjoyerDbContext(options);
+    }
+
+    public void Dispose()
+    {
+        context.Database.EnsureDeleted();
+        context.Dispose();
+        GC.SuppressFinalize(this);
+    }
 
     [Fact]
-    public async Task GetBottleByIdReturnsBottle()
+    public async Task GetBottleByIdAsyncExistingIdReturnsBottle()
     {
         // Arrange
         var bottleId = Guid.NewGuid();
-        var expectedBottle = new BottleDto
+        var producerId = Guid.NewGuid();
+        var imageService = new ImageService(context);
+        var producer = new Producer
+        {
+            Id = producerId,
+            Name = "Producer1",
+            Description = "Description1",
+            City = "Pelhrimov",
+            CountryId = default
+        };
+
+        var bottle = new Bottle
         {
             Id = bottleId,
             Name = "Test Bottle",
-            Description = "A test bottle description"
+            Description = "A really cool bottle",
+            BottlePicture = "",
+            CapLinks = [],
+            Voltage = 4.2,
+            DrinkType = DrinkType.BeerLager,
+            ProducerId = producerId,
+            Producer = producer
         };
-
-        this.bottleServiceMock
-            .Setup(service => service.GetBottleById(bottleId))
-            .ReturnsAsync(expectedBottle);
+        context.Bottles.Add(bottle);
+        await context.SaveChangesAsync();
 
         // Act
-        var bottle = await this.bottleServiceMock.Object.GetBottleById(bottleId);
+        var result = await new BottleService(context, imageService).GetBottleById(bottleId);
 
         // Assert
-        Assert.NotNull(bottle);
-        Assert.Equal(expectedBottle.Id, bottle.Id);
-        Assert.Equal(expectedBottle.Name, bottle.Name);
+        Assert.Equal(bottleId, result.Id);
+        Assert.Equal("Test Bottle", result.Name);
     }
 
     [Fact]
-    public async Task GetAllBottlesReturnsListOfBottles()
+    public async Task CreateBottleAsyncAddsNewBottle()
     {
         // Arrange
-        var bottles = new List<BottleDto>
+        var imageService = new ImageService(context);
+        var bottleService = new BottleService(context, imageService);
+        var producerId = Guid.NewGuid();
+        var producer = new Producer
         {
-            new() { Id = Guid.NewGuid(), Name = "Bottle 1", Description = "Description 1" },
-            new() { Id = Guid.NewGuid(), Name = "Bottle 2", Description = "Description 2" }
+            Id = producerId,
+            Name = "Producer1",
+            Description = "Description1",
+            City = "Pelhrimov",
+            CountryId = default
         };
-
-        this.bottleServiceMock
-            .Setup(service => service.GetAllBottles())
-            .ReturnsAsync(bottles);
-
-        // Act
-        var result = await this.bottleServiceMock.Object.GetAllBottles();
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(2, result.Count());
-    }
-
-    [Fact]
-    public async Task CreateBottleReturnsCreatedBottle()
-    {
-        // Arrange
-        var newBottle = new BottleDto { Name = "New Bottle", Description = "A new bottle description" };
-        var createdBottle = new BottleDto
+        context.Producers.Add(producer);
+        await context.SaveChangesAsync();
+        var newBottle = new BottleInsertDto
         {
-            Id = Guid.NewGuid(),
-            Name = "New Bottle",
-            Description = "A new bottle description"
+            Name = "Awesome Bottle",
+            Description = "An awesome bottle with amazing design",
+            Voltage = 4.2,
+            DrinkType = "BeerLager",
+            Caps = [],
+            ProducerId = producerId
         };
 
-        this.bottleServiceMock
-            .Setup(service => service.CreateBottle(newBottle))
-            .ReturnsAsync(createdBottle);
-
         // Act
-        var result = await this.bottleServiceMock.Object.CreateBottle(newBottle);
+        await bottleService.CreateBottle(newBottle);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(createdBottle.Id, result.Id);
-        Assert.Equal(createdBottle.Name, result.Name);
+        Assert.Equal(1, context.Bottles.Count());
+        Assert.Equal("Awesome Bottle", context.Bottles.First().Name);
+        Assert.Equal(newBottle.DrinkType, context.Bottles.First().DrinkType.ToString());
     }
 
     [Fact]
-    public async Task UpdateBottleReturnsUpdatedBottle()
+    public async Task DeleteBottleAsyncRemovesBottle()
     {
         // Arrange
+        var imageService = new ImageService(context);
+        var bottleService = new BottleService(context, imageService);
         var bottleId = Guid.NewGuid();
-        var updatedBottle = new BottleDto
+        var producerId = Guid.NewGuid();
+        var producer = new Producer
+        {
+            Id = producerId,
+            Name = "Producer1",
+            Description = "Description1",
+            City = "Pelhrimov",
+            CountryId = default
+        };
+        var bottle = new Bottle
         {
             Id = bottleId,
-            Name = "Updated Bottle",
-            Description = "An updated bottle description"
+            Name = "Test Bottle",
+            Description = "A really cool bottle",
+            BottlePicture = "",
+            CapLinks = [],
+            Voltage = 4.2,
+            DrinkType = DrinkType.BeerLager,
+            ProducerId = producerId,
+            Producer = producer
         };
-
-        this.bottleServiceMock
-            .Setup(service => service.UpdateBottle(bottleId, updatedBottle))
-            .ReturnsAsync(updatedBottle);
+        context.Bottles.Add(bottle);
+        await context.SaveChangesAsync();
 
         // Act
-        var result = await this.bottleServiceMock.Object.UpdateBottle(bottleId, updatedBottle);
+        await bottleService.DeleteBottle(bottleId);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(updatedBottle.Id, result.Id);
-        Assert.Equal(updatedBottle.Name, result.Name);
+        Assert.Equal(0, context.Bottles.Count());
     }
 
     [Fact]
-    public async Task DeleteBottleCallsServiceOnce()
+    public async Task UpdateBottleAsyncUpdatesBottle()
     {
         // Arrange
+        var imageService = new ImageService(context);
+        var bottleService = new BottleService(context, imageService);
         var bottleId = Guid.NewGuid();
-
-        this.bottleServiceMock
-            .Setup(service => service.DeleteBottle(bottleId))
-            .Returns(Task.CompletedTask)
-            .Verifiable();
-
-        // Act
-        await this.bottleServiceMock.Object.DeleteBottle(bottleId);
-
-        // Assert
-        this.bottleServiceMock.Verify(service => service.DeleteBottle(bottleId), Times.Once);
-    }
-
-    [Fact]
-    public async Task UploadImageForBottleAsyncHandlesImageUpload()
-    {
-        // Arrange
-        var bottleId = Guid.NewGuid();
-        var mockImageFile = new Mock<IFormFile>();
-        const string fileName = "image.png";
-        const string content = "fake image content";
-        var fileStream = new MemoryStream(Encoding.UTF8.GetBytes(content));
-
-        mockImageFile.Setup(f => f.FileName).Returns(fileName);
-        mockImageFile.Setup(f => f.OpenReadStream()).Returns(fileStream);
-        mockImageFile.Setup(f => f.Length).Returns(fileStream.Length);
-        mockImageFile.Setup(f => f.ContentType).Returns("image/png");
-
-        this.bottleServiceMock
-            .Setup(service => service.UploadImageForBottleAsync(bottleId, mockImageFile.Object))
-            .Returns(Task.CompletedTask)
-            .Verifiable();
-
-        // Act
-        await this.bottleServiceMock.Object.UploadImageForBottleAsync(bottleId, mockImageFile.Object);
-
-        // Assert
-        this.bottleServiceMock.Verify(service => service.UploadImageForBottleAsync(bottleId, mockImageFile.Object),
-            Times.Once);
-    }
-
-    [Fact]
-    public async Task CreateBottleThrowsExceptionWhenRequiredFieldsAreMissing()
-    {
-        var invalidBottle = new BottleDto
+        var producerId = Guid.NewGuid();
+        var producer = new Producer
         {
-            Name = "",
-            Description = ""
+            Id = producerId,
+            Name = "Producer1",
+            Description = "Description1",
+            City = "Pelhrimov",
+            CountryId = default
+        };
+        var bottle = new Bottle
+        {
+            Id = bottleId,
+            Name = "Test Bottle",
+            Description = "A really cool bottle",
+            BottlePicture = "",
+            CapLinks = [],
+            Voltage = 4.2,
+            DrinkType = DrinkType.BeerLager,
+            ProducerId = new Guid(),
+            Producer = producer
+        };
+        context.Bottles.Add(bottle);
+        await context.SaveChangesAsync();
+
+        var updatedBottle = new BottleInsertDto
+        {
+            Name = "Updated Bottle",
+            Description = "An updated bottle",
+            Voltage = 4.2,
+            DrinkType = "BeerLager",
+            Caps = []
         };
 
-        this.bottleServiceMock
-            .Setup(service => service.CreateBottle(invalidBottle))
-            .ThrowsAsync(new ArgumentException("Name or description is missing"));
-
         // Act
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-            this.bottleServiceMock.Object.CreateBottle(invalidBottle));
+        await bottleService.UpdateBottle(bottleId, updatedBottle);
 
         // Assert
-        Assert.Equal("Name or description is missing", exception.Message);
+        Assert.Equal(1, context.Bottles.Count());
+        Assert.Equal("Updated Bottle", context.Bottles.First().Name);
+        Assert.Equal("An updated bottle", context.Bottles.First().Description);
     }
 
     [Fact]
-    public async Task UploadImageForBottleAsyncThrowsExceptionWhenFileSizeExceedsLimit()
+    public async Task GetBottlesAsyncReturnsAllBottles()
     {
         // Arrange
-        var bottleId = Guid.NewGuid();
-        var mockLargeImageFile = new Mock<IFormFile>();
-        const int largeFileSize = 6 * 1024 * 1024; // 6 MB (exceeds 5 MB limit)
-        const string fileName = "large_image.png";
-
-        mockLargeImageFile.Setup(f => f.FileName).Returns(fileName);
-        mockLargeImageFile.Setup(f => f.Length).Returns(largeFileSize);
-        mockLargeImageFile.Setup(f => f.ContentType).Returns("image/png");
-
-        this.bottleServiceMock
-            .Setup(service => service.UploadImageForBottleAsync(bottleId, mockLargeImageFile.Object))
-            .ThrowsAsync(new ArgumentException("File size is too big."));
-
-        // Act
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-            this.bottleServiceMock.Object.UploadImageForBottleAsync(bottleId, mockLargeImageFile.Object));
-
-        //Assert
-        Assert.Equal("File size is too big.", exception.Message);
-    }
-
-    [Fact]
-    public async Task UpdateBottleThrowsExceptionWhenBottleDoesNotExist()
-    {
-        // Arrange
-        var nonExistentBottleId = Guid.NewGuid();
-        var updatedBottle = new BottleDto
+        var imageService = new ImageService(context);
+        var bottleService = new BottleService(context, imageService);
+        var producerId = Guid.NewGuid();
+        var producer = new Producer
         {
-            Id = nonExistentBottleId,
-            Name = "Updated Bottle",
-            Description = "Updated description"
+            Id = producerId,
+            Name = "Producer1",
+            Description = "Description1",
+            City = "Pelhrimov",
+            CountryId = default
         };
-
-        this.bottleServiceMock
-            .Setup(service => service.UpdateBottle(nonExistentBottleId, updatedBottle))
-            .ThrowsAsync(new ArgumentException($"Bottle with ID {nonExistentBottleId} not found."));
-
-        // Act
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-            this.bottleServiceMock.Object.UpdateBottle(nonExistentBottleId, updatedBottle));
-
-        //Assert
-        Assert.Equal($"Bottle with ID {nonExistentBottleId} not found.", exception.Message);
-    }
-
-    [Fact]
-    public async Task UploadImageForBottleAsyncThrowsExceptionForInvalidFileType()
-    {
-        // Arrange
-        var bottleId = Guid.NewGuid();
-        var mockInvalidImageFile = new Mock<IFormFile>();
-        const string fileName = "invalid_image.txt";
-        const string content = "fake text content";
-        var fileStream = new MemoryStream(Encoding.UTF8.GetBytes(content));
-
-        mockInvalidImageFile.Setup(f => f.FileName).Returns(fileName);
-        mockInvalidImageFile.Setup(f => f.OpenReadStream()).Returns(fileStream);
-        mockInvalidImageFile.Setup(f => f.Length).Returns(fileStream.Length);
-        mockInvalidImageFile.Setup(f => f.ContentType).Returns("text/plain");
-
-        this.bottleServiceMock
-            .Setup(service => service.UploadImageForBottleAsync(bottleId, mockInvalidImageFile.Object))
-            .ThrowsAsync(new ArgumentException("Invalid file type."));
+        context.Bottles.AddRange(
+            new Bottle
+            {
+                Id = Guid.NewGuid(),
+                Name = "Bottle1",
+                Description = "Description1",
+                Voltage = 4.2,
+                DrinkType = DrinkType.BeerLager,
+                BottlePicture = "",
+                CapLinks = [],
+                ProducerId = producerId,
+                Producer = producer
+            },
+            new Bottle
+            {
+                Id = Guid.NewGuid(),
+                Name = "Bottle2",
+                Description = "Description2",
+                Voltage = 4.2,
+                DrinkType = DrinkType.BeerLager,
+                BottlePicture = "",
+                CapLinks = [],
+                ProducerId = producerId,
+                Producer = producer
+            }
+        );
+        await context.SaveChangesAsync();
 
         // Act
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-            this.bottleServiceMock.Object.UploadImageForBottleAsync(bottleId, mockInvalidImageFile.Object));
+        var result = await bottleService.GetAllBottles();
 
-        //Assert
-        Assert.Equal("Invalid file type.", exception.Message);
+        // Assert
+        var bottleDtos = result.ToList();
+        Assert.Equal(2, bottleDtos.Count);
+        Assert.Equal("Bottle1", bottleDtos.First().Name);
+        Assert.Equal("Bottle2", bottleDtos.Last().Name);
     }
-
 }

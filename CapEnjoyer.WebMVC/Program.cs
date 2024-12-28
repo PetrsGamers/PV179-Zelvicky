@@ -1,7 +1,7 @@
+using CapEnjoyer.API.Helpers;
 using CapEnjoyer.BL.Mappers;
 using CapEnjoyer.DAL;
 using CapEnjoyer.DAL.Entities;
-using DotNetEnv;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,16 +9,11 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 
-Env.Load();
-var connectionString = $"Host={Environment.GetEnvironmentVariable("DB_HOST")};" +
-                       $"Port={Environment.GetEnvironmentVariable("DB_PORT")};" +
-                       $"Username={Environment.GetEnvironmentVariable("DB_USERNAME")};" +
-                       $"Password={Environment.GetEnvironmentVariable("DB_PASSWORD")};" +
-                       $"Database={Environment.GetEnvironmentVariable("DB_NAME")}";
-
+var connectionString = builder.Configuration.GetConnectionString("LocalPostgres");
+var postgresOptionValidator = new PostgresOptionValidator { ConnectionString = connectionString };
 
 builder.Services.AddDbContextFactory<CapEnjoyerDbContext>(
-    options => options.UseNpgsql(connectionString));
+    options => options.UseNpgsql(postgresOptionValidator.ConnectionString));
 
 
 builder.Services.AddControllersWithViews();
@@ -47,6 +42,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.ValidateConnection();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

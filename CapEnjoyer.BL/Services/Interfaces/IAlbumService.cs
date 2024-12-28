@@ -2,7 +2,7 @@ namespace CapEnjoyer.BL.Services.Interfaces;
 
 using DTOs;
 
-public interface IAlbumServiceAsync
+public interface IAlbumService
 {
     public Task<IEnumerable<AlbumDto>> GetAllAlbums();
     public Task<AlbumDto> GetAlbumById(Guid id);
