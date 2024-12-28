@@ -45,7 +45,7 @@ public class AccountController(
             if (result.Succeeded)
             {
                 await signInManager.SignInAsync(user, false);
-                return this.RedirectToAction(nameof(Login), nameof(AccountController).Replace("Controller", ""));
+                return RedirectToAction(nameof(Login), nameof(AccountController).Replace("Controller", ""));
             }
 
             foreach (var error in result.Errors)
@@ -62,26 +62,26 @@ public class AccountController(
     [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
-        if (this.ModelState.IsValid)
+        if (ModelState.IsValid)
         {
-            var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, false, lockoutOnFailure: false);
+            var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
             if (result.Succeeded)
             {
-                return this.RedirectToAction(nameof(this.LoginSuccess),
+                return RedirectToAction(nameof(LoginSuccess),
                     nameof(AccountController).Replace("Controller", ""));
             }
 
-            this.ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
         }
 
-        return this.View(model);
+        return View(model);
     }
 
     public async Task<IActionResult> Logout()
     {
         await signInManager.SignOutAsync();
-        return this.RedirectToAction(nameof(HomeController.Index), nameof(HomeController).Replace("Controller", ""));
+        return RedirectToAction(nameof(HomeController.Index), nameof(HomeController).Replace("Controller", ""));
     }
 
-    public IActionResult LoginSuccess() => this.View();
+    public IActionResult LoginSuccess() => View();
 }

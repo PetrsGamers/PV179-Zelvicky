@@ -5,5 +5,5 @@ public enum AuditLogAction
     Create,
     Update,
     Delete,
-    ImageUpload,
+    ImageUpload
 }

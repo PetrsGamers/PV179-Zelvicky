@@ -10,7 +10,7 @@
 <form asp-action="Create" method="post" enctype="multipart/form-data">
     <div>
         <label asp-for="TextOnCap">Text On Cap</label>
-        <input asp-for="TextOnCap" class="form-control" />
+        <input asp-for="TextOnCap" class="form-control"/>
         <span asp-validation-for="TextOnCap" class="text-danger"></span>
     </div>
     <div>
@@ -20,27 +20,30 @@
     </div>
     <div>
         <label asp-for="TextColorsIds">Text Colors</label>
-        <select asp-for="TextColorsIds" asp-items="Model.ColorsOptions" class="form-control" multiple></select>
+        <select asp-for="TextColorsIds" asp-items="Model.ColorsOptions" class="form-control selectpicker" multiple
+                data-live-search="true"></select>
         <span asp-validation-for="TextColorsIds" class="text-danger"></span>
     </div>
     <div>
         <label asp-for="BgColorsIds">Background Colors</label>
-        <select asp-for="BgColorsIds" asp-items="Model.ColorsOptions" class="form-control" multiple></select>
+        <select asp-for="BgColorsIds" asp-items="Model.ColorsOptions" class="form-control selectpicker" multiple
+                data-live-search="true"></select>
         <span asp-validation-for="BgColorsIds" class="text-danger"></span>
     </div>
     <div>
         <label asp-for="BottlesIds">Bottles</label>
-        <select asp-for="BottlesIds" asp-items="Model.BottlesOptions" class="form-control" multiple></select>
+        <select asp-for="BottlesIds" asp-items="Model.BottlesOptions" class="form-control selectpicker" multiple
+                data-live-search="true"></select>
         <span asp-validation-for="BottlesIds" class="text-danger"></span>
     </div>
     <div>
         <label asp-for="CapPicture">Cap Picture</label>
-        <input asp-for="CapPicture" type="file" class="form-control" />
+        <input asp-for="CapPicture" type="file" class="form-control"/>
         <span asp-validation-for="CapPicture" class="text-danger"></span>
     </div>
-    <br />
+    <br/>
     <button type="submit" class="btn btn-primary">Create</button>
 </form>
 
-<br />
+<br/>
 <a asp-action="Index" asp-controller="Cap" class="btn btn-secondary">Back to List</a>

@@ -22,7 +22,6 @@ public class LoggerMiddleware(
 
     public async Task InvokeAsync(HttpContext context)
     {
-
         IncomingRequest(logger, context.Request.Method, context.Request.Path.ToString(), null);
 
         await next(context);

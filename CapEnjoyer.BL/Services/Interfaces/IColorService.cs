@@ -11,5 +11,4 @@ public interface IColorService
     public Task<ColorDto> UpdateColorAsync(Guid id, ColorDto colorDto);
     public Task DeleteColorAsync(Guid id);
     public Task<List<SelectListItem>> GetColorOptionsAsync();
-
 }

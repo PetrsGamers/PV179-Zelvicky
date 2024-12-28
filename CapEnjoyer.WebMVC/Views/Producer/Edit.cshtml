@@ -10,12 +10,12 @@
 <form asp-action="Edit" method="post">
     <div>
         <label>Name</label>
-        <input asp-for="Name" />
+        <input asp-for="Name"/>
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div>
         <label>City</label>
-        <input asp-for="City" />
+        <input asp-for="City"/>
         <span asp-validation-for="City" class="text-danger"></span>
     </div>
     <div>
@@ -25,10 +25,13 @@
     </div>
     <div>
         <label>Country</label>
-        <select asp-for="CountryId" asp-items="Model.Countries"  class="selectpicker" data-live-search="true"></select>
+        <select asp-for="CountryId" asp-items="Model.Countries" class="selectpicker" data-live-search="true"></select>
         <span asp-validation-for="CountryId" class="text-danger"></span>
     </div>
-    <button type="submit" onclick="return confirm('To maintain data quality, the producer cannot be edited directly. Our team will review your edit request soon, and if approved, the changes will be updated in the database.')">Save</button>
+    <button type="submit"
+            onclick="return confirm('To maintain data quality, the producer cannot be edited directly. Our team will review your edit request soon, and if approved, the changes will be updated in the database.')">
+        Save
+    </button>
 </form>
 
 <a asp-action="Index" asp-controller="Producer">Back to List</a>

@@ -1,12 +1,14 @@
 namespace Cap.Enjoyer.WebMVC.Controllers;
-using Cap.Enjoyer.WebMVC.Models;
+
 using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services.Interfaces;
-using CapEnjoyer.DAL.Constants;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Models;
 
-public class BottleController(IBottleService bottleService, IProducerService producerService, ICapService capService) : Controller
+public class BottleController(
+    IBottleService bottleService,
+    IProducerServiceAsync producerService,
+    ICapService capService) : Controller
 {
     public async Task<IActionResult> Index()
     {
@@ -19,9 +21,9 @@ public class BottleController(IBottleService bottleService, IProducerService pro
             Voltage = b.Voltage,
             BottlePicture = b.BottlePicture,
             DrinkType = b.DrinkType,
-            Producer = b.Producer,
-            Caps = b.Caps,
-            IsEditFor = b.IsEditFor
+            Producer = b.ProducerId,
+            Caps = b.Caps ?? [],
+            IsEditFor = b.IsEditForId
         });
         return View(viewModel);
     }
@@ -37,9 +39,9 @@ public class BottleController(IBottleService bottleService, IProducerService pro
             Voltage = bottle.Voltage,
             BottlePicture = bottle.BottlePicture,
             DrinkType = bottle.DrinkType,
-            Producer = bottle.Producer,
+            Producer = bottle.ProducerId,
             Caps = bottle.Caps,
-            IsEditFor = bottle.IsEditFor
+            IsEditFor = bottle.IsEditForId
         };
         return View(viewModel);
     }
@@ -86,8 +88,8 @@ public class BottleController(IBottleService bottleService, IProducerService pro
             Description = model.Description,
             Voltage = model.Voltage,
             DrinkType = model.DrinkType,
-            Producer = model.ProducerId,
-            Caps = model.CapIds ?? [],
+            ProducerId = model.ProducerId,
+            CapsIds = model.CapIds ?? [],
             BottlePicture = "placeholder"
         };
 
@@ -106,7 +108,7 @@ public class BottleController(IBottleService bottleService, IProducerService pro
             Description = bottle.Description,
             Voltage = bottle.Voltage,
             DrinkType = bottle.DrinkType,
-            ProducerId = bottle.Producer,
+            ProducerId = bottle.ProducerId,
             CapIds = bottle.Caps,
             ProducersOptions = await producerService.GetProducerOptionsAsync(),
             DrinkTypes = bottleService.GetDrinkTypeOptions(),
@@ -115,7 +117,6 @@ public class BottleController(IBottleService bottleService, IProducerService pro
 
         return View(model);
     }
-
 
 
     [HttpPost]
@@ -140,14 +141,14 @@ public class BottleController(IBottleService bottleService, IProducerService pro
             return View(viewModel);
         }
 
-        var bottleDto = new BottleInsertDto()
+        var bottleDto = new BottleInsertDto
         {
             Name = model.Name,
             Description = model.Description,
             Voltage = model.Voltage,
             DrinkType = model.DrinkType,
-            Producer = model.ProducerId,
-            Caps = model.CapIds ?? []
+            ProducerId = model.ProducerId,
+            CapsIds = model.CapIds ?? []
         };
 
         await bottleService.UpdateBottle(id, bottleDto);

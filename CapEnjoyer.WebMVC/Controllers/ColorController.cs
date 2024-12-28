@@ -1,20 +1,16 @@
 namespace Cap.Enjoyer.WebMVC.Controllers;
-using Cap.Enjoyer.WebMVC.Models;
+
 using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 
 public class ColorController(IColorService colorService) : Controller
 {
     public async Task<IActionResult> Index()
     {
         var colors = await colorService.GetColorsAsync();
-        var viewModel = colors.Select(c => new ColorViewModel
-        {
-            Id = c.Id,
-            Name = c.Name,
-            HexValue = c.HexValue
-        });
+        var viewModel = colors.Select(c => new ColorViewModel { Id = c.Id, Name = c.Name, HexValue = c.HexCode });
         return View(viewModel);
     }
 
@@ -29,11 +25,7 @@ public class ColorController(IColorService colorService) : Controller
             return View(returnModel);
         }
 
-        var colorDto = new ColorDto
-        {
-            Name = returnModel.Name,
-            HexValue = returnModel.HexValue
-        };
+        var colorDto = new ColorDto { Name = returnModel.Name, HexCode = returnModel.HexValue };
 
         await colorService.CreateColorAsync(colorDto);
         return RedirectToAction(nameof(Index));
@@ -48,12 +40,7 @@ public class ColorController(IColorService colorService) : Controller
             return NotFound();
         }
 
-        var viewModel = new ColorViewModel
-        {
-            Id = color.Id,
-            Name = color.Name,
-            HexValue = color.HexValue
-        };
+        var viewModel = new ColorViewModel { Id = color.Id, Name = color.Name, HexValue = color.HexCode };
         return View(viewModel);
     }
 
@@ -65,12 +52,7 @@ public class ColorController(IColorService colorService) : Controller
             return View(viewModel);
         }
 
-        var colorDto = new ColorDto
-        {
-            Id = viewModel.Id,
-            Name = viewModel.Name,
-            HexValue = viewModel.HexValue
-        };
+        var colorDto = new ColorDto { Id = viewModel.Id, Name = viewModel.Name, HexCode = viewModel.HexValue };
 
         await colorService.UpdateColorAsync(viewModel.Id, colorDto);
         return RedirectToAction(nameof(Index));

@@ -19,5 +19,3 @@ public class CapCreateViewModel
     public required List<SelectListItem> BottlesOptions { get; set; }
     public required List<SelectListItem> ColorsOptions { get; set; }
 }
-
-

@@ -30,8 +30,10 @@
                 <a href="@Url.Action("Edit", "Producer", new { id = producer.Id })" class="btn btn-info btn-sm">
                     <i class="fas fa-edit"></i> Edit
                 </a> |
-                <form action="@Url.Action("Delete", "Producer", new { id = producer.Id })" method="post" style="display:inline;">
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this producer?')">
+                <form action="@Url.Action("Delete", "Producer", new { id = producer.Id })" method="post"
+                      style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Are you sure you want to delete this producer?')">
                         <i class="fas fa-trash-alt"></i> Delete
                     </button>
                 </form>

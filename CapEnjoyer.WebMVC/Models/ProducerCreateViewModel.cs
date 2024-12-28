@@ -1,4 +1,5 @@
 namespace Cap.Enjoyer.WebMVC.Models;
+
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 public class ProducerCreateViewModel

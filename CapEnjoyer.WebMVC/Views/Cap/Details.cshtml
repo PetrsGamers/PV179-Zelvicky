@@ -11,7 +11,7 @@
     <h4>@Model.TextOnCap</h4>
     <p>Description: @Model.Description</p>
     <p>Is Edit For: @(Model.IsEditFor.HasValue ? Model.IsEditFor.ToString() : "None")</p>
-    <img src="@Model.CapPicture" alt="@Model.TextOnCap" />
+    <img src="@Model.CapPicture" alt="@Model.TextOnCap"/>
 </div>
 
 <a asp-action="Index" asp-controller="Cap">Back to List</a>

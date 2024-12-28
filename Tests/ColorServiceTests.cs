@@ -16,26 +16,26 @@ public class ColorServiceTests : IDisposable
             .UseInMemoryDatabase("TestColorDatabase")
             .Options;
 
-        this.context = new CapEnjoyerDbContext(options);
+        context = new CapEnjoyerDbContext(options);
     }
 
     public void Dispose()
     {
-        this.context.Database.EnsureDeleted();
-        this.context.Dispose();
+        context.Database.EnsureDeleted();
+        context.Dispose();
         GC.SuppressFinalize(this);
     }
 
     [Fact]
     public async Task GetColorByIdReturnsCorrectColor()
     {
-        var colorService = new ColorService(this.context);
+        var colorService = new ColorService(context);
 
         var colorId = Guid.NewGuid();
         var color = new Color { Id = colorId, Name = "Blue", HexCode = "#0000FF" };
 
-        this.context.Colors.Add(color);
-        await this.context.SaveChangesAsync();
+        context.Colors.Add(color);
+        await context.SaveChangesAsync();
 
         var result = await colorService.GetColorByIdAsync(colorId);
 
@@ -48,13 +48,13 @@ public class ColorServiceTests : IDisposable
     [Fact]
     public async Task GetColorsReturnsAllColors()
     {
-        var colorService = new ColorService(this.context);
+        var colorService = new ColorService(context);
 
-        this.context.Colors.AddRange(
+        context.Colors.AddRange(
             new Color { Id = Guid.NewGuid(), Name = "Blue", HexCode = "#0000FF" },
             new Color { Id = Guid.NewGuid(), Name = "Red", HexCode = "#FF0000" }
         );
-        await this.context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         var result = await colorService.GetColorsAsync();
 
@@ -64,7 +64,7 @@ public class ColorServiceTests : IDisposable
     [Fact]
     public async Task CreateColorAddsNewColor()
     {
-        var colorService = new ColorService(this.context);
+        var colorService = new ColorService(context);
 
         var newColor = new ColorDto { Name = "Green", HexCode = "#00FF00" };
 
@@ -74,7 +74,7 @@ public class ColorServiceTests : IDisposable
         Assert.Equal("Green", result.Name);
         Assert.Equal("#00FF00", result.HexCode);
 
-        var createdColor = this.context.Colors.FirstOrDefault(c => c.Name == "Green");
+        var createdColor = context.Colors.FirstOrDefault(c => c.Name == "Green");
         Assert.NotNull(createdColor);
         Assert.Equal("#00FF00", createdColor?.HexCode);
     }
@@ -82,30 +82,30 @@ public class ColorServiceTests : IDisposable
     [Fact]
     public async Task DeleteColorRemovesColor()
     {
-        var colorService = new ColorService(this.context);
+        var colorService = new ColorService(context);
 
         var colorId = Guid.NewGuid();
         var color = new Color { Id = colorId, Name = "Yellow", HexCode = "#FFFF00" };
 
-        this.context.Colors.Add(color);
-        await this.context.SaveChangesAsync();
+        context.Colors.Add(color);
+        await context.SaveChangesAsync();
 
         await colorService.DeleteColorAsync(colorId);
 
-        var deletedColor = await this.context.Colors.FindAsync(colorId);
+        var deletedColor = await context.Colors.FindAsync(colorId);
         Assert.Null(deletedColor);
     }
 
     [Fact]
     public async Task UpdateColorModifiesColorDetails()
     {
-        var colorService = new ColorService(this.context);
+        var colorService = new ColorService(context);
 
         var colorId = Guid.NewGuid();
         var originalColor = new Color { Id = colorId, Name = "Orange", HexCode = "#FFA500" };
 
-        this.context.Colors.Add(originalColor);
-        await this.context.SaveChangesAsync();
+        context.Colors.Add(originalColor);
+        await context.SaveChangesAsync();
 
         var updatedColorDto = new ColorDto { Name = "Dark Orange", HexCode = "#FF8C00" };
 
@@ -115,7 +115,7 @@ public class ColorServiceTests : IDisposable
         Assert.Equal("Dark Orange", result.Name);
         Assert.Equal("#FF8C00", result.HexCode);
 
-        var updatedColor = await this.context.Colors.FindAsync(colorId);
+        var updatedColor = await context.Colors.FindAsync(colorId);
         Assert.NotNull(updatedColor);
         Assert.Equal("Dark Orange", updatedColor?.Name);
         Assert.Equal("#FF8C00", updatedColor?.HexCode);

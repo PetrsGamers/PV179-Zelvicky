@@ -1,12 +1,12 @@
 namespace Cap.Enjoyer.WebMVC.Controllers;
 
-using Cap.Enjoyer.WebMVC.Models;
 using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Models;
 
-public class ProducerController(IProducerService producerService, ICountryService countryService) : Controller
+public class ProducerController(IProducerServiceAsync producerService, ICountryService countryService) : Controller
 {
     public async Task<IActionResult> Index()
     {
@@ -17,7 +17,8 @@ public class ProducerController(IProducerService producerService, ICountryServic
             Name = p.Name,
             City = p.City,
             Description = p.Description,
-            Country = p.Country,
+            Country = p.CountryId,
+            IsEditFor = p.IsEditForId
         });
         return View(viewModel);
     }
@@ -31,7 +32,7 @@ public class ProducerController(IProducerService producerService, ICountryServic
             Name = producer.Name,
             City = producer.City,
             Description = producer.Description,
-            Country = producer.Country,
+            Country = producer.CountryId
         };
         return View(viewModel);
     }
@@ -45,11 +46,8 @@ public class ProducerController(IProducerService producerService, ICountryServic
         var viewModel = new ProducerCreateViewModel
         {
             CountryId = defaultCountryId,
-            Countries = countries.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            }).ToList()
+            Countries = countries.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
+                .ToList()
         };
 
         return View(viewModel);
@@ -67,11 +65,8 @@ public class ProducerController(IProducerService producerService, ICountryServic
                 City = returnModel.City,
                 Description = returnModel.Description,
                 CountryId = returnModel.CountryId,
-                Countries = countries.Select(c => new SelectListItem
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name
-                }).ToList()
+                Countries = countries.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
+                    .ToList()
             };
 
             return View(viewModel);
@@ -82,7 +77,7 @@ public class ProducerController(IProducerService producerService, ICountryServic
             Name = returnModel.Name,
             City = returnModel.City,
             Description = returnModel.Description,
-            Country = returnModel.CountryId,
+            Country = returnModel.CountryId
         };
 
         await producerService.CreateProducerAsync(producerDto);
@@ -100,12 +95,9 @@ public class ProducerController(IProducerService producerService, ICountryServic
             Name = producer.Name,
             City = producer.City,
             Description = producer.Description,
-            CountryId = producer.Country,
-            Countries = countries.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            }).ToList()
+            CountryId = producer.CountryId,
+            Countries = countries.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
+                .ToList()
         };
 
         return View(viewModel);
@@ -123,11 +115,8 @@ public class ProducerController(IProducerService producerService, ICountryServic
                 City = returnModel.City,
                 Description = returnModel.Description,
                 CountryId = returnModel.CountryId,
-                Countries = countries.Select(c => new SelectListItem
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name
-                }).ToList()
+                Countries = countries.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
+                    .ToList()
             };
             return View(viewModel);
         }
@@ -137,7 +126,7 @@ public class ProducerController(IProducerService producerService, ICountryServic
             Name = returnModel.Name,
             City = returnModel.City,
             Description = returnModel.Description,
-            Country = returnModel.CountryId,
+            Country = returnModel.CountryId
         };
 
         await producerService.UpdateProducerAsync(id, producerDto);

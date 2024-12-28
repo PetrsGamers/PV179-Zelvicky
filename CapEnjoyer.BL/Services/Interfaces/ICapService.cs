@@ -19,5 +19,4 @@ public interface ICapService
     public Task<CapDto> UpdateCapAsync(Guid id, CapInsertDto capInsertDto);
     public Task DeleteCapAsync(Guid id);
     Task<List<SelectListItem>> GetCapOptionsAsync();
-
 }

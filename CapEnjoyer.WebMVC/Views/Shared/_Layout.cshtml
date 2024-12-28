@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - CapEnjoyer.WebMVC</title>
     <link rel="stylesheet" href="~/lib/bootstrap-4.5.3-dist/css/bootstrap.min.css"/>
-    <link href="~/lib/bootstrap-select-1.13.18/css/bootstrap-select.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-select-1.13.18/css/bootstrap-select.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/styles.css" asp-append-version="true"/>
 </head>
@@ -14,7 +14,8 @@
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container-fluid">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CapEnjoyer.WebMVC</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -36,22 +37,27 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="Bottle" asp-action="Index">Bottles</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Producer" asp-action="Index">Producers</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Producer"
+                           asp-action="Index">Producers</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Color" asp-action="Index">Colors</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Country" asp-action="Index">Countries</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Country"
+                           asp-action="Index">Countries</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Cap Edits</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Cap
+                            Edits</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Bottle Edits</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Bottle
+                            Edits</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Producer Edits</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Producer
+                            Edits</a>
                     </li>
                 </ul>
             </div>
@@ -73,6 +79,6 @@
 <script src="~/lib/bootstrap-4.5.3-dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/lib/bootstrap-select-1.13.18/js/bootstrap-select.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", required: false)
+@await RenderSectionAsync("Scripts", false)
 </body>
 </html>

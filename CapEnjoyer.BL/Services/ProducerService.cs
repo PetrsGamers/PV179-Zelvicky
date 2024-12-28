@@ -4,8 +4,8 @@ using DAL;
 using DAL.Entities;
 using DTOs;
 using Interfaces;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Mapster;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 public class ProducerService(CapEnjoyerDbContext context) : IProducerService
@@ -105,11 +105,7 @@ public class ProducerService(CapEnjoyerDbContext context) : IProducerService
 
     public async Task<List<SelectListItem>> GetProducerOptionsAsync()
     {
-        var producers = await context.Producers.Where(p=> p.IsEditForId == null).ToListAsync();
-        return producers.Select(p => new SelectListItem
-        {
-            Value = p.Id.ToString(),
-            Text = p.Name
-        }).ToList();
+        var producers = await context.Producers.Where(p => p.IsEditForId == null).ToListAsync();
+        return producers.Select(p => new SelectListItem { Value = p.Id.ToString(), Text = p.Name }).ToList();
     }
 }

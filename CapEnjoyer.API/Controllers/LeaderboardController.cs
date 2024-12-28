@@ -1,6 +1,6 @@
 namespace CapEnjoyer.API.Controllers;
 
-using CapEnjoyer.BL.Services.Interfaces;
+using BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -11,6 +11,6 @@ public class LeaderboardController(ILeaderboardService leaderboardService) : Con
     public async Task<IActionResult> GetLeaderboard()
     {
         var leaderboard = await leaderboardService.GetLeaderboard();
-        return this.Ok(leaderboard);
+        return Ok(leaderboard);
     }
 }

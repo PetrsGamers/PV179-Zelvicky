@@ -12,5 +12,4 @@ public interface IBottleService
     public Task DeleteBottle(Guid id);
     List<SelectListItem> GetDrinkTypeOptions();
     public Task<List<SelectListItem>> GetBottleOptionsAsync();
-
 }

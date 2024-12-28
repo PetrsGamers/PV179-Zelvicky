@@ -10,12 +10,12 @@
 <form asp-action="Create" method="post">
     <div>
         <label>Name</label>
-        <input asp-for="Name" class="form-control" />
+        <input asp-for="Name" class="form-control"/>
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div>
         <label>Hex Value</label>
-        <input asp-for="HexValue" class="form-control" placeholder="#FFFFFF" />
+        <input asp-for="HexValue" class="form-control" placeholder="#FFFFFF"/>
         <span asp-validation-for="HexValue" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-success">Create</button>

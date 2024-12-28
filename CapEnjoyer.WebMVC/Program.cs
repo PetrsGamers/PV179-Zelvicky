@@ -1,7 +1,7 @@
 using CapEnjoyer.API.Helpers;
+using CapEnjoyer.BL.Mappers;
 using CapEnjoyer.BL.Services;
 using CapEnjoyer.BL.Services.Interfaces;
-using CapEnjoyer.BL.Mappers;
 using CapEnjoyer.DAL;
 using CapEnjoyer.DAL.Entities;
 using Mapster;
