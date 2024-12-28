@@ -114,11 +114,7 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
     public List<SelectListItem> GetDrinkTypeOptions() =>
         Enum.GetValues(typeof(DrinkType))
             .Cast<DrinkType>()
-            .Select(d => new SelectListItem
-            {
-                Value = d.ToString(),
-                Text = d.ToString()
-            }).ToList();
+            .Select(d => new SelectListItem { Value = d.ToString(), Text = d.ToString() }).ToList();
 
     public async Task<List<SelectListItem>> GetBottleOptionsAsync() =>
         await context.Bottles

@@ -8,10 +8,11 @@ using Models;
 public class CapController(ICapService capService, IBottleService bottleService, IColorService colorService)
     : Controller
 {
+    [HttpGet]
     public async Task<IActionResult> Index()
     {
         var caps = await capService.GetAllCapsFilteredAsync();
-        var viewModel = caps.Select(c => new CapViewModel
+        var viewModel = caps.Select(c => new CapListViewModel
         {
             Id = c.Id,
             TextOnCap = c.TextOnCap,
@@ -24,21 +25,53 @@ public class CapController(ICapService capService, IBottleService bottleService,
         return View(viewModel);
     }
 
+    [HttpGet]
+    [HttpGet]
     public async Task<IActionResult> Details(Guid id)
     {
         var cap = await capService.GetCapByIdAsync(id);
-        var viewModel = new CapViewModel
+
+        // Fetch text colors sequentially
+        var textColors = new List<ColorDetail>();
+        foreach (var colorId in cap.TextColors)
+        {
+            var color = await colorService.GetColorByIdAsync(colorId);
+            if (color == null) { continue; }
+
+            textColors.Add(new ColorDetail { Id = color.Id, Name = color.Name, HexCode = color.HexCode });
+        }
+
+        var bgColors = new List<ColorDetail>();
+        foreach (var colorId in cap.BgColors)
+        {
+            var color = await colorService.GetColorByIdAsync(colorId);
+            if (color == null) { continue; }
+
+            bgColors.Add(new ColorDetail { Id = color.Id, Name = color.Name, HexCode = color.HexCode });
+        }
+
+        var bottles = new List<BottleDetail>();
+        foreach (var bottleId in cap.Bottles)
+        {
+            var bottle = await bottleService.GetBottleById(bottleId);
+            bottles.Add(new BottleDetail { Id = bottle.Id, Name = bottle.Name });
+        }
+
+        var viewModel = new CapDetailViewModel
         {
             Id = cap.Id,
             TextOnCap = cap.TextOnCap,
             Description = cap.Description,
-            CapPicture = null, //TODO pictures
-            TextColorsIds = cap.TextColors,
-            BgColorsIds = cap.BgColors,
-            BottlesIds = cap.Bottles
+            CapPicture = cap.CapPicture,
+            TextColors = textColors,
+            BgColors = bgColors,
+            Bottles = bottles,
+            IsEditForId = cap.IsEditForId
         };
+
         return View(viewModel);
     }
+
 
     [HttpGet]
     public async Task<IActionResult> Create()

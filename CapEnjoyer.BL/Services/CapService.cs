@@ -132,10 +132,7 @@ public class CapService(CapEnjoyerDbContext context, IImageService imageService)
             .Where(bc => capInsertDto.BgColors.Contains(bc.Id))
             .Select(bc => new CapToBackgroundColor
             {
-                BackgroundColor = bc,
-                Cap = oldCap,
-                BackgroundColorId = bc.Id,
-                CapId = oldCap.Id
+                BackgroundColor = bc, Cap = oldCap, BackgroundColorId = bc.Id, CapId = oldCap.Id
             })
             .ToListAsync();
 
@@ -187,10 +184,7 @@ public class CapService(CapEnjoyerDbContext context, IImageService imageService)
             .Where(bc => capInsertDto.BgColors.Contains(bc.Id))
             .Select(bc => new CapToBackgroundColor
             {
-                BackgroundColor = bc,
-                Cap = cap,
-                BackgroundColorId = bc.Id,
-                CapId = cap.Id
+                BackgroundColor = bc, Cap = cap, BackgroundColorId = bc.Id, CapId = cap.Id
             })
             .ToListAsync();
 
@@ -221,10 +215,6 @@ public class CapService(CapEnjoyerDbContext context, IImageService imageService)
     public async Task<List<SelectListItem>> GetCapOptionsAsync()
     {
         var caps = await context.Caps.Where(cap => cap.IsEditForId == null).ToListAsync();
-        return caps.Select(c => new SelectListItem
-        {
-            Value = c.Id.ToString(),
-            Text = c.TextOnCap
-        }).ToList();
+        return caps.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.TextOnCap }).ToList();
     }
 }

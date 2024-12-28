@@ -42,12 +42,7 @@ public class BottleController(
         foreach (var capId in capIds)
         {
             var cap = await capService.GetCapByIdAsync(capId);
-            caps.Add(new CapDetail
-            {
-                Id = cap.Id,
-                Name = cap.TextOnCap,
-                Description = cap.Description,
-            });
+            caps.Add(new CapDetail { Id = cap.Id, Name = cap.TextOnCap, Description = cap.Description });
         }
 
         var viewModel = new BottleDetailViewModel
@@ -66,7 +61,6 @@ public class BottleController(
 
         return View(viewModel);
     }
-
 
 
     [HttpGet]

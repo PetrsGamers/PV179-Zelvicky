@@ -18,7 +18,7 @@ public class ProducerController(IProducerService producerService, ICountryServic
             Name = p.Name,
             City = p.City,
             Description = p.Description,
-            Country = p.CountryId,
+            Country = p.CountryId
         });
         return View(viewModel);
     }
@@ -28,14 +28,14 @@ public class ProducerController(IProducerService producerService, ICountryServic
         var producer = await producerService.GetProducerByIdAsync(id);
         var country = await countryService.GetCountryByIdAsync(producer.CountryId);
 
-        var viewModel = new ProducerDetailViewModel()
+        var viewModel = new ProducerDetailViewModel
         {
             Id = producer.Id,
             Name = producer.Name,
             City = producer.City,
             Description = producer.Description,
             Country = country?.Name ?? "Failed to load country",
-            IsEditForId = producer.IsEditForId,
+            IsEditForId = producer.IsEditForId
         };
         return View(viewModel);
     }
@@ -148,7 +148,7 @@ public class ProducerController(IProducerService producerService, ICountryServic
         {
             return NotFound();
         }
-        catch(DbUpdateException)
+        catch (DbUpdateException)
         {
             //TODO hlaska
         }

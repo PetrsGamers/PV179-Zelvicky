@@ -1,6 +1,6 @@
 namespace Cap.Enjoyer.WebMVC.Models;
 
-public class CapViewModel
+public class CapListViewModel
 {
     public required Guid Id { get; set; }
     public required string TextOnCap { get; set; }

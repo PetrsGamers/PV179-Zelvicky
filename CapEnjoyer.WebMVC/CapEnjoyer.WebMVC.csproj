@@ -29,13 +29,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\styles.css" />
+    <None Include="wwwroot\styles.css"/>
   </ItemGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="Views\Bottle\Index.cshtml" />
-    <AdditionalFiles Include="Views\Cap\Index.cshtml" />
-    <AdditionalFiles Include="Views\Color\Index.cshtml" />
+    <AdditionalFiles Include="Views\Bottle\Index.cshtml"/>
+    <AdditionalFiles Include="Views\Cap\Index.cshtml"/>
+    <AdditionalFiles Include="Views\Color\Index.cshtml"/>
   </ItemGroup>
 
 </Project>
