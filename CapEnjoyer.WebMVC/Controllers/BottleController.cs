@@ -10,10 +10,11 @@ public class BottleController(
     IProducerService producerService,
     ICapService capService) : Controller
 {
+    [HttpGet]
     public async Task<IActionResult> Index()
     {
         var bottles = await bottleService.GetAllBottles();
-        var viewModel = bottles.Select(b => new BottleViewModel
+        var viewModel = bottles.Select(b => new BottleListViewModel
         {
             Id = b.Id,
             Name = b.Name,
@@ -28,10 +29,28 @@ public class BottleController(
         return View(viewModel);
     }
 
+    [HttpGet]
     public async Task<IActionResult> Details(Guid id)
     {
         var bottle = await bottleService.GetBottleById(id);
-        var viewModel = new BottleViewModel
+
+        var producer = await producerService.GetProducerByIdAsync(bottle.ProducerId);
+
+        var capIds = bottle.Caps ?? [];
+        List<CapDetail> caps = [];
+
+        foreach (var capId in capIds)
+        {
+            var cap = await capService.GetCapByIdAsync(capId);
+            caps.Add(new CapDetail
+            {
+                Id = cap.Id,
+                Name = cap.TextOnCap,
+                Description = cap.Description,
+            });
+        }
+
+        var viewModel = new BottleDetailViewModel
         {
             Id = bottle.Id,
             Name = bottle.Name,
@@ -40,11 +59,15 @@ public class BottleController(
             BottlePicture = bottle.BottlePicture,
             DrinkType = bottle.DrinkType,
             Producer = bottle.ProducerId,
-            Caps = bottle.Caps ?? [],
+            ProducerName = producer.Name,
+            CapDetails = caps,
             IsEditFor = bottle.IsEditForId
         };
+
         return View(viewModel);
     }
+
+
 
     [HttpGet]
     public async Task<IActionResult> Create()
@@ -129,7 +152,7 @@ public class BottleController(
                 Name = model.Name,
                 Description = model.Description,
                 Voltage = model.Voltage,
-                BottlePicture = null, //TODO image input
+                BottlePicture = model.BottlePicture,
                 DrinkType = model.DrinkType,
                 ProducerId = model.ProducerId,
                 CapIds = model.CapIds,
@@ -148,10 +171,11 @@ public class BottleController(
             Voltage = model.Voltage,
             DrinkType = model.DrinkType,
             ProducerId = model.ProducerId,
-            Caps = model.CapIds ?? []
+            Caps = model.CapIds ?? [],
+            IsEditForId = id
         };
 
-        await bottleService.UpdateBottle(id, bottleDto);
+        await bottleService.CreateBottle(bottleDto);
 
         return RedirectToAction(nameof(Index));
     }

@@ -34,7 +34,8 @@ public class ProducerController(IProducerService producerService, ICountryServic
             Name = producer.Name,
             City = producer.City,
             Description = producer.Description,
-            Country = country?.Name ?? "Failed to load country"
+            Country = country?.Name ?? "Failed to load country",
+            IsEditForId = producer.IsEditForId,
         };
         return View(viewModel);
     }

@@ -12,6 +12,10 @@
     <p>City: @Model.City</p>
     <p>Description: @Model.Description</p>
     <p>Country: @Model.Country</p>
+    @if (Model.IsEditForId.HasValue)
+    {
+        <p>Is Edit For: @Model.IsEditForId</p>
+    }
 </div>
 
 <a asp-action="Index" asp-controller="Producer">Back to List</a>

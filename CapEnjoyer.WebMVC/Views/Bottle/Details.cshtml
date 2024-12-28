@@ -1,4 +1,4 @@
-@model BottleViewModel
+@model BottleDetailViewModel
 
 @{
     Layout = "_Layout";
@@ -12,9 +12,26 @@
     <p>Description: @Model.Description</p>
     <p>Voltage: @Model.Voltage</p>
     <p>Drink Type: @Model.DrinkType</p>
-    <p>Producer: @Model.Producer</p>
-    <p>Is Edit For: @(Model.IsEditFor.HasValue ? Model.IsEditFor.ToString() : "None")</p>
-    <img src="@Model.BottlePicture" alt="@Model.Name picture"/>
+    <p>
+        Producer:
+        <a asp-controller="Producer" asp-action="Details" asp-route-id="@Model.Producer">
+            @Model.ProducerName
+        </a>
+    </p>
+    @if (Model.IsEditFor.HasValue)
+    {
+        <p>Is Edit For: @Model.IsEditFor</p>
+    }
+    <p>Caps:</p>
+    <ul>
+        @foreach (var cap in Model.CapDetails)
+        {
+            <li>
+                <a asp-controller="Cap" asp-action="Details" asp-route-id="@cap.Id">@cap.Name</a>
+            </li>
+        }
+    </ul>
+    <img src="@Model.BottlePicture" alt="@Model.Name picture" />
 </div>
 
 <a asp-action="Index" asp-controller="Bottle">Back to List</a>

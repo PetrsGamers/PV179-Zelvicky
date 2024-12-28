@@ -7,7 +7,7 @@ public class BottleCreateViewModel
     public string? Name { get; set; }
     public string? Description { get; set; }
     public double? Voltage { get; set; }
-    public string? BottlePicture { get; set; }
+    public IFormFile? BottlePicture { get; set; }
     public string? DrinkType { get; set; }
     public Guid? ProducerId { get; set; }
     public List<Guid>? CapIds { get; set; }

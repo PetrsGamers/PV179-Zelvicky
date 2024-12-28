@@ -129,10 +129,11 @@ public class CapController(ICapService capService, IBottleService bottleService,
             CapPictureFile = model.CapPicture,
             TextColors = model.TextColorsIds,
             BgColors = model.BgColorsIds,
-            Bottles = model.BottlesIds ?? []
+            Bottles = model.BottlesIds ?? [],
+            IsEditFor = id
         };
 
-        await capService.UpdateCapAsync(id, capDto);
+        await capService.CreateCapAsync(capDto);
 
         return RedirectToAction(nameof(Index));
     }

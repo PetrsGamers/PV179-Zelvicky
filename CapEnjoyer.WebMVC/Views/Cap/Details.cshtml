@@ -10,7 +10,10 @@
 <div>
     <h4>@Model.TextOnCap</h4>
     <p>Description: @Model.Description</p>
-    <p>Is Edit For: @(Model.IsEditFor.HasValue ? Model.IsEditFor.ToString() : "None")</p>
+    @if (Model.IsEditFor.HasValue)
+    {
+        <p>Is Edit For: @Model.IsEditFor</p>
+    }
     <img src="@Model.CapPicture" alt="@Model.TextOnCap"/>
 </div>
 
