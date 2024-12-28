@@ -4,6 +4,7 @@ using DAL;
 using DAL.Entities;
 using DTOs;
 using Interfaces;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,4 +51,16 @@ public class ColorService(CapEnjoyerDbContext context) : IColorService
         context.Colors.Remove(color);
         await context.SaveChangesAsync();
     }
+
+    public async Task<List<SelectListItem>> GetColorOptionsAsync()
+    {
+        return await context.Colors
+            .Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = $"{c.Name} ({c.HexCode})"
+            })
+            .ToListAsync();
+    }
+
 }

@@ -11,5 +11,6 @@ public interface IBottleService
     public Task<BottleDto> UpdateBottle(Guid id, BottleInsertDto bottle);
     public Task DeleteBottle(Guid id);
     List<SelectListItem> GetDrinkTypeOptions();
+    public Task<List<SelectListItem>> GetBottleOptionsAsync();
 
 }

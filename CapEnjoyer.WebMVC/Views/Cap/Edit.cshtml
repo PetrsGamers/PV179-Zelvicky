@@ -1,4 +1,4 @@
-@model CapViewModel
+@model CapCreateViewModel
 
 @{
     Layout = "_Layout";
@@ -8,32 +8,50 @@
 <h2>Edit Cap</h2>
 
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="Id" />
+
     <div>
-        <label>Text On Cap</label>
-        <input asp-for="TextOnCap" />
+        <label asp-for="TextOnCap">Text On Cap</label>
+        <input asp-for="TextOnCap" class="form-control" />
+        <span asp-validation-for="TextOnCap" class="text-danger"></span>
     </div>
+
     <div>
-        <label>Description</label>
-        <textarea asp-for="Description"></textarea>
+        <label asp-for="Description">Description</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
+
     <div>
-        <label>Text Colors</label>
-        <input asp-for="TextColors" />
+        <label asp-for="TextColorsIds">Text Colors</label>
+        <select asp-for="TextColorsIds" asp-items="Model.ColorsOptions" class="form-control" multiple></select>
+        <span asp-validation-for="TextColorsIds" class="text-danger"></span>
     </div>
+
     <div>
-        <label>Background Colors</label>
-        <input asp-for="BgColors" />
+        <label asp-for="BgColorsIds">Background Colors</label>
+        <select asp-for="BgColorsIds" asp-items="Model.ColorsOptions" class="form-control" multiple></select>
+        <span asp-validation-for="BgColorsIds" class="text-danger"></span>
     </div>
+
     <div>
-        <label>Bottles</label>
-        <input asp-for="Bottles" />
+        <label asp-for="BottlesIds">Bottles</label>
+        <select asp-for="BottlesIds" asp-items="Model.BottlesOptions" class="form-control" multiple></select>
+        <span asp-validation-for="BottlesIds" class="text-danger"></span>
     </div>
+
     <div>
-        <label>Cap Picture</label>
-        <input asp-for="CapPicture" type="file" />
+        <label asp-for="CapPicture">Cap Picture</label>
+        <input asp-for="CapPicture" type="file" class="form-control" />
+        <span asp-validation-for="CapPicture" class="text-danger"></span>
     </div>
-    <button type="submit" onclick="return confirm('To maintain data quality, the cap cannot be edited directly. Our team will review your edit request soon, and if approved, the changes will be updated in the database.')">Save</button>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary"
+        onclick="return confirm('To maintain data quality, the cap cannot be edited directly. Our team will review your edit request soon, and if approved, the changes will be updated in the database.')">
+        Save
+    </button>
 </form>
 
-<a asp-action="Index" asp-controller="Cap">Back to List</a>
+<br />
+<a asp-action="Index" asp-controller="Cap" class="btn btn-secondary">Back to List</a>

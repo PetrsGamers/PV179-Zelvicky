@@ -43,6 +43,7 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
             Name = bottle.Name,
             Description = bottle.Description,
             Voltage = bottle.Voltage,
+            BottlePicture = bottle.BottlePicture,
             DrinkType = Enum.Parse<DrinkType>(bottle.DrinkType),
             ProducerId = bottle.ProducerId,
             Producer = producer,
@@ -121,4 +122,13 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
                 Text = d.ToString()
             }).ToList();
     }
+
+    public async Task<List<SelectListItem>> GetBottleOptionsAsync() =>
+        await context.Bottles
+            .Select(b => new SelectListItem
+            {
+                Value = b.Id.ToString(),
+                Text = b.Name
+            })
+            .ToListAsync();
 }

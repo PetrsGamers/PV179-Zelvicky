@@ -3,8 +3,9 @@ using Cap.Enjoyer.WebMVC.Models;
 using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
-public class CapController(ICapService capService) : Controller
+public class CapController(ICapService capService, IBottleService bottleService, IColorService colorService) : Controller
 {
     public async Task<IActionResult> Index()
     {
@@ -14,11 +15,10 @@ public class CapController(ICapService capService) : Controller
             Id = c.Id,
             TextOnCap = c.TextOnCap,
             Description = c.Description,
-            CapPicture = c.CapPicture,
-            TextColors = c.TextColors,
-            BgColors = c.BgColors,
-            Bottles = c.Bottles,
-            IsEditFor = c.IsEditFor
+            CapPicture = null,
+            TextColorsIds = c.TextColors,
+            BgColorsIds = c.BgColors,
+            BottlesIds = c.Bottles
         });
         return View(viewModel);
     }
@@ -31,42 +31,53 @@ public class CapController(ICapService capService) : Controller
             Id = cap.Id,
             TextOnCap = cap.TextOnCap,
             Description = cap.Description,
-            CapPicture = cap.CapPicture,
-            TextColors = cap.TextColors,
-            BgColors = cap.BgColors,
-            Bottles = cap.Bottles,
-            IsEditFor = cap.IsEditFor
+            CapPicture = null, //TODO pictures
+            TextColorsIds = cap.TextColors,
+            BgColorsIds = cap.BgColors,
+            BottlesIds = cap.Bottles
         };
         return View(viewModel);
     }
 
     [HttpGet]
-    public IActionResult Create() => View();
+    public async Task<IActionResult> Create()
+    {
+        var model = new CapCreateViewModel
+        {
+            ColorsOptions = await colorService.GetColorOptionsAsync(),
+            BottlesOptions = await bottleService.GetBottleOptionsAsync()
+        };
+        return View(model);
+    }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CapCreateViewModel viewModel, IFormFile image)
+    public async Task<IActionResult> Create(CapCreateReturnModel model, IFormFile image)
     {
         if (!ModelState.IsValid)
         {
+            var viewModel = new CapCreateViewModel
+            {
+                TextOnCap = model.TextOnCap,
+                Description = model.Description,
+                TextColorsIds = model.TextColorsIds,
+                BgColorsIds = model.BgColorsIds,
+                BottlesIds = model.BottlesIds,
+                BottlesOptions = await bottleService.GetBottleOptionsAsync(),
+                ColorsOptions = await colorService.GetColorOptionsAsync(),
+            };
             return View(viewModel);
         }
 
         var capDto = new CapInsertDto
         {
-            TextOnCap = viewModel.TextOnCap,
-            Description = viewModel.Description,
-            CapPicture = viewModel.CapPicture,
-            TextColors = viewModel.TextColors,
-            BgColors = viewModel.BgColors,
-            Bottles = viewModel.Bottles,
-            IsEditFor = viewModel.IsEditFor
+            TextOnCap = model.TextOnCap,
+            Description = model.Description,
+            TextColors = model.TextColorsIds,
+            BgColors = model.BgColorsIds,
+            Bottles = model.BottlesIds ?? [],
         };
 
-        var createdCap = await capService.CreateCapAsync(capDto);
-        if (image != null)
-        {
-            await capService.UploadImageForCapAsync(createdCap.Id, image);
-        }
+        await capService.CreateCapAsync(capDto);
 
         return RedirectToAction(nameof(Index));
     }
@@ -75,44 +86,50 @@ public class CapController(ICapService capService) : Controller
     public async Task<IActionResult> Edit(Guid id)
     {
         var cap = await capService.GetCapByIdAsync(id);
-        var viewModel = new CapViewModel
+
+        var model = new CapCreateViewModel
         {
-            Id = cap.Id,
             TextOnCap = cap.TextOnCap,
             Description = cap.Description,
-            CapPicture = cap.CapPicture,
-            TextColors = cap.TextColors,
-            BgColors = cap.BgColors,
-            Bottles = cap.Bottles,
-            IsEditFor = cap.IsEditFor
+            TextColorsIds = cap.TextColors,
+            BgColorsIds = cap.BgColors,
+            BottlesIds = cap.Bottles,
+            BottlesOptions = await bottleService.GetBottleOptionsAsync(),
+            ColorsOptions = await colorService.GetColorOptionsAsync(),
         };
-        return View(viewModel);
+
+        return View(model);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(CapViewModel viewModel, IFormFile image)
+    public async Task<IActionResult> Edit(Guid id, CapCreateReturnModel model, IFormFile image)
     {
         if (!ModelState.IsValid)
         {
+            var viewModel = new CapCreateViewModel
+            {
+                TextOnCap = model.TextOnCap,
+                Description = model.Description,
+                TextColorsIds = model.TextColorsIds,
+                BgColorsIds = model.BgColorsIds,
+                BottlesIds = model.BottlesIds,
+                BottlesOptions = await bottleService.GetBottleOptionsAsync(),
+                ColorsOptions = await colorService.GetColorOptionsAsync(),
+            };
             return View(viewModel);
         }
 
         var capDto = new CapInsertDto
         {
-            TextOnCap = viewModel.TextOnCap,
-            Description = viewModel.Description,
-            CapPicture = viewModel.CapPicture,
-            TextColors = viewModel.TextColors,
-            BgColors = viewModel.BgColors,
-            Bottles = viewModel.Bottles,
-            IsEditFor = viewModel.IsEditFor
+            TextOnCap = model.TextOnCap,
+            Description = model.Description,
+            CapPicture = model.CapPicture,
+            TextColors = model.TextColorsIds,
+            BgColors = model.BgColorsIds,
+            Bottles = model.BottlesIds ?? [],
         };
 
-        var updatedCap = await capService.UpdateCapAsync(viewModel.Id, capDto);
-        if (image != null)
-        {
-            await capService.UploadImageForCapAsync(updatedCap.Id, image);
-        }
+        await capService.UpdateCapAsync(id, capDto);
 
         return RedirectToAction(nameof(Index));
     }
