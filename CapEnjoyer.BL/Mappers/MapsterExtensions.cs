@@ -11,10 +11,11 @@ public static class MapsterExtensions
     {
         // Mapping from Album to AlbumDto
         config.NewConfig<Album, AlbumDto>()
-        .Map(dest => dest.Caps, src => src.CapLinks.Select(cl => cl.CapId).ToList());
+            .Map(dest => dest.Caps, src => src.CapLinks.Select(cl => cl.CapId).ToList());
 
         // Mapping from Bottle to BottleDto
-        config.NewConfig<Bottle, BottleDto>().Map(dest => dest.Caps, src => src.CapLinks.Select(cl => cl.CapId).ToList());
+        config.NewConfig<Bottle, BottleDto>()
+            .Map(dest => dest.Caps, src => src.CapLinks.Select(cl => cl.CapId).ToList());
 
         // Mapping from Cap to CapDto
         config.NewConfig<Cap, CapDto>()
@@ -23,6 +24,5 @@ public static class MapsterExtensions
             .Map(dest => dest.Bottles, src => src.BottleLinks.Select(bl => bl.BottleId).ToList());
 
         TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
-
     }
 }

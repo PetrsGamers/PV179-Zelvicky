@@ -15,26 +15,26 @@ public class CountryServiceTests : IDisposable
             .UseInMemoryDatabase("TestCountryDatabase")
             .Options;
 
-        this.context = new CapEnjoyerDbContext(options);
+        context = new CapEnjoyerDbContext(options);
     }
 
     public void Dispose()
     {
-        this.context.Database.EnsureDeleted();
-        this.context.Dispose();
+        context.Database.EnsureDeleted();
+        context.Dispose();
         GC.SuppressFinalize(this);
     }
 
     [Fact]
     public async Task GetCountryByIdReturnsCorrectCountry()
     {
-        var countryService = new CountryService(this.context);
+        var countryService = new CountryService(context);
 
         var countryId = Guid.NewGuid();
         var country = new Country { Id = countryId, Name = "Czech Republic" };
 
-        this.context.Countries.Add(country);
-        await this.context.SaveChangesAsync();
+        context.Countries.Add(country);
+        await context.SaveChangesAsync();
 
         var result = await countryService.GetCountryByIdAsync(countryId);
 
@@ -46,16 +46,16 @@ public class CountryServiceTests : IDisposable
     [Fact]
     public async Task GetCountriesReturnsAllCountries()
     {
-        var countryService = new CountryService(this.context);
+        var countryService = new CountryService(context);
 
-        this.context.Countries.AddRange(
+        context.Countries.AddRange(
             new Country { Id = Guid.NewGuid(), Name = "Czech Republic" },
             new Country { Id = Guid.NewGuid(), Name = "Slovakia" }
         );
-        await this.context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         var result = await countryService.GetCountriesAsync();
 
-        Assert.Equal(2, result.Count());
+        Assert.Equal(2, result.Count);
     }
 }

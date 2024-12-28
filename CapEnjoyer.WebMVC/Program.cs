@@ -1,5 +1,7 @@
 using CapEnjoyer.API.Helpers;
 using CapEnjoyer.BL.Mappers;
+using CapEnjoyer.BL.Services;
+using CapEnjoyer.BL.Services.Interfaces;
 using CapEnjoyer.DAL;
 using CapEnjoyer.DAL.Entities;
 using Mapster;
@@ -17,6 +19,16 @@ builder.Services.AddDbContextFactory<CapEnjoyerDbContext>(
 
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IBottleService, BottleService>();
+builder.Services.AddScoped<ICapService, CapService>();
+builder.Services.AddScoped<IColorService, ColorService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
+// builder.Services.AddScoped<IEditRequestService, EditRequestService>();
+builder.Services.AddScoped<IProducerService, ProducerService>();
+builder.Services.AddScoped<IImageService, ImageService>();
+
 builder.Services.AddRazorPages();
 builder.Services.AddIdentity<LocalIdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<CapEnjoyerDbContext>()

@@ -1,7 +1,7 @@
 @model RegisterViewModel
 
 @{
-Layout = null;
+    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -98,17 +98,17 @@ Layout = null;
     <form asp-action="Register" method="post">
         <div>
             <label asp-for="Email"></label>
-            <input asp-for="Email" type="email" />
+            <input asp-for="Email" type="email"/>
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
         <div>
             <label asp-for="Password"></label>
-            <input asp-for="Password" type="password" />
+            <input asp-for="Password" type="password"/>
             <span asp-validation-for="Password" class="text-danger"></span>
         </div>
         <div>
             <label asp-for="ConfirmPassword"></label>
-            <input asp-for="ConfirmPassword" type="password" />
+            <input asp-for="ConfirmPassword" type="password"/>
             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
         </div>
         <button type="submit">Register</button>

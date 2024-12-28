@@ -1,7 +1,7 @@
 #nullable disable
 
 namespace CapEnjoyer.DAL.Migrations;
-using System;
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
 /// <inheritdoc />

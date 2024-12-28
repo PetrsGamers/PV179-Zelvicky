@@ -1,7 +1,7 @@
 @model LoginViewModel
 
 @{
-Layout = null;
+    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -108,16 +108,16 @@ Layout = null;
     <form asp-action="Login" method="post">
         <div>
             <label asp-for="Email"></label>
-            <input asp-for="Email" type="email" />
+            <input asp-for="Email" type="email"/>
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
         <div>
             <label asp-for="Password"></label>
-            <input asp-for="Password" type="password" />
+            <input asp-for="Password" type="password"/>
             <span asp-validation-for="Password" class="text-danger"></span>
         </div>
         <div class="form-check">
-            <input asp-for="RememberMe" type="checkbox" />
+            <input asp-for="RememberMe" type="checkbox"/>
             <label asp-for="RememberMe"></label>
         </div>
         <button type="submit">Login</button>

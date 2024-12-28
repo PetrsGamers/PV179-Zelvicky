@@ -9,8 +9,8 @@ public class Album
     public required string Description { get; set; }
     public required bool Public { get; set; }
     public required Guid UserId { get; set; }
-    [ForeignKey("UserId")]
-    public required User User { get; set; }
+
+    [ForeignKey("UserId")] public required User User { get; set; }
+
     public List<CapToAlbum> CapLinks { get; set; } = [];
 }
-

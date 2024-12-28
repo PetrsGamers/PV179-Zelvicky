@@ -1,0 +1,46 @@
+@model IEnumerable<BottleListViewModel>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Bottle List";
+}
+
+<h2>Bottle List</h2>
+
+<a asp-action="Create" asp-controller="Bottle" class="btn btn-primary">Add New Bottle</a>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Voltage</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var bottle in Model)
+    {
+        <tr>
+            <td>@bottle.Name</td>
+            <td>@bottle.Description</td>
+            <td>@bottle.Voltage</td>
+            <td>
+                <a href="@Url.Action("Details", "Bottle", new { id = bottle.Id })" class="btn btn-info btn-sm">
+                    <i class="fas fa-info"></i> Details
+                </a> |
+                <a href="@Url.Action("Edit", "Bottle", new { id = bottle.Id })" class="btn btn-info btn-sm">
+                    <i class="fas fa-edit"></i> Edit
+                </a> |
+                <form action="@Url.Action("Delete", "Bottle", new { id = bottle.Id })" method="post"
+                      style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Are you sure you want to delete this bottle?')">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -7,6 +7,7 @@ using DTOs;
 using Interfaces;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 public class CapService(CapEnjoyerDbContext context, IImageService imageService) : ICapService
@@ -208,12 +209,34 @@ public class CapService(CapEnjoyerDbContext context, IImageService imageService)
         });
 
         await context.SaveChangesAsync();
-        if (capInsertDto.CapPictureFile != null)
+        if (capInsertDto.CapPictureFile == null)
         {
-            var path = await imageService.UploadImageForCapAsync(cap.Id, capInsertDto.CapPictureFile);
-            cap.CapPicture = path;
+            return cap.Adapt<CapDto>();
         }
 
+        var path = await imageService.UploadImageForCapAsync(cap.Id, capInsertDto.CapPictureFile);
+        cap.CapPicture = path;
+
         return cap.Adapt<CapDto>();
+    }
+
+    public async Task<List<SelectListItem>> GetCapOptionsAsync()
+    {
+        var caps = await context.Caps.Where(cap => cap.IsEditForId == null).ToListAsync();
+        return caps.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.TextOnCap }).ToList();
+    }
+
+    public async Task<List<CapDto>> GetCapsByIdsAsync(List<Guid> ids)
+    {
+        if (ids.Count == 0)
+        {
+            return [];
+        }
+
+        var colors = await context.Caps
+            .Where(c => ids.Contains(c.Id))
+            .ToListAsync();
+
+        return colors.Select(c => c.Adapt<CapDto>()).ToList();
     }
 }

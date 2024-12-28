@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
-public class HomeController() : Controller
+public class HomeController : Controller
 {
     public IActionResult Index() => View();
 

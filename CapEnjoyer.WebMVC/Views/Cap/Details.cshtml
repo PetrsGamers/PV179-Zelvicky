@@ -1,0 +1,54 @@
+@model CapDetailViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Cap Details";
+}
+
+<h2>Cap Details</h2>
+
+<div>
+    <h4>@Model.TextOnCap</h4>
+    <p>Description: @Model.Description</p>
+
+    @if (Model.IsEditForId.HasValue)
+    {
+        <p>Is Edit For: @Model.IsEditForId</p>
+    }
+
+    <p>Text Colors:</p>
+    <ul>
+        @foreach (var color in Model.TextColors)
+        {
+            <li style="background-color:@color.HexCode; color:white">
+                @color.Name (@color.HexCode)
+            </li>
+        }
+    </ul>
+
+    <p>Background Colors:</p>
+    <ul>
+        @foreach (var color in Model.BgColors)
+        {
+            <li style="background-color:@color.HexCode; color:white">
+                @color.Name (@color.HexCode)
+            </li>
+        }
+    </ul>
+
+    <p>Bottles:</p>
+    <ul>
+        @foreach (var bottle in Model.Bottles)
+        {
+            <li>
+                <a asp-controller="Bottle" asp-action="Details" asp-route-id="@bottle.Id">
+                    @bottle.Name
+                </a>
+            </li>
+        }
+    </ul>
+
+    <img src="@Model.CapPicture" alt="@Model.TextOnCap"/>
+</div>
+
+<a asp-action="Index" asp-controller="Cap">Back to List</a>

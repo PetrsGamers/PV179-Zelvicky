@@ -11,45 +11,35 @@ public class UserController(IUserService userService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetUsers()
     {
-
         var users = await userService.GetAllUsers();
-        return this.Ok(users);
-
+        return Ok(users);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetUserById(Guid id)
     {
-
         var user = await userService.GetUserById(id);
-        return this.Ok(user);
-
+        return Ok(user);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateUser([FromBody] User user)
     {
-
         var createdUser = await userService.CreateUser(user);
-        return this.CreatedAtAction(nameof(this.GetUserById), new { id = createdUser.Id }, createdUser);
-
+        return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateUser(Guid id, [FromBody] User user)
     {
-
         var updatedUser = await userService.UpdateUser(id, user);
-        return this.Ok(updatedUser);
-
+        return Ok(updatedUser);
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteUser(Guid id)
     {
-
         await userService.DeleteUser(id);
-        return this.Ok();
-
+        return Ok();
     }
 }

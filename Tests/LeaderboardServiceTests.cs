@@ -5,7 +5,6 @@ using CapEnjoyer.DAL;
 using CapEnjoyer.DAL.Constants;
 using CapEnjoyer.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using Xunit;
 
 public class LeaderboardServiceTests : IDisposable
 {
@@ -17,13 +16,13 @@ public class LeaderboardServiceTests : IDisposable
             .UseInMemoryDatabase("TestLeaderboardDatabase")
             .Options;
 
-        this.context = new CapEnjoyerDbContext(options);
+        context = new CapEnjoyerDbContext(options);
     }
 
     public void Dispose()
     {
-        this.context.Database.EnsureDeleted();
-        this.context.Dispose();
+        context.Database.EnsureDeleted();
+        context.Dispose();
         GC.SuppressFinalize(this);
     }
 
@@ -31,13 +30,45 @@ public class LeaderboardServiceTests : IDisposable
     public async Task GetLeaderboardReturnsCorrectRankings()
     {
         // Arrange
-        var leaderboardService = new LeaderboardService(this.context);
+        var leaderboardService = new LeaderboardService(context);
 
-        var user1 = new User { Id = Guid.NewGuid(), Email = "e1@example.com", Username = "User1", Albums = [], Role = Role.User };
-        var user2 = new User { Id = Guid.NewGuid(), Email = "e2@example.com", Username = "User2", Albums = [], Role = Role.User };
-        var cap1 = new Cap { Id = Guid.NewGuid(), TextOnCap = "Cap1", CapPicture = "Cap1picture", Description = "Cap1description" };
-        var cap2 = new Cap { Id = Guid.NewGuid(), TextOnCap = "Cap2", CapPicture = "Cap2picture", Description = "Cap2description" };
-        var cap3 = new Cap { Id = Guid.NewGuid(), TextOnCap = "Cap3", CapPicture = "Cap3picture", Description = "Cap3description" };
+        var user1 = new User
+        {
+            Id = Guid.NewGuid(),
+            Email = "e1@example.com",
+            Username = "User1",
+            Albums = [],
+            Role = Role.User
+        };
+        var user2 = new User
+        {
+            Id = Guid.NewGuid(),
+            Email = "e2@example.com",
+            Username = "User2",
+            Albums = [],
+            Role = Role.User
+        };
+        var cap1 = new Cap
+        {
+            Id = Guid.NewGuid(),
+            TextOnCap = "Cap1",
+            CapPicture = "Cap1picture",
+            Description = "Cap1description"
+        };
+        var cap2 = new Cap
+        {
+            Id = Guid.NewGuid(),
+            TextOnCap = "Cap2",
+            CapPicture = "Cap2picture",
+            Description = "Cap2description"
+        };
+        var cap3 = new Cap
+        {
+            Id = Guid.NewGuid(),
+            TextOnCap = "Cap3",
+            CapPicture = "Cap3picture",
+            Description = "Cap3description"
+        };
 
         var album1id = Guid.NewGuid();
         user1.Albums.Add(new Album
@@ -53,7 +84,6 @@ public class LeaderboardServiceTests : IDisposable
             Public = true,
             User = user1,
             UserId = user1.Id
-
         });
         var album2id = Guid.NewGuid();
         user1.Albums.Add(new Album
@@ -83,9 +113,9 @@ public class LeaderboardServiceTests : IDisposable
             UserId = user2.Id
         });
 
-        this.context.Users.AddRange(user1, user2);
-        this.context.Caps.AddRange(cap1, cap2, cap3);
-        await this.context.SaveChangesAsync();
+        context.Users.AddRange(user1, user2);
+        context.Caps.AddRange(cap1, cap2, cap3);
+        await context.SaveChangesAsync();
 
         // Act
         var leaderboard = await leaderboardService.GetLeaderboard();
@@ -108,13 +138,27 @@ public class LeaderboardServiceTests : IDisposable
     public async Task GetLeaderboardHandlesUsersWithNoAlbums()
     {
         // Arrange
-        var leaderboardService = new LeaderboardService(this.context);
+        var leaderboardService = new LeaderboardService(context);
 
-        var user1 = new User { Id = Guid.NewGuid(), Email = "e1@example.com", Username = "User1", Albums = [], Role = Role.User };
-        var user2 = new User { Id = Guid.NewGuid(), Email = "e2@example.com", Username = "User2", Albums = [], Role = Role.User };
+        var user1 = new User
+        {
+            Id = Guid.NewGuid(),
+            Email = "e1@example.com",
+            Username = "User1",
+            Albums = [],
+            Role = Role.User
+        };
+        var user2 = new User
+        {
+            Id = Guid.NewGuid(),
+            Email = "e2@example.com",
+            Username = "User2",
+            Albums = [],
+            Role = Role.User
+        };
 
-        this.context.Users.AddRange(user1, user2);
-        await this.context.SaveChangesAsync();
+        context.Users.AddRange(user1, user2);
+        await context.SaveChangesAsync();
 
         // Act
         var leaderboard = await leaderboardService.GetLeaderboard();
@@ -133,12 +177,38 @@ public class LeaderboardServiceTests : IDisposable
     public async Task GetLeaderboardHandlesTieInDistinctCapCount()
     {
         // Arrange
-        var leaderboardService = new LeaderboardService(this.context);
+        var leaderboardService = new LeaderboardService(context);
 
-        var user1 = new User { Id = Guid.NewGuid(), Email = "e1@example.com", Username = "User1", Albums = [], Role = Role.User };
-        var user2 = new User { Id = Guid.NewGuid(), Email = "e2@example.com", Username = "User2", Albums = [], Role = Role.User };
-        var cap1 = new Cap { Id = Guid.NewGuid(), TextOnCap = "Cap1", CapPicture = "Cap1picture", Description = "Cap1description" };
-        var cap2 = new Cap { Id = Guid.NewGuid(), TextOnCap = "Cap2", CapPicture = "Cap2picture", Description = "Cap2description" };
+        var user1 = new User
+        {
+            Id = Guid.NewGuid(),
+            Email = "e1@example.com",
+            Username = "User1",
+            Albums = [],
+            Role = Role.User
+        };
+        var user2 = new User
+        {
+            Id = Guid.NewGuid(),
+            Email = "e2@example.com",
+            Username = "User2",
+            Albums = [],
+            Role = Role.User
+        };
+        var cap1 = new Cap
+        {
+            Id = Guid.NewGuid(),
+            TextOnCap = "Cap1",
+            CapPicture = "Cap1picture",
+            Description = "Cap1description"
+        };
+        var cap2 = new Cap
+        {
+            Id = Guid.NewGuid(),
+            TextOnCap = "Cap2",
+            CapPicture = "Cap2picture",
+            Description = "Cap2description"
+        };
 
         var album1id = Guid.NewGuid();
         user1.Albums.Add(new Album
@@ -173,9 +243,9 @@ public class LeaderboardServiceTests : IDisposable
             UserId = user2.Id
         });
 
-        this.context.Users.AddRange(user1, user2);
-        this.context.Caps.AddRange(cap1, cap2);
-        await this.context.SaveChangesAsync();
+        context.Users.AddRange(user1, user2);
+        context.Caps.AddRange(cap1, cap2);
+        await context.SaveChangesAsync();
 
         // Act
         var leaderboard = await leaderboardService.GetLeaderboard();

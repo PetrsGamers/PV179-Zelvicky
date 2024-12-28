@@ -5,6 +5,7 @@ using DAL.Entities;
 using DTOs;
 using Interfaces;
 using Mapster;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 public class ProducerService(CapEnjoyerDbContext context) : IProducerService
@@ -42,13 +43,13 @@ public class ProducerService(CapEnjoyerDbContext context) : IProducerService
             throw new ArgumentException("Name and city must be non-empty string.");
         }
 
-        var country = await context.Countries.FindAsync(producerDto.Country) ??
-                      throw new ArgumentException($"Country with ID {producerDto.Country} not found.");
+        var country = await context.Countries.FindAsync(producerDto.CountryId) ??
+                      throw new ArgumentException($"Country with ID {producerDto.CountryId} not found.");
 
-        if (producerDto.IsEditFor != null)
+        if (producerDto.IsEditForId != null)
         {
-            var isEditFor = await context.Producers.FindAsync(producerDto.IsEditFor) ??
-                            throw new ArgumentException($"Producer with ID {producerDto.IsEditFor} not found.");
+            var isEditFor = await context.Producers.FindAsync(producerDto.IsEditForId) ??
+                            throw new ArgumentException($"Producer with ID {producerDto.IsEditForId} not found.");
         }
 
         var producer = new Producer
@@ -57,9 +58,9 @@ public class ProducerService(CapEnjoyerDbContext context) : IProducerService
             Name = producerDto.Name,
             City = producerDto.City,
             Description = producerDto.Description,
-            CountryId = producerDto.Country,
+            CountryId = producerDto.CountryId,
             Country = country,
-            IsEditForId = producerDto.IsEditFor
+            IsEditForId = producerDto.IsEditForId
         };
 
         await context.Producers.AddAsync(producer);
@@ -78,27 +79,33 @@ public class ProducerService(CapEnjoyerDbContext context) : IProducerService
         var oldProducer = await context.Producers.FindAsync(id) ??
                           throw new ArgumentException($"Producer with ID {producerDto} not found.");
 
-        var country = await context.Countries.FindAsync(producerDto.Country) ??
-                      throw new ArgumentException($"Country with ID {producerDto.Country} not found.");
+        var country = await context.Countries.FindAsync(producerDto.CountryId) ??
+                      throw new ArgumentException($"Country with ID {producerDto.CountryId} not found.");
 
         if (producerDto.Name.Length < 1 && producerDto.City.Length < 1)
         {
             throw new ArgumentException("Name and city must be non-empty string.");
         }
 
-        if (producerDto.IsEditFor != null)
+        if (producerDto.IsEditForId != null)
         {
-            var isEditFor = await context.Producers.FindAsync(producerDto.IsEditFor) ??
-                            throw new ArgumentException($"Producer with ID {producerDto.IsEditFor} not found.");
+            var isEditFor = await context.Producers.FindAsync(producerDto.IsEditForId) ??
+                            throw new ArgumentException($"Producer with ID {producerDto.IsEditForId} not found.");
         }
 
         oldProducer.Name = producerDto.Name;
         oldProducer.City = producerDto.City;
         oldProducer.Description = producerDto.Description;
-        oldProducer.CountryId = producerDto.Country;
-        oldProducer.IsEditForId = producerDto.IsEditFor;
+        oldProducer.CountryId = producerDto.CountryId;
+        oldProducer.IsEditForId = producerDto.IsEditForId;
 
         await context.SaveChangesAsync();
         return oldProducer.Adapt<ProducerDto>();
+    }
+
+    public async Task<List<SelectListItem>> GetProducerOptionsAsync()
+    {
+        var producers = await context.Producers.Where(p => p.IsEditForId == null).ToListAsync();
+        return producers.Select(p => new SelectListItem { Value = p.Id.ToString(), Text = p.Name }).ToList();
     }
 }

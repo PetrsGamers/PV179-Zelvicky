@@ -1,0 +1,43 @@
+@model IEnumerable<CapListViewModel>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Cap List";
+}
+
+<h2>Cap List</h2>
+
+<a asp-action="Create" asp-controller="Cap" class="btn btn-primary">Add New Cap</a>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Text On Cap</th>
+        <th>Description</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var cap in Model)
+    {
+        <tr>
+            <td>@cap.TextOnCap</td>
+            <td>@cap.Description</td>
+            <td>
+                <a href="@Url.Action("Details", "Cap", new { id = cap.Id })" class="btn btn-info btn-sm">
+                    <i class="fas fa-info"></i> Details
+                </a> |
+                <a href="@Url.Action("Edit", "Cap", new { id = cap.Id })" class="btn btn-info btn-sm">
+                    <i class="fas fa-edit"></i> Edit
+                </a> |
+                <form action="@Url.Action("Delete", "Cap", new { id = cap.Id })" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Are you sure you want to delete this cap?')">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

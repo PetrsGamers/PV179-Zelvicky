@@ -1,0 +1,24 @@
+@model IEnumerable<CountryViewModel>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Countries";
+}
+
+<h2>Countries</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var country in Model)
+    {
+        <tr>
+            <td>@country.Name</td>
+        </tr>
+    }
+    </tbody>
+</table>

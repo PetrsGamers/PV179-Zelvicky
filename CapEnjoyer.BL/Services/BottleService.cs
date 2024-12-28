@@ -6,6 +6,7 @@ using DAL.Entities;
 using DTOs;
 using Interfaces;
 using Mapster;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 public class BottleService(CapEnjoyerDbContext context, IImageService imageService) : IBottleService
@@ -108,5 +109,29 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
 
         context.Bottles.Remove(bottle);
         await context.SaveChangesAsync();
+    }
+
+    public List<SelectListItem> GetDrinkTypeOptions() =>
+        Enum.GetValues(typeof(DrinkType))
+            .Cast<DrinkType>()
+            .Select(d => new SelectListItem { Value = d.ToString(), Text = d.ToString() }).ToList();
+
+    public async Task<List<SelectListItem>> GetBottleOptionsAsync() =>
+        await context.Bottles
+            .Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name })
+            .ToListAsync();
+
+    public async Task<List<BottleDto>> GetBottlesByIdsAsync(List<Guid> ids)
+    {
+        if (ids.Count == 0)
+        {
+            return [];
+        }
+
+        var colors = await context.Bottles
+            .Where(c => ids.Contains(c.Id))
+            .ToListAsync();
+
+        return colors.Select(c => c.Adapt<BottleDto>()).ToList();
     }
 }

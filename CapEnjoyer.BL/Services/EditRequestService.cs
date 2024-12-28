@@ -1,7 +1,7 @@
 namespace CapEnjoyer.BL.Services;
-using CapEnjoyer.DAL.Entities;
 
 using DAL;
+using DAL.Entities;
 using DTOs;
 using Interfaces;
 using Mapster;
@@ -15,7 +15,8 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
         var bottleEditCount = await context.Bottles.CountAsync(b => b.IsEditFor != null);
         var producerEditCount = await context.Producers.CountAsync(p => p.IsEditFor != null);
 
-        var firstCapEditRequest = await context.Caps.Include(ctc => ctc.TextColorLinks).Include(cbc => cbc.BackgroundColorLinks).Include(cb => cb.BottleLinks)
+        var firstCapEditRequest = await context.Caps.Include(ctc => ctc.TextColorLinks)
+            .Include(cbc => cbc.BackgroundColorLinks).Include(cb => cb.BottleLinks)
             .Where(c => c.IsEditFor != null)
             .ProjectToType<CapDto>()
             .FirstOrDefaultAsync();
@@ -31,7 +32,8 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
             .FirstOrDefaultAsync();
 
         var currentCap = firstCapEditRequest?.IsEditForId != null
-            ? await context.Caps.Include(ctc => ctc.TextColorLinks).Include(cbc => cbc.BackgroundColorLinks).Include(cb => cb.BottleLinks)
+            ? await context.Caps.Include(ctc => ctc.TextColorLinks).Include(cbc => cbc.BackgroundColorLinks)
+                .Include(cb => cb.BottleLinks)
                 .Where(c => c.Id == firstCapEditRequest.IsEditForId)
                 .ProjectToType<CapDto>()
                 .FirstOrDefaultAsync()
@@ -68,21 +70,23 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
     public async Task ConfirmCapEdit(Guid currentCapId, Guid capRequestId, bool isEditConfirmed)
     {
         var capRequest = await context.Caps
-            .Include(c => c.TextColorLinks)
-                .ThenInclude(tcl => tcl.TextColor)
-            .Include(c => c.BackgroundColorLinks)
-                .ThenInclude(bcl => bcl.BackgroundColor)
-            .Include(c => c.BottleLinks)
-                .ThenInclude(bl => bl.Bottle)
-            .FirstOrDefaultAsync(c => c.Id == capRequestId) ?? throw new ArgumentException("Cap edit request not found.");
+                             .Include(c => c.TextColorLinks)
+                             .ThenInclude(tcl => tcl.TextColor)
+                             .Include(c => c.BackgroundColorLinks)
+                             .ThenInclude(bcl => bcl.BackgroundColor)
+                             .Include(c => c.BottleLinks)
+                             .ThenInclude(bl => bl.Bottle)
+                             .FirstOrDefaultAsync(c => c.Id == capRequestId) ??
+                         throw new ArgumentException("Cap edit request not found.");
 
         if (isEditConfirmed)
         {
             var currentCap = await context.Caps
-                .Include(c => c.TextColorLinks)
-                .Include(c => c.BackgroundColorLinks)
-                .Include(c => c.BottleLinks)
-                .FirstOrDefaultAsync(c => c.Id == currentCapId) ?? throw new ArgumentException("Current cap not found.");
+                                 .Include(c => c.TextColorLinks)
+                                 .Include(c => c.BackgroundColorLinks)
+                                 .Include(c => c.BottleLinks)
+                                 .FirstOrDefaultAsync(c => c.Id == currentCapId) ??
+                             throw new ArgumentException("Current cap not found.");
 
             currentCap.TextOnCap = capRequest.TextOnCap;
             currentCap.Description = capRequest.Description;
@@ -90,15 +94,33 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
 
             currentCap.TextColorLinks.Clear();
             currentCap.TextColorLinks = capRequest.TextColorLinks
-                .Select(textColorLink => new CapToTextColor { CapId = currentCap.Id, Cap = currentCap, TextColorId = textColorLink.TextColorId, TextColor = textColorLink.TextColor })
+                .Select(textColorLink => new CapToTextColor
+                {
+                    CapId = currentCap.Id,
+                    Cap = currentCap,
+                    TextColorId = textColorLink.TextColorId,
+                    TextColor = textColorLink.TextColor
+                })
                 .ToList();
 
             currentCap.BackgroundColorLinks = capRequest.BackgroundColorLinks
-                .Select(backgroundColorLink => new CapToBackgroundColor { CapId = currentCap.Id, Cap = currentCap, BackgroundColorId = backgroundColorLink.BackgroundColorId, BackgroundColor = backgroundColorLink.BackgroundColor })
+                .Select(backgroundColorLink => new CapToBackgroundColor
+                {
+                    CapId = currentCap.Id,
+                    Cap = currentCap,
+                    BackgroundColorId = backgroundColorLink.BackgroundColorId,
+                    BackgroundColor = backgroundColorLink.BackgroundColor
+                })
                 .ToList();
 
             currentCap.BottleLinks = capRequest.BottleLinks
-                .Select(bottleLink => new CapToBottle { CapId = currentCap.Id, Cap = currentCap, BottleId = bottleLink.BottleId, Bottle = bottleLink.Bottle })
+                .Select(bottleLink => new CapToBottle
+                {
+                    CapId = currentCap.Id,
+                    Cap = currentCap,
+                    BottleId = bottleLink.BottleId,
+                    Bottle = bottleLink.Bottle
+                })
                 .ToList();
 
             context.Caps.Update(currentCap);
@@ -107,18 +129,21 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
         context.Caps.Remove(capRequest);
         await context.SaveChangesAsync();
     }
+
     public async Task ConfirmBottleEdit(Guid currentBottleId, Guid bottleRequestId, bool isEditConfirmed)
     {
         var bottleRequest = await context.Bottles
-            .Include(b => b.CapLinks)
-            .ThenInclude(cl => cl.Cap)
-            .FirstOrDefaultAsync(b => b.Id == bottleRequestId) ?? throw new ArgumentException("Bottle edit request not found.");
+                                .Include(b => b.CapLinks)
+                                .ThenInclude(cl => cl.Cap)
+                                .FirstOrDefaultAsync(b => b.Id == bottleRequestId) ??
+                            throw new ArgumentException("Bottle edit request not found.");
 
         if (isEditConfirmed)
         {
             var currentBottle = await context.Bottles
-                .Include(b => b.CapLinks)
-                .FirstOrDefaultAsync(b => b.Id == currentBottleId) ?? throw new ArgumentException("Current bottle not found.");
+                                    .Include(b => b.CapLinks)
+                                    .FirstOrDefaultAsync(b => b.Id == currentBottleId) ??
+                                throw new ArgumentException("Current bottle not found.");
 
             currentBottle.Name = bottleRequest.Name;
             currentBottle.Description = bottleRequest.Description;
@@ -129,7 +154,13 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
             currentBottle.CapLinks.Clear();
             foreach (var capLink in bottleRequest.CapLinks)
             {
-                currentBottle.CapLinks.Add(new CapToBottle { CapId = capLink.CapId, Cap = capLink.Cap, BottleId = currentBottle.Id, Bottle = currentBottle });
+                currentBottle.CapLinks.Add(new CapToBottle
+                {
+                    CapId = capLink.CapId,
+                    Cap = capLink.Cap,
+                    BottleId = currentBottle.Id,
+                    Bottle = currentBottle
+                });
             }
 
             context.Bottles.Update(currentBottle);
@@ -141,11 +172,13 @@ public class EditRequestService(CapEnjoyerDbContext context) : IEditRequestServi
 
     public async Task ConfirmProducerEdit(Guid currentProducerId, Guid producerRequestId, bool isEditConfirmed)
     {
-        var producerRequest = await context.Producers.FindAsync(producerRequestId) ?? throw new ArgumentException("Producer edit request not found.");
+        var producerRequest = await context.Producers.FindAsync(producerRequestId) ??
+                              throw new ArgumentException("Producer edit request not found.");
 
         if (isEditConfirmed)
         {
-            var currentProducer = await context.Producers.FindAsync(currentProducerId) ?? throw new ArgumentException("Current producer not found.");
+            var currentProducer = await context.Producers.FindAsync(currentProducerId) ??
+                                  throw new ArgumentException("Current producer not found.");
 
             currentProducer.Name = producerRequest.Name;
             currentProducer.City = producerRequest.City;

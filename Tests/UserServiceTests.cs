@@ -16,20 +16,20 @@ public class UserServiceTests : IDisposable
             .UseInMemoryDatabase("TestDatabase")
             .Options;
 
-        this.context = new CapEnjoyerDbContext(options);
+        context = new CapEnjoyerDbContext(options);
     }
 
     public void Dispose()
     {
-        this.context.Database.EnsureDeleted();
-        this.context.Dispose();
+        context.Database.EnsureDeleted();
+        context.Dispose();
         GC.SuppressFinalize(this);
     }
 
     [Fact]
     public async void GetUserByIdReturnsCorrectUser()
     {
-        var userService = new UserService(this.context);
+        var userService = new UserService(context);
 
         var userId = new Guid("6B3D4C29-85CF-4031-851A-4AB9EAF6E5ED");
         var user = new User
@@ -41,8 +41,8 @@ public class UserServiceTests : IDisposable
             Username = "ted"
         };
 
-        this.context.Users.Add(user);
-        await this.context.SaveChangesAsync();
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
 
         var result = await userService.GetUserById(userId);
         Assert.Equal(result.Id, userId);

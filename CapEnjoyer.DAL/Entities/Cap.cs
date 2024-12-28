@@ -15,7 +15,8 @@ public class Cap
     public List<CapToAlbum> AlbumLinks { get; set; } = [];
 
     public Guid? IsEditForId { get; set; }
-    [ForeignKey("IsEditForId")]
-    public Cap? IsEditFor { get; set; }
+
+    [ForeignKey("IsEditForId")] public Cap? IsEditFor { get; set; }
+
     public List<Cap> Edits { get; set; } = [];
 }

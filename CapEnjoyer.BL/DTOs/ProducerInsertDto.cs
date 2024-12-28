@@ -5,6 +5,6 @@ public class ProducerInsertDto
     public string Name { get; set; }
     public string City { get; set; }
     public string Description { get; set; }
-    public Guid Country { get; set; }
-    public Guid? IsEditFor { get; set; }
+    public Guid CountryId { get; set; }
+    public Guid? IsEditForId { get; set; }
 }
