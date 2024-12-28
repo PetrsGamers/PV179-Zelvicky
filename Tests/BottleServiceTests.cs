@@ -33,6 +33,7 @@ public class BottleServiceTests : IDisposable
         // Arrange
         var bottleId = Guid.NewGuid();
         var producerId = Guid.NewGuid();
+        var imageService = new ImageService(context);
         var producer = new Producer
         {
             Id = producerId,
@@ -58,7 +59,7 @@ public class BottleServiceTests : IDisposable
         await context.SaveChangesAsync();
 
         // Act
-        var result = await new BottleService(context).GetBottleById(bottleId);
+        var result = await new BottleService(context, imageService).GetBottleById(bottleId);
 
         // Assert
         Assert.Equal(bottleId, result.Id);
@@ -69,7 +70,8 @@ public class BottleServiceTests : IDisposable
     public async Task CreateBottleAsyncAddsNewBottle()
     {
         // Arrange
-        var bottleService = new BottleService(context);
+        var imageService = new ImageService(context);
+        var bottleService = new BottleService(context, imageService);
         var producerId = Guid.NewGuid();
         var producer = new Producer
         {
@@ -81,11 +83,10 @@ public class BottleServiceTests : IDisposable
         };
         context.Producers.Add(producer);
         await context.SaveChangesAsync();
-        var newBottle = new BottleDto
+        var newBottle = new BottleInsertDto
         {
             Name = "Awesome Bottle",
             Description = "An awesome bottle with amazing design",
-            BottlePicture = "",
             Voltage = 4.2,
             DrinkType = "BeerLager",
             Caps = [],
@@ -105,7 +106,8 @@ public class BottleServiceTests : IDisposable
     public async Task DeleteBottleAsyncRemovesBottle()
     {
         // Arrange
-        var bottleService = new BottleService(context);
+        var imageService = new ImageService(context);
+        var bottleService = new BottleService(context, imageService);
         var bottleId = Guid.NewGuid();
         var producerId = Guid.NewGuid();
         var producer = new Producer
@@ -142,8 +144,18 @@ public class BottleServiceTests : IDisposable
     public async Task UpdateBottleAsyncUpdatesBottle()
     {
         // Arrange
-        var bottleService = new BottleService(context);
+        var imageService = new ImageService(context);
+        var bottleService = new BottleService(context, imageService);
         var bottleId = Guid.NewGuid();
+        var producerId = Guid.NewGuid();
+        var producer = new Producer
+        {
+            Id = producerId,
+            Name = "Producer1",
+            Description = "Description1",
+            City = "Pelhrimov",
+            CountryId = default
+        };
         var bottle = new Bottle
         {
             Id = bottleId,
@@ -154,17 +166,15 @@ public class BottleServiceTests : IDisposable
             Voltage = 4.2,
             DrinkType = DrinkType.BeerLager,
             ProducerId = new Guid(),
-            Producer = null
+            Producer = producer
         };
         context.Bottles.Add(bottle);
         await context.SaveChangesAsync();
 
-        var updatedBottle = new BottleDto
+        var updatedBottle = new BottleInsertDto
         {
-            Id = bottleId,
             Name = "Updated Bottle",
             Description = "An updated bottle",
-            BottlePicture = "",
             Voltage = 4.2,
             DrinkType = "BeerLager",
             Caps = []
@@ -183,7 +193,8 @@ public class BottleServiceTests : IDisposable
     public async Task GetBottlesAsyncReturnsAllBottles()
     {
         // Arrange
-        var bottleService = new BottleService(context);
+        var imageService = new ImageService(context);
+        var bottleService = new BottleService(context, imageService);
         var producerId = Guid.NewGuid();
         var producer = new Producer
         {

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 public class ImageService(CapEnjoyerDbContext context) : IImageService
 {
-    public async Task UploadImageForCapAsync(Guid capId, IFormFile image)
+    public async Task<string> UploadImageForCapAsync(Guid capId, IFormFile image)
     {
         if (image == null || image.Length == 0)
         {
@@ -51,9 +51,10 @@ public class ImageService(CapEnjoyerDbContext context) : IImageService
             CapId = capId
         });
         await context.SaveChangesAsync();
+        return filePath;
     }
 
-    public async Task UploadImageForBottleAsync(Guid bottleId, IFormFile image)
+    public async Task<string> UploadImageForBottleAsync(Guid bottleId, IFormFile image)
     {
         if (image == null || image.Length == 0)
         {
@@ -88,5 +89,6 @@ public class ImageService(CapEnjoyerDbContext context) : IImageService
 
         context.Bottles.Update(bottle);
         await context.SaveChangesAsync();
+        return filePath;
     }
 }

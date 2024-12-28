@@ -29,7 +29,8 @@ public class CapServiceTests : IDisposable
     [Fact]
     public async Task GetCapByIdReturnsCorrectCap()
     {
-        var capService = new CapService(context);
+        var imageService = new ImageService(context);
+        var capService = new CapService(context, imageService);
 
         var capId = Guid.NewGuid();
         var cap = new Cap { Id = capId, TextOnCap = "Cool Cap", Description = "A really cool cap", CapPicture = "" };
@@ -48,13 +49,13 @@ public class CapServiceTests : IDisposable
     [Fact]
     public async Task CreateCapAddsNewCap()
     {
-        var capService = new CapService(context);
+        var imageService = new ImageService(context);
+        var capService = new CapService(context, imageService);
 
         var newCap = new CapInsertDto
         {
             TextOnCap = "Awesome Cap",
             Description = "An awesome cap with amazing design",
-            CapPicture = "",
             TextColors = [],
             BgColors = [],
             Bottles = []
@@ -74,7 +75,8 @@ public class CapServiceTests : IDisposable
     [Fact]
     public async Task DeleteCapRemovesCap()
     {
-        var capService = new CapService(context);
+        var imageService = new ImageService(context);
+        var capService = new CapService(context, imageService);
 
         var capId = Guid.NewGuid();
 
@@ -103,7 +105,8 @@ public class CapServiceTests : IDisposable
     [Fact]
     public async Task UpdateCapModifiesCapDetails()
     {
-        var capService = new CapService(context);
+        var imageService = new ImageService(context);
+        var capService = new CapService(context, imageService);
 
         var capId = new Guid("8D47DAEC-E8AF-49B9-BBFE-18A438E8D705");
         var originalCap = new Cap
@@ -126,7 +129,6 @@ public class CapServiceTests : IDisposable
         {
             TextOnCap = "Updated Cap",
             Description = "This cap has been updated",
-            CapPicture = "",
             TextColors = [],
             BgColors = [],
             Bottles = []

@@ -9,7 +9,7 @@ using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-public class CapService(CapEnjoyerDbContext context) : ICapService
+public class CapService(CapEnjoyerDbContext context, IImageService imageService) : ICapService
 {
     public async Task<CapDto> GetCapByIdAsync(Guid id)
     {
@@ -121,7 +121,6 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
 
         oldCap.TextOnCap = capInsertDto.TextOnCap;
         oldCap.Description = capInsertDto.Description;
-        oldCap.CapPicture = capInsertDto.CapPicture;
 
         oldCap.TextColorLinks = await context.Colors
             .Where(tc => capInsertDto.TextColors.Contains(tc.Id))
@@ -132,10 +131,7 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
             .Where(bc => capInsertDto.BgColors.Contains(bc.Id))
             .Select(bc => new CapToBackgroundColor
             {
-                BackgroundColor = bc,
-                Cap = oldCap,
-                BackgroundColorId = bc.Id,
-                CapId = oldCap.Id
+                BackgroundColor = bc, Cap = oldCap, BackgroundColorId = bc.Id, CapId = oldCap.Id
             })
             .ToListAsync();
 
@@ -154,6 +150,12 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
         });
 
         await context.SaveChangesAsync();
+        if (capInsertDto.CapPictureFile != null)
+        {
+            var path = await imageService.UploadImageForCapAsync(oldCap.Id, capInsertDto.CapPictureFile);
+            oldCap.CapPicture = path;
+        }
+
         return oldCap.Adapt<CapDto>();
     }
 
@@ -164,29 +166,26 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
             Id = Guid.NewGuid(),
             TextOnCap = capInsertDto.TextOnCap,
             Description = capInsertDto.Description,
-            CapPicture = capInsertDto.CapPicture,
             TextColorLinks = [],
             BackgroundColorLinks =
                 [],
             BottleLinks = [],
-            IsEditForId = capInsertDto.IsEditFor
+            IsEditForId = capInsertDto.IsEditFor,
+            CapPicture = ""
         };
 
         cap.TextColorLinks = await context.Colors
-                   .Where(tc => capInsertDto.TextColors.Contains(tc.Id))
-                   .Select(tc => new CapToTextColor { TextColorId = tc.Id, TextColor = tc, Cap = cap, CapId = cap.Id })
-                   .ToListAsync();
+            .Where(tc => capInsertDto.TextColors.Contains(tc.Id))
+            .Select(tc => new CapToTextColor { TextColorId = tc.Id, TextColor = tc, Cap = cap, CapId = cap.Id })
+            .ToListAsync();
 
         cap.BackgroundColorLinks = await context.Colors
-                   .Where(bc => capInsertDto.BgColors.Contains(bc.Id))
-                   .Select(bc => new CapToBackgroundColor
-                   {
-                       BackgroundColor = bc,
-                       Cap = cap,
-                       BackgroundColorId = bc.Id,
-                       CapId = cap.Id
-                   })
-                   .ToListAsync();
+            .Where(bc => capInsertDto.BgColors.Contains(bc.Id))
+            .Select(bc => new CapToBackgroundColor
+            {
+                BackgroundColor = bc, Cap = cap, BackgroundColorId = bc.Id, CapId = cap.Id
+            })
+            .ToListAsync();
 
         cap.BottleLinks = await context.Bottles
             .Where(b => capInsertDto.Bottles.Contains(b.Id))
@@ -203,6 +202,11 @@ public class CapService(CapEnjoyerDbContext context) : ICapService
         });
 
         await context.SaveChangesAsync();
+        if (capInsertDto.CapPictureFile != null)
+        {
+            var path = await imageService.UploadImageForCapAsync(cap.Id, capInsertDto.CapPictureFile);
+            cap.CapPicture = path;
+        }
 
         return cap.Adapt<CapDto>();
     }

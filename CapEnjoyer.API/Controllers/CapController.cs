@@ -6,16 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CapController(ICapService capService, IImageService imageService) : ControllerBase
+public class CapController(ICapService capService) : ControllerBase
 {
-    [HttpPost("upload-image/{capId:guid}")]
-    public async Task<IActionResult> UploadImageForCap(Guid capId, IFormFile image)
-    {
-        await imageService.UploadImageForCapAsync(capId, image);
-        return Ok("Image uploaded successfully.");
-    }
-
-
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetCapById(Guid id)
     {
@@ -51,14 +43,14 @@ public class CapController(ICapService capService, IImageService imageService) :
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCap([FromBody] CapInsertDto capDto)
+    public async Task<IActionResult> CreateCap(CapInsertDto capDto)
     {
         var cap = await capService.CreateCapAsync(capDto);
         return Ok(cap);
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateCap(Guid id, [FromBody] CapInsertDto capDto)
+    public async Task<IActionResult> UpdateCap(Guid id, CapInsertDto capDto)
     {
         var cap = await capService.UpdateCapAsync(id, capDto);
         return Ok(cap);
