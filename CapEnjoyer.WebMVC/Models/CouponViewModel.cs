@@ -8,4 +8,6 @@ public class CouponViewModel
     public DateTime? ValidFrom { get; set; }
     public DateTime? ValidTo { get; set; }
     public string? ActivateeName { get; set; }
+    public string? BuyerName { get; set; }
+    public DateTime? BoughtAt { get; set; }
 }

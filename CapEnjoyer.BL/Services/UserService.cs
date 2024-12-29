@@ -63,16 +63,16 @@ public class UserService(CapEnjoyerDbContext context) : IUserService
         return user?.Username;
     }
 
-    public bool IsPremiumUser(string username)
+    public async Task<bool> IsPremiumUserAsync(string username)
     {
-        var user = context.Users.FirstOrDefault(u => u.Username == username);
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Username == username);
         if (user == null)
         {
             throw new ArgumentException("User not found.");
         }
 
-        var activeValidCoupon = context.Coupons.FirstOrDefault(
-            c => c.BuyerId == user.Id && c.ValidFrom < DateTime.Now.ToUniversalTime() &&
+        var activeValidCoupon = await context.Coupons.FirstOrDefaultAsync(
+            c => c.ActivateeId == user.Id && c.ValidFrom < DateTime.Now.ToUniversalTime() &&
                  DateTime.Now.ToUniversalTime() < c.ValidUntil);
         return activeValidCoupon != null;
     }

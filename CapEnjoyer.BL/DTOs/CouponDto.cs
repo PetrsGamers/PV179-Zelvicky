@@ -11,4 +11,5 @@ public class CouponDto
     public DateTime? ValidUntil { get; set; }
     public bool IsUsed { get; set; }
     public string? ActivateeUsername { get; set; }
+    public string? BuyerUsername { get; set; }
 }

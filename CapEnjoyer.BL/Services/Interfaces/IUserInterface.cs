@@ -11,5 +11,5 @@ public interface IUserService
     public Task DeleteUser(Guid id);
     public Task<string?> GetUsernameById(Guid id);
 
-    public bool IsPremiumUser(string username);
+    public Task<bool> IsPremiumUserAsync(string username);
 }

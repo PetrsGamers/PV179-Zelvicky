@@ -31,7 +31,9 @@ public class CouponController(
             IsUsed = c.IsUsed,
             ValidFrom = c.ValidFrom,
             ValidTo = c.ValidUntil,
-            ActivateeName = c.ActivateeUsername
+            ActivateeName = c.ActivateeUsername,
+            BuyerName = c.BuyerUsername,
+            BoughtAt = c.GeneratedAt
         });
         return View(viewModel);
     }

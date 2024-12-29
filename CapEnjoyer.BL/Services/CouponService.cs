@@ -9,13 +9,51 @@ using Microsoft.EntityFrameworkCore;
 
 public class CouponService(CapEnjoyerDbContext context) : ICouponService
 {
-    public Task<List<CouponDto>> GetCouponsAsync(bool onlyActive = false)
+    public async Task<List<CouponDto>> GetCouponsAsync(bool onlyActive = false)
     {
-        var coupons = context.Coupons
+        var coupons = await context.Coupons
             .Where(c => !onlyActive || (c.ValidFrom <= DateTime.Now && c.ValidUntil >= DateTime.Now))
             .Select(c => c.Adapt<CouponDto>())
             .ToListAsync();
-        return coupons;
+
+
+        var activateeIds = coupons
+            .Where(c => c.ActivateeId.HasValue)
+            .Select(c => c.ActivateeId.Value)
+            .Distinct()
+            .ToList();
+
+        var buyerIds = coupons
+            .Select(c => c.BuyerId)
+            .Distinct()
+            .ToList();
+
+        var activateeNames = await context.Users
+            .Where(u => activateeIds.Contains(u.Id))
+            .ToDictionaryAsync(u => u.Id, u => u.Username);
+
+        var buyerNames = await context.Users
+            .Where(u => buyerIds.Contains(u.Id))
+            .ToDictionaryAsync(u => u.Id, u => u.Username);
+
+        var couponDtos = coupons.Select(c => new CouponDto
+        {
+            Id = c.Id,
+            Code = c.Code,
+            IsUsed = c.IsUsed,
+            ValidFrom = c.ValidFrom,
+            ValidUntil = c.ValidUntil,
+            BuyerUsername = buyerNames.GetValueOrDefault(c.BuyerId),
+            ActivateeUsername = c.ActivateeId.HasValue &&
+                                activateeNames.TryGetValue(c.ActivateeId.Value,
+                                    out var name)
+                ? name
+                : null,
+            BuyerId = c.BuyerId,
+            GeneratedAt = c.GeneratedAt
+        }).ToList();
+
+        return couponDtos;
     }
 
 

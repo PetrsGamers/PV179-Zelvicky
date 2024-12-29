@@ -9,13 +9,17 @@ public class LeaderboardController(ILeaderboardService leaderboardService, IUser
     public async Task<IActionResult> Index()
     {
         var leaderboard = await leaderboardService.GetLeaderboard();
-        var viewModel = leaderboard.Select(l => new LeaderboardViewModel
+
+        var viewModel = new List<LeaderboardViewModel>();
+        foreach (var l in leaderboard)
         {
-            Rank = l.Rank,
-            Username = l.Username,
-            DistinctCapCount = l.DistinctCapCount,
-            isPremium = userService.IsPremiumUser(l.Username)
-        });
+            var isPremium = await userService.IsPremiumUserAsync(l.Username);
+            viewModel.Add(new LeaderboardViewModel
+            {
+                Rank = l.Rank, Username = l.Username, DistinctCapCount = l.DistinctCapCount, isPremium = isPremium
+            });
+        }
+
         return View(viewModel);
     }
 }
