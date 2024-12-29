@@ -1,4 +1,4 @@
-﻿namespace Cap.Enjoyer.WebMVC.Controllers;
+namespace Cap.Enjoyer.WebMVC.Controllers;
 
 using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services.Interfaces;

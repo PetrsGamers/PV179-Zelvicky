@@ -1,4 +1,4 @@
-﻿namespace Cap.Enjoyer.WebMVC.Models;
+namespace Cap.Enjoyer.WebMVC.Models;
 
 using System.ComponentModel.DataAnnotations;
 

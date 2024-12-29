@@ -16,7 +16,10 @@ public class LeaderboardController(ILeaderboardService leaderboardService, IUser
             var isPremium = await userService.IsPremiumUserAsync(l.Username);
             viewModel.Add(new LeaderboardViewModel
             {
-                Rank = l.Rank, Username = l.Username, DistinctCapCount = l.DistinctCapCount, isPremium = isPremium
+                Rank = l.Rank,
+                Username = l.Username,
+                DistinctCapCount = l.DistinctCapCount,
+                IsPremium = isPremium
             });
         }
 

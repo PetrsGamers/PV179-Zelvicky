@@ -1,4 +1,4 @@
-﻿namespace CapEnjoyer.BL.Services;
+namespace CapEnjoyer.BL.Services;
 
 using DAL;
 using DAL.Entities;
@@ -140,7 +140,7 @@ public class CouponService(CapEnjoyerDbContext context) : ICouponService
         return coupon.Adapt<CouponDto>();
     }
 
-    private string GenerateCouponCode()
+    private static string GenerateCouponCode()
     {
         var code = "";
         var random = new Random();

@@ -1,4 +1,4 @@
-﻿namespace CapEnjoyer.BL.DTOs;
+namespace CapEnjoyer.BL.DTOs;
 
 public class CouponInsertDto
 {

@@ -65,11 +65,7 @@ public class UserService(CapEnjoyerDbContext context) : IUserService
 
     public async Task<bool> IsPremiumUserAsync(string username)
     {
-        var user = await context.Users.FirstOrDefaultAsync(u => u.Username == username);
-        if (user == null)
-        {
-            throw new ArgumentException("User not found.");
-        }
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Username == username) ?? throw new ArgumentException("User not found.");
 
         var activeValidCoupon = await context.Coupons.FirstOrDefaultAsync(
             c => c.ActivateeId == user.Id && c.ValidFrom < DateTime.Now.ToUniversalTime() &&

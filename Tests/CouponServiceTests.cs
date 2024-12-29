@@ -1,4 +1,4 @@
-﻿namespace Tests;
+namespace Tests;
 
 using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services;
@@ -35,7 +35,10 @@ public class CouponServiceTests : IDisposable
         var buyerId = Guid.NewGuid();
         var coupon = new Coupon
         {
-            Id = couponId, Code = "TestCode", BuyerId = buyerId, GeneratedAt = DateTime.Now.ToUniversalTime()
+            Id = couponId,
+            Code = "TestCode",
+            BuyerId = buyerId,
+            GeneratedAt = DateTime.Now.ToUniversalTime()
         };
         context.Coupons.Add(coupon);
         await context.SaveChangesAsync();
@@ -60,7 +63,10 @@ public class CouponServiceTests : IDisposable
         var activateeId = Guid.NewGuid();
         var coupon = new Coupon
         {
-            Id = couponId, Code = "AB1337LOL", BuyerId = buyerId, GeneratedAt = DateTime.Now.ToUniversalTime()
+            Id = couponId,
+            Code = "AB1337LOL",
+            BuyerId = buyerId,
+            GeneratedAt = DateTime.Now.ToUniversalTime()
         };
         context.Coupons.Add(coupon);
         await context.SaveChangesAsync();

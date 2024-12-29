@@ -1,4 +1,4 @@
-﻿namespace CapEnjoyer.DAL.Entities;
+namespace CapEnjoyer.DAL.Entities;
 
 using System.ComponentModel.DataAnnotations.Schema;
 
