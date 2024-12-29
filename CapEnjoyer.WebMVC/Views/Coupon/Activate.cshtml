@@ -1,0 +1,19 @@
+﻿@model CouponReturnModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Activate Coupon";
+}
+
+<h2>Here you can activate your premium status with coupon code</h2>
+
+<form asp-action="ActivateConfirmed" method="post" enctype="multipart/form-data">
+    <div>
+        <label asp-for="Code"></label>
+        Enter coupon code:
+        <input asp-for="Code"/>
+        @* <span asp-validation-for="Code" class="text-danger"></span> *@
+    </div>
+    <button type="submit" class="btn btn-primary">Activate</button>
+</form>
+<a asp-action="Index" asp-controller="Coupon" class="btn btn-secondary">Back to List</a>

@@ -1,0 +1,35 @@
+@model IEnumerable<CouponViewModel>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Coupons";
+}
+
+<h2>All coupons you have bought</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Code</th>
+        <th>Is Used</th>
+        <th>Valid From</th>
+        <th>Valid Until</th>
+        <th>User Who Activated</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var coupon in Model)
+    {
+        <tr>
+            <td>@coupon.Code</td>
+            <td>@coupon.IsUsed</td>
+            <td>@coupon.ValidFrom</td>
+            <td>@coupon.ValidTo</td>
+            <td>@coupon.ActivateeName</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-action="Buy" asp-controller="Coupon" class="btn btn-secondary">Buy a coupon</a>
+<a asp-action="Activate" asp-controller="Coupon" class="btn btn-secondary">Activate a coupon</a>

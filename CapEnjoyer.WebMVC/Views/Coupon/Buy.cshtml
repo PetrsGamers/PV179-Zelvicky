@@ -1,0 +1,13 @@
+﻿@model CouponCreateViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Buy Coupon";
+}
+
+<h2>Buy coupon</h2>
+
+<span>Buy a new premium coupon that you can activate or gift your friend!</span>
+<form asp-action="BuyConfirmed" method="post">
+    <button type="submit" class="btn btn-primary">Buy</button>
+</form>
+<a asp-action="Index" asp-controller="Coupon" class="btn btn-secondary">Back to List</a>

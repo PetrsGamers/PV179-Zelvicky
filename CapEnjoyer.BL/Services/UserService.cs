@@ -55,4 +55,11 @@ public class UserService(CapEnjoyerDbContext context) : IUserService
         context.Users.Remove(user);
         await context.SaveChangesAsync();
     }
+
+    public async Task<string?> GetUsernameById(Guid id)
+    {
+        var user = await context.Users.FindAsync(id) ?? null;
+
+        return user?.Username;
+    }
 }

@@ -22,6 +22,8 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
     public DbSet<AuditLog> AuditLogs { get; set; }
     public DbSet<MiddlewareLog> MiddlewareLogs { get; set; }
 
+    public DbSet<Coupon> Coupons { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -130,6 +132,18 @@ public class CapEnjoyerDbContext(DbContextOptions<CapEnjoyerDbContext> options) 
             .HasOne(cb => cb.Bottle)
             .WithMany(b => b.CapLinks)
             .HasForeignKey(cb => cb.BottleId);
+
+        // Coupon >o---|| User
+        modelBuilder.Entity<Coupon>()
+            .HasOne(c => c.Buyer)
+            .WithMany(u => u.Coupons)
+            .HasForeignKey(c => c.BuyerId)
+            .IsRequired();
+
+        modelBuilder.Entity<Coupon>()
+            .HasOne(c => c.Activatee)
+            .WithMany(u => u.ActivatedCoupons)
+            .HasForeignKey(c => c.ActivateeId);
     }
 
     private static void ConfigureEntities(ModelBuilder modelBuilder)
