@@ -10,4 +10,6 @@ public interface IUserService
     public Task<User> UpdateUser(Guid id, User user);
     public Task DeleteUser(Guid id);
     public Task<string?> GetUsernameById(Guid id);
+
+    public bool IsPremiumUser(string username);
 }

@@ -3,6 +3,7 @@
 using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services;
 using CapEnjoyer.DAL;
+using CapEnjoyer.DAL.Constants;
 using CapEnjoyer.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -97,18 +98,33 @@ public class CouponServiceTests : IDisposable
     [Fact]
     public async Task UserIsProperlyLinkedAfterActivation()
     {
-        var couponId = Guid.NewGuid();
-        var buyerId = Guid.NewGuid();
-        var activateeId = Guid.NewGuid();
+        var activateeId = new Guid("6B3D4C29-85CF-4031-851A-4AB9EAF6E5ED");
+        var user = new User
+        {
+            Id = activateeId,
+            Albums = [],
+            Email = "ted@gmail.com",
+            Role = Role.User,
+            Username = "ted",
+            Coupons = [],
+            ActivatedCoupons = []
+        };
+
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
 
         var couponService = new CouponService(context);
-        var couponInsertDto = new CouponInsertDto { BuyerId = buyerId };
+        var couponInsertDto = new CouponInsertDto { BuyerId = user.Id };
         var coupon = await couponService.CreateNewCouponAsync(couponInsertDto);
-        var couponActivated = await couponService.ActivateCouponAsync(coupon.Code, activateeId);
+        Assert.NotEmpty(user.Coupons);
+        Assert.Empty(user.ActivatedCoupons);
+        var couponActivated = await couponService.ActivateCouponAsync(coupon.Code, user.Id);
 
+        Assert.NotEmpty(user.ActivatedCoupons);
+        Assert.NotEmpty(user.Coupons);
         Assert.NotNull(couponActivated);
         Assert.Equal(activateeId, couponActivated.ActivateeId);
-        Assert.Equal(buyerId, couponActivated.BuyerId);
+        Assert.Equal(user.Id, couponActivated.BuyerId);
         Assert.Equal(coupon.Code, couponActivated.Code);
     }
 }

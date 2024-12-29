@@ -20,7 +20,16 @@
     {
         <tr>
             <td>@entry.Rank</td>
-            <td>@entry.Username</td>
+            @if (entry.isPremium)
+            {
+                <td>
+                    <strong>@entry.Username</strong>
+                </td>
+            }
+            else
+            {
+                <td>@entry.Username</td>
+            }
             <td>@entry.DistinctCapCount</td>
         </tr>
     }

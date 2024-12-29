@@ -4,7 +4,7 @@ using CapEnjoyer.BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
-public class LeaderboardController(ILeaderboardService leaderboardService) : Controller
+public class LeaderboardController(ILeaderboardService leaderboardService, IUserService userService) : Controller
 {
     public async Task<IActionResult> Index()
     {
@@ -13,7 +13,8 @@ public class LeaderboardController(ILeaderboardService leaderboardService) : Con
         {
             Rank = l.Rank,
             Username = l.Username,
-            DistinctCapCount = l.DistinctCapCount
+            DistinctCapCount = l.DistinctCapCount,
+            isPremium = userService.IsPremiumUser(l.Username)
         });
         return View(viewModel);
     }
