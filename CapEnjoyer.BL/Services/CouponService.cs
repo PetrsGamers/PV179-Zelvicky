@@ -84,6 +84,15 @@ public class CouponService(CapEnjoyerDbContext context) : ICouponService
             return null;
         }
 
+        // check if the user already has an active coupon
+        var activeCoupon = await context.Coupons
+            .Where(c => c.ActivateeId == activateeId && c.ValidFrom < DateTime.Now.ToUniversalTime() &&
+                        c.ValidUntil > DateTime.Now.ToUniversalTime()).FirstOrDefaultAsync();
+        if (activeCoupon != null)
+        {
+            return null;
+        }
+
         coupon.IsUsed = true;
         coupon.ActivateeId = activateeId;
         coupon.ValidFrom = DateTime.Now.ToUniversalTime();

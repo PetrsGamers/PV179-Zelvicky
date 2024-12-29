@@ -33,3 +33,12 @@
 
 <a asp-action="Buy" asp-controller="Coupon" class="btn btn-secondary">Buy a coupon</a>
 <a asp-action="Activate" asp-controller="Coupon" class="btn btn-secondary">Activate a coupon</a>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        <div class="toast-body">
+            @TempData["SuccessMessage"]
+        </div>
+    </div>
+}

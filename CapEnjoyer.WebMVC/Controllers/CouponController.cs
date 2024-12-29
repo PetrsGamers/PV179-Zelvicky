@@ -75,7 +75,7 @@ public class CouponController(
     }
 
     [HttpPost]
-    public async Task<IActionResult> ActivateConfirmed(CouponReturnModel model)
+    public async Task<IActionResult> Activate(CouponReturnModel model)
     {
         var signInUser = await userManager.GetUserAsync(User);
         if (signInUser == null)
@@ -83,14 +83,21 @@ public class CouponController(
             return RedirectToAction("Login", "Account");
         }
 
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
         var coupon = await couponService.ActivateCouponAsync(model.Code, signInUser.UserId);
         if (coupon == null)
         {
             Console.WriteLine("Coupon not found or already used");
+            TempData["ErrorMessage"] = "Coupon not found, already used or you have an active coupon already";
             return RedirectToAction("Activate");
         }
 
         Console.WriteLine("Coupon activated");
+        TempData["SuccessMessage"] = "Coupon activated";
         return RedirectToAction("Index");
     }
 }

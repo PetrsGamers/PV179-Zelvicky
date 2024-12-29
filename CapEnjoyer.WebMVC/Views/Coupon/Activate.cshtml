@@ -7,13 +7,20 @@
 
 <h2>Here you can activate your premium status with coupon code</h2>
 
-<form asp-action="ActivateConfirmed" method="post" enctype="multipart/form-data">
+<form asp-action="Activate" method="post" enctype="multipart/form-data">
     <div>
         <label asp-for="Code"></label>
         Enter coupon code:
         <input asp-for="Code"/>
-        @* <span asp-validation-for="Code" class="text-danger"></span> *@
+        <span asp-validation-for="Code" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Activate</button>
 </form>
 <a asp-action="Index" asp-controller="Coupon" class="btn btn-secondary">Back to List</a>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["ErrorMessage"]
+    </div>
+}
