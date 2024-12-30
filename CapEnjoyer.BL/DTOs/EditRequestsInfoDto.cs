@@ -1,14 +1,8 @@
 namespace CapEnjoyer.BL.DTOs;
 
-public class EditRequestsInfoDto
+public class EditRequestsInfoDto<T>
 {
-    public int CapEditRequestCount { get; set; }
-    public int BottleEditRequestCount { get; set; }
-    public int ProducerEditRequestCount { get; set; }
-    public CapDto? FirstCapEditRequest { get; set; }
-    public BottleDto? FirstBottleEditRequest { get; set; }
-    public ProducerDto? FirstProducerEditRequest { get; set; }
-    public CapDto? CurrentCap { get; set; }
-    public BottleDto? CurrentBottle { get; set; }
-    public ProducerDto? CurrentProducer { get; set; }
+    public int EditRequestCount { get; set; }
+    public T? FirstEditRequest { get; set; }
+    public T? CurrentEntity { get; set; }
 }

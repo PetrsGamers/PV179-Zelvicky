@@ -56,9 +56,9 @@ public class CapServiceTests : IDisposable
         {
             TextOnCap = "Awesome Cap",
             Description = "An awesome cap with amazing design",
-            TextColors = [],
-            BgColors = [],
-            Bottles = []
+            TextColorIds = [],
+            BgColorIds = [],
+            BottleIds = []
         };
 
         var result = await capService.CreateCapAsync(newCap);
@@ -129,9 +129,9 @@ public class CapServiceTests : IDisposable
         {
             TextOnCap = "Updated Cap",
             Description = "This cap has been updated",
-            TextColors = [],
-            BgColors = [],
-            Bottles = []
+            TextColorIds = [],
+            BgColorIds = [],
+            BottleIds = []
         };
 
         var result = await capService.UpdateCapAsync(capId, updatedCapDto);

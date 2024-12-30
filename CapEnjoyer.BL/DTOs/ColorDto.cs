@@ -2,8 +2,7 @@ namespace CapEnjoyer.BL.DTOs;
 
 public class ColorDto
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-
-    public string HexCode { get; set; }
+    public required Guid Id { get; set; }
+    public required string Name { get; set; }
+    public required string HexCode { get; set; }
 }

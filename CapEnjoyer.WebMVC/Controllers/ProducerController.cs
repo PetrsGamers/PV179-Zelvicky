@@ -2,8 +2,8 @@ namespace Cap.Enjoyer.WebMVC.Controllers;
 
 using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services.Interfaces;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Models;
 
@@ -12,31 +12,21 @@ public class ProducerController(IProducerService producerService, ICountryServic
     public async Task<IActionResult> Index()
     {
         var producers = await producerService.GetAllProducersAsync();
-        var viewModel = producers.Where(p => p.IsEditForId == null).Select(p => new ProducerListViewModel
-        {
-            Id = p.Id,
-            Name = p.Name,
-            City = p.City,
-            Description = p.Description,
-            Country = p.CountryId
-        });
+        var viewModel = producers.Where(p => p.IsEditForId is null).Select(p => p.Adapt<ProducerListViewModel>());
         return View(viewModel);
     }
 
     public async Task<IActionResult> Details(Guid id)
     {
-        var producer = await producerService.GetProducerByIdAsync(id);
-        var country = await countryService.GetCountryByIdAsync(producer.CountryId);
+        var producer = await producerService.FindProducerWithDetailsByIdAsync(id);
 
-        var viewModel = new ProducerDetailViewModel
+        if (producer is null)
         {
-            Id = producer.Id,
-            Name = producer.Name,
-            City = producer.City,
-            Description = producer.Description,
-            Country = country?.Name ?? "Failed to load country",
-            IsEditForId = producer.IsEditForId
-        };
+            return NotFound();
+        }
+
+        var viewModel = producer.Adapt<ProducerDetailViewModel>();
+
         return View(viewModel);
     }
 
@@ -49,8 +39,7 @@ public class ProducerController(IProducerService producerService, ICountryServic
         var viewModel = new ProducerCreateViewModel
         {
             CountryId = defaultCountryId,
-            Countries = countries.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
-                .ToList()
+            Countries = await countryService.GetCountryOptionsAsync()
         };
 
         return View(viewModel);
@@ -61,28 +50,13 @@ public class ProducerController(IProducerService producerService, ICountryServic
     {
         if (!ModelState.IsValid)
         {
-            var countries = await countryService.GetCountriesAsync();
-            var viewModel = new ProducerCreateViewModel
-            {
-                Name = returnModel.Name,
-                City = returnModel.City,
-                Description = returnModel.Description,
-                CountryId = returnModel.CountryId,
-                Countries = countries.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
-                    .ToList()
-            };
+            var viewModel = returnModel.Adapt<ProducerCreateViewModel>();
+            viewModel.Countries = await countryService.GetCountryOptionsAsync();
 
             return View(viewModel);
         }
 
-        var producerDto = new ProducerInsertDto
-        {
-            Name = returnModel.Name,
-            City = returnModel.City,
-            Description = returnModel.Description,
-            CountryId = returnModel.CountryId
-        };
-
+        var producerDto = returnModel.Adapt<ProducerInsertDto>();
         await producerService.CreateProducerAsync(producerDto);
         return RedirectToAction(nameof(Index));
     }
@@ -91,17 +65,8 @@ public class ProducerController(IProducerService producerService, ICountryServic
     public async Task<IActionResult> Edit(Guid id)
     {
         var producer = await producerService.GetProducerByIdAsync(id);
-        var countries = await countryService.GetCountriesAsync();
-
-        var viewModel = new ProducerCreateViewModel
-        {
-            Name = producer.Name,
-            City = producer.City,
-            Description = producer.Description,
-            CountryId = producer.CountryId,
-            Countries = countries.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
-                .ToList()
-        };
+        var viewModel = producer.Adapt<ProducerCreateViewModel>();
+        viewModel.Countries = await countryService.GetCountryOptionsAsync();
 
         return View(viewModel);
     }
@@ -111,29 +76,16 @@ public class ProducerController(IProducerService producerService, ICountryServic
     {
         if (!ModelState.IsValid)
         {
-            var countries = await countryService.GetCountriesAsync();
-            var viewModel = new ProducerCreateViewModel
-            {
-                Name = returnModel.Name,
-                City = returnModel.City,
-                Description = returnModel.Description,
-                CountryId = returnModel.CountryId,
-                Countries = countries.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
-                    .ToList()
-            };
+            var viewModel = returnModel.Adapt<ProducerCreateViewModel>();
+            viewModel.Countries = await countryService.GetCountryOptionsAsync();
+
             return View(viewModel);
         }
 
-        var producerDto = new ProducerInsertDto
-        {
-            Name = returnModel.Name,
-            City = returnModel.City,
-            Description = returnModel.Description,
-            CountryId = returnModel.CountryId,
-            IsEditForId = id
-        };
-
+        var producerDto = returnModel.Adapt<ProducerInsertDto>();
+        producerDto.IsEditForId = id;
         await producerService.CreateProducerAsync(producerDto);
+
         return RedirectToAction(nameof(Index));
     }
 

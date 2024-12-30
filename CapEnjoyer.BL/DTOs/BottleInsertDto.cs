@@ -10,6 +10,6 @@ public class BottleInsertDto
     public IFormFile? BottlePictureFile { get; set; }
     public string DrinkType { get; set; }
     public Guid ProducerId { get; set; }
-    public List<Guid>? Caps { get; set; }
+    public List<Guid>? CapIds { get; set; }
     public Guid? IsEditForId { get; set; }
 }

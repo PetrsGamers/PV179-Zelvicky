@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 public interface IProducerService
 {
     Task<IEnumerable<ProducerDto>> GetAllProducersAsync();
+    public Task<ProducerWithDetailsDto?> FindProducerWithDetailsByIdAsync(Guid id);
     Task<ProducerDto> GetProducerByIdAsync(Guid id);
     Task DeleteProducerAsync(Guid id);
     Task<ProducerDto> CreateProducerAsync(ProducerInsertDto producerDto);

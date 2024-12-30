@@ -1,0 +1,27 @@
+@model BottleDetailViewModel
+
+<div>
+    <h4>@Model.Name</h4>
+    <p>Description: @Model.Description</p>
+    <p>Voltage: @Model.Voltage</p>
+    <p>Drink Type: @Model.DrinkType</p>
+    <p>
+        Producer:
+        <a asp-controller="Producer" asp-action="Details" asp-route-id="@Model.Producer.Id">
+            @Model.Producer.Name
+        </a>
+    </p>
+    <p>Caps:</p>
+    <ul>
+        @if (@Model.CapDetails != null)
+        {
+            @foreach (var cap in Model.CapDetails)
+            {
+                <li>
+                    <a asp-controller="Cap" asp-action="Details" asp-route-id="@cap.Id">@cap.TextOnCap</a>
+                </li>
+            }
+        }
+    </ul>
+    <img src="@Model.BottlePicture" alt="@Model.Name picture" />
+</div>

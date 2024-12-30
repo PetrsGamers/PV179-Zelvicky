@@ -1,0 +1,32 @@
+@model CapCreateViewModel
+
+<div>
+    <label asp-for="TextOnCap">Text On Cap</label>
+    <input asp-for="TextOnCap" class="form-control" />
+    <span asp-validation-for="TextOnCap" class="text-danger"></span>
+</div>
+<div>
+    <label asp-for="Description">Description</label>
+    <textarea asp-for="Description" class="form-control"></textarea>
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>
+<div>
+    <label asp-for="TextColorIds">Text Colors</label>
+    <select asp-for="TextColorIds" asp-items="Model.ColorsOptions" class="form-control selectpicker" multiple data-live-search="true"></select>
+    <span asp-validation-for="TextColorIds" class="text-danger"></span>
+</div>
+<div>
+    <label asp-for="BgColorIds">Background Colors</label>
+    <select asp-for="BgColorIds" asp-items="Model.ColorsOptions" class="form-control selectpicker" multiple data-live-search="true"></select>
+    <span asp-validation-for="BgColorIds" class="text-danger"></span>
+</div>
+<div>
+    <label asp-for="BottleIds">Bottles</label>
+    <select asp-for="BottleIds" asp-items="Model.BottlesOptions" class="form-control selectpicker" multiple data-live-search="true"></select>
+    <span asp-validation-for="BottleIds" class="text-danger"></span>
+</div>
+<div>
+    <label asp-for="CapPicture">Cap Picture</label>
+    <input asp-for="CapPicture" type="file" class="form-control" />
+    <span asp-validation-for="CapPicture" class="text-danger"></span>
+</div>

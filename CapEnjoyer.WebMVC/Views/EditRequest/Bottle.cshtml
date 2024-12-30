@@ -1,0 +1,30 @@
+@model EditRequestBottleViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Edit Bottle Request";
+}
+
+<h2>Edit Bottle Request (@Model.RequestCount)</h2>
+
+<div style="display: flex; gap: 20px;">
+    <div style="flex: 1; border: 1px solid black; padding: 10px;">
+        <h3>Original Bottle</h3>
+        <partial name="../Bottle/_BottleDetailsPartial" model="Model.OriginalBottle" />
+    </div>
+
+    <div style="flex: 1; border: 1px solid black; padding: 10px;">
+        <h3>Edit Request Bottle</h3>
+        <partial name="../Bottle/_BottleDetailsPartial" model="Model.EditRequestBottle" />
+    </div>
+</div>
+
+<form method="post" asp-action="Bottle">
+    <input type="hidden" name="currentEntityId" value="@Model.OriginalBottle.Id" />
+    <input type="hidden" name="editRequestId" value="@Model.EditRequestBottle.Id" />
+
+    <button type="submit" name="isEditConfirmed" value="false">Reject</button>
+    <button type="submit" name="isEditConfirmed" value="true">Confirm</button>
+</form>
+
+<a asp-action="Index" asp-controller="Bottle">Back to List</a>

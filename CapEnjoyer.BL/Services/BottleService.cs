@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 public class BottleService(CapEnjoyerDbContext context, IImageService imageService) : IBottleService
 {
-    public async Task<BottleDto> GetBottleById(Guid id)
+    public async Task<BottleDto> GetBottleByIdAsync(Guid id)
     {
         var bottle = await context.Bottles.Include(b => b.CapLinks)
             .FirstOrDefaultAsync(b => b.Id == id) ?? throw new ArgumentException($"Bottle with {id} not found.");
@@ -19,7 +19,16 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
         return bottle.Adapt<BottleDto>();
     }
 
-    public async Task<IEnumerable<BottleDto>> GetAllBottles()
+    public async Task<BottleWithDetailsDto?> FindBottleWithDetailsByIdAsync(Guid id)
+    {
+        var bottle = await context.Bottles.Include(b => b.CapLinks)
+            .ThenInclude(cl => cl.Cap).Include(b => b.Producer)
+            .FirstOrDefaultAsync(b => b.Id == id);
+
+        return bottle?.Adapt<BottleWithDetailsDto>();
+    }
+
+    public async Task<IEnumerable<BottleDto>> GetAllBottlesAsync()
     {
         var bottles = await context.Bottles
             .Include(b => b.CapLinks)
@@ -27,7 +36,7 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
         return bottles.Adapt<IEnumerable<BottleDto>>();
     }
 
-    public async Task<BottleDto> CreateBottle(BottleInsertDto bottle)
+    public async Task<BottleDto> CreateBottleAsync(BottleInsertDto bottle)
     {
         if (string.IsNullOrEmpty(bottle.Name) || string.IsNullOrEmpty(bottle.Description))
         {
@@ -49,7 +58,7 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
             CapLinks =
             [
                 .. context.Caps
-                    .Where(c => bottle.Caps != null && bottle.Caps.Contains(c.Id))
+                    .Where(c => bottle.CapIds != null && bottle.CapIds.Contains(c.Id))
                     .Select(c => new CapToBottle { CapId = c.Id, Cap = c, BottleId = id })
             ],
             IsEditForId = bottle.IsEditForId,
@@ -67,7 +76,7 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
         return newBottle.Adapt<BottleDto>();
     }
 
-    public async Task<BottleDto> UpdateBottle(Guid id, BottleInsertDto bottle)
+    public async Task<BottleDto> UpdateBottleAsync(Guid id, BottleInsertDto bottle)
     {
         var existingBottle = await context.Bottles
             .Include(b => b.CapLinks)
@@ -79,14 +88,14 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
         existingBottle.DrinkType = Enum.Parse<DrinkType>(bottle.DrinkType);
         existingBottle.ProducerId = bottle.ProducerId;
 
-        if (bottle.Caps == null)
+        if (bottle.CapIds is null)
         {
             existingBottle.CapLinks = [];
         }
         else
         {
             existingBottle.CapLinks = await context.Caps
-                .Where(c => bottle.Caps.Contains(c.Id))
+                .Where(c => bottle.CapIds.Contains(c.Id))
                 .Select(c => new CapToBottle { BottleId = id, CapId = c.Id, Cap = c, Bottle = existingBottle })
                 .ToListAsync();
         }
@@ -102,7 +111,7 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
         return existingBottle.Adapt<BottleDto>();
     }
 
-    public async Task DeleteBottle(Guid id)
+    public async Task DeleteBottleAsync(Guid id)
     {
         var bottle = await context.Bottles.FindAsync(id) ??
                      throw new ArgumentException($"Bottle with ID {id} not found.");
@@ -120,18 +129,4 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
         await context.Bottles
             .Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name })
             .ToListAsync();
-
-    public async Task<List<BottleDto>> GetBottlesByIdsAsync(List<Guid> ids)
-    {
-        if (ids.Count == 0)
-        {
-            return [];
-        }
-
-        var colors = await context.Bottles
-            .Where(c => ids.Contains(c.Id))
-            .ToListAsync();
-
-        return colors.Select(c => c.Adapt<BottleDto>()).ToList();
-    }
 }

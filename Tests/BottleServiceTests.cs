@@ -59,7 +59,7 @@ public class BottleServiceTests : IDisposable
         await context.SaveChangesAsync();
 
         // Act
-        var result = await new BottleService(context, imageService).GetBottleById(bottleId);
+        var result = await new BottleService(context, imageService).GetBottleByIdAsync(bottleId);
 
         // Assert
         Assert.Equal(bottleId, result.Id);
@@ -89,12 +89,12 @@ public class BottleServiceTests : IDisposable
             Description = "An awesome bottle with amazing design",
             Voltage = 4.2,
             DrinkType = "BeerLager",
-            Caps = [],
+            CapIds = [],
             ProducerId = producerId
         };
 
         // Act
-        await bottleService.CreateBottle(newBottle);
+        await bottleService.CreateBottleAsync(newBottle);
 
         // Assert
         Assert.Equal(1, context.Bottles.Count());
@@ -134,7 +134,7 @@ public class BottleServiceTests : IDisposable
         await context.SaveChangesAsync();
 
         // Act
-        await bottleService.DeleteBottle(bottleId);
+        await bottleService.DeleteBottleAsync(bottleId);
 
         // Assert
         Assert.Equal(0, context.Bottles.Count());
@@ -177,11 +177,11 @@ public class BottleServiceTests : IDisposable
             Description = "An updated bottle",
             Voltage = 4.2,
             DrinkType = "BeerLager",
-            Caps = []
+            CapIds = []
         };
 
         // Act
-        await bottleService.UpdateBottle(bottleId, updatedBottle);
+        await bottleService.UpdateBottleAsync(bottleId, updatedBottle);
 
         // Assert
         Assert.Equal(1, context.Bottles.Count());
@@ -233,7 +233,7 @@ public class BottleServiceTests : IDisposable
         await context.SaveChangesAsync();
 
         // Act
-        var result = await bottleService.GetAllBottles();
+        var result = await bottleService.GetAllBottlesAsync();
 
         // Assert
         var bottleDtos = result.ToList();

@@ -10,11 +10,11 @@ public class CapCreateViewModel
 
     public IFormFile? CapPicture { get; set; }
 
-    public List<Guid>? TextColorsIds { get; set; } = [];
+    public List<Guid>? TextColorIds { get; set; } = [];
 
-    public List<Guid>? BgColorsIds { get; set; } = [];
+    public List<Guid>? BgColorIds { get; set; } = [];
 
-    public List<Guid>? BottlesIds { get; set; }
+    public List<Guid>? BottleIds { get; set; }
 
     public required List<SelectListItem> BottlesOptions { get; set; }
     public required List<SelectListItem> ColorsOptions { get; set; }

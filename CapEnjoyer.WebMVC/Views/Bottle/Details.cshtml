@@ -7,31 +7,13 @@
 
 <h2>Bottle Details</h2>
 
-<div>
-    <h4>@Model.Name</h4>
-    <p>Description: @Model.Description</p>
-    <p>Voltage: @Model.Voltage</p>
-    <p>Drink Type: @Model.DrinkType</p>
-    <p>
-        Producer:
-        <a asp-controller="Producer" asp-action="Details" asp-route-id="@Model.Producer">
-            @Model.ProducerName
-        </a>
-    </p>
-    @if (Model.IsEditFor.HasValue)
-    {
-        <p>Is Edit For: @Model.IsEditFor</p>
-    }
-    <p>Caps:</p>
-    <ul>
-        @foreach (var cap in Model.CapDetails)
-        {
-            <li>
-                <a asp-controller="Cap" asp-action="Details" asp-route-id="@cap.Id">@cap.TextOnCap</a>
-            </li>
-        }
-    </ul>
-    <img src="@Model.BottlePicture" alt="@Model.Name picture"/>
-</div>
+<partial name="_BottleDetailsPartial" model="Model" />
+@if (Model.IsEditFor.HasValue)
+{
+    <p>Is Edit For: @Model.IsEditFor</p>
+}
 
 <a asp-action="Index" asp-controller="Bottle">Back to List</a>
+
+
+

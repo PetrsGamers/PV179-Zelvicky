@@ -4,6 +4,7 @@ using DAL;
 using DTOs;
 using Interfaces;
 using Mapster;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 public class CountryService(CapEnjoyerDbContext context) : ICountryService
@@ -24,5 +25,18 @@ public class CountryService(CapEnjoyerDbContext context) : ICountryService
             .FirstOrDefaultAsync();
 
         return country.Adapt<CountryDto>();
+    }
+
+    public async Task<List<SelectListItem>> GetCountryOptionsAsync()
+    {
+        var countries = await context.Countries
+            .Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            })
+            .ToListAsync();
+
+        return countries;
     }
 }

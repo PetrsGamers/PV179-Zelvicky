@@ -6,8 +6,8 @@ public class CapListViewModel
     public required string TextOnCap { get; set; }
     public required string Description { get; set; }
     public string? CapPicture { get; set; }
-    public required List<Guid> TextColorsIds { get; set; }
-    public required List<Guid> BgColorsIds { get; set; }
-    public required List<Guid> BottlesIds { get; set; }
+    public required List<Guid> TextColorIds { get; set; }
+    public required List<Guid> BgColorIds { get; set; }
+    public required List<Guid> BottleIds { get; set; }
     public Guid? IsEditFor { get; set; }
 }

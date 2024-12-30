@@ -1,0 +1,31 @@
+@model EditRequestProducerViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Edit Producer Request";
+}
+
+<h2>Edit Producer Request (@Model.RequestCount)</h2>
+
+<div style="display: flex; gap: 20px;">
+    <div style="flex: 1; border: 1px solid black; padding: 10px;">
+        <h3>Original Producer</h3>
+        <partial name="../Producer/_ProducerDetailsPartial" model="Model.OriginalProducer" />
+    </div>
+
+    <div style="flex: 1; border: 1px solid black; padding: 10px;">
+        <h3>Edit Request Producer</h3>
+        <partial name="../Producer/_ProducerDetailsPartial" model="Model.EditRequestProducer" />
+    </div>
+</div>
+
+<form method="post" asp-action="Producer">
+    <input type="hidden" name="currentEntityId" value="@Model.OriginalProducer.Id" />
+    <input type="hidden" name="editRequestId" value="@Model.EditRequestProducer.Id" />
+
+    <button type="submit" name="isEditConfirmed" value="false">Reject</button>
+    <button type="submit" name="isEditConfirmed" value="true">Confirm</button>
+</form>
+
+
+<a asp-action="Index" asp-controller="Producer">Back to List</a>

@@ -24,7 +24,7 @@ public class ColorController(IColorService colorService) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateColor([FromBody] ColorDto colorDto)
+    public async Task<IActionResult> CreateColor([FromBody] ColorInsertDto colorDto)
     {
         var color = await colorService.CreateColorAsync(colorDto);
         return Ok(color);
@@ -32,7 +32,7 @@ public class ColorController(IColorService colorService) : ControllerBase
 
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateColor(Guid id, [FromBody] ColorDto colorDto)
+    public async Task<IActionResult> UpdateColor(Guid id, [FromBody] ColorInsertDto colorDto)
     {
         var color = await colorService.UpdateColorAsync(id, colorDto);
         return Ok(color);

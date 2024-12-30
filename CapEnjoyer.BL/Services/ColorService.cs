@@ -26,7 +26,7 @@ public class ColorService(CapEnjoyerDbContext context) : IColorService
         return color.Adapt<ColorDto>();
     }
 
-    public async Task<ColorDto> CreateColorAsync(ColorDto colorDto)
+    public async Task<ColorDto> CreateColorAsync(ColorInsertDto colorDto)
     {
         var color = colorDto.Adapt<Color>();
         await context.Colors.AddAsync(color);
@@ -34,7 +34,7 @@ public class ColorService(CapEnjoyerDbContext context) : IColorService
         return color.Adapt<ColorDto>();
     }
 
-    public async Task<ColorDto> UpdateColorAsync(Guid id, ColorDto colorDto)
+    public async Task<ColorDto> UpdateColorAsync(Guid id, ColorInsertDto colorDto)
     {
         var color = await context.Colors.FindAsync(id) ?? throw new ArgumentException($"Color with ID {id} not found.");
         color.Name = colorDto.Name;
@@ -57,18 +57,4 @@ public class ColorService(CapEnjoyerDbContext context) : IColorService
             .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = $"{c.Name} ({c.HexCode})" })
             .ToListAsync();
 
-
-    public async Task<List<ColorDto>> GetColorsByIdsAsync(List<Guid> ids)
-    {
-        if (ids.Count == 0)
-        {
-            return [];
-        }
-
-        var colors = await context.Colors
-            .Where(c => ids.Contains(c.Id))
-            .ToListAsync();
-
-        return colors.Select(c => c.Adapt<ColorDto>()).ToList();
-    }
 }

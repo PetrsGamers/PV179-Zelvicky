@@ -15,26 +15,25 @@ public class LeaderboardService(CapEnjoyerDbContext context) : ILeaderboardServi
             .ThenInclude(ca => ca.Cap)
             .ToListAsync();
 
-        var leaderboard = (from user in users
-                           let distinctCapIds = user.Albums.SelectMany(album => album.CapLinks)
-                               .Select(capToAlbum => capToAlbum.Cap.Id)
-                               .Distinct()
-                               .ToList()
-                           select new LeaderboardDto
-                           {
-                               DistinctCapCount = distinctCapIds.Count,
-                               Rank = 0,
-                               Username = user.Username
-                           })
+        var leaderboard = users
+            .Select(user => new LeaderboardDto
+            {
+                Username = user.Username,
+                DistinctCapCount = user.Albums
+                    .SelectMany(album => album.CapLinks)
+                    .Select(capToAlbum => capToAlbum.Cap?.Id)
+                    .Distinct()
+                    .Count(),
+            })
+            .OrderByDescending(dto => dto.DistinctCapCount)
+            .Select((dto, index) =>
+            {
+                dto.Rank = index + 1;
+                return dto;
+            })
             .ToList();
-
-        leaderboard.Sort((x, y) => y.DistinctCapCount.CompareTo(x.DistinctCapCount));
-
-        for (var i = 0; i < leaderboard.Count; i++)
-        {
-            leaderboard[i].Rank = i + 1;
-        }
 
         return leaderboard;
     }
+
 }
