@@ -254,4 +254,24 @@ public class CapService(CapEnjoyerDbContext context, IImageService imageService)
 
         return colors.Select(c => c.Adapt<CapDto>()).ToList();
     }
+
+
+    public async Task<PaginatedResult<CapDto>> GetCapsPaginated(int page, int pageSize)
+    {
+        var allCaps = await context.Caps
+            .Include(c => c.TextColorLinks)
+            .Include(c => c.BackgroundColorLinks)
+            .Include(c => c.BottleLinks)
+            .Include(c => c.AlbumLinks).Where(c => c.IsEditForId == null).ToListAsync();
+
+
+        var totalCount = allCaps.Count;
+
+        var caps = allCaps
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
+
+        return new PaginatedResult<CapDto> { Items = caps.Adapt<IEnumerable<CapDto>>(), TotalCount = totalCount };
+    }
+
 }
