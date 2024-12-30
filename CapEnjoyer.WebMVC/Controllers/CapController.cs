@@ -10,10 +10,17 @@ public class CapController(ICapService capService, IBottleService bottleService,
     : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page)
     {
-        var caps = await capService.GetAllCapsFilteredAsync();
-        var viewModel = caps.Where(c => c.IsEditForId is null).Select(c => c.Adapt<CapListViewModel>());
+        var items = await capService.GetCapsPaginated(page, 10);
+
+        var viewModel = new PaginationCapListViewModel
+        {
+            Caps = items.Items.Adapt<IEnumerable<CapDetailViewModel>>(),
+            CurrentPage = page,
+            TotalPages = (int)Math.Ceiling((double)items.TotalCount / 10)
+        };
+
         return View(viewModel);
     }
 

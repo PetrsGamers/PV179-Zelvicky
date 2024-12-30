@@ -20,5 +20,7 @@ public interface ICapService
     public Task<CapDto> UpdateCapAsync(Guid id, CapInsertDto capInsertDto);
     public Task DeleteCapAsync(Guid id);
     Task<List<SelectListItem>> GetCapOptionsAsync();
+    public Task<List<CapDto>> GetCapsByIdsAsync(List<Guid> ids);
+    public Task<PaginatedResult<CapDto>> GetCapsPaginated(int page, int pageSize);
 
 }

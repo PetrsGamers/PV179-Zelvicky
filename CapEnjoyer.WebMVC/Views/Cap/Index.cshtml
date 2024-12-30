@@ -1,10 +1,39 @@
-@model IEnumerable<CapListViewModel>
+@model PaginationCapListViewModel
 
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Cap List";
 }
+<style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
 
+    .pagination a {
+        text-decoration: none;
+        color: #007bff;
+        padding: 8px 11px;
+        margin: 0 5px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .pagination a:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .pagination a.active {
+        background-color: #007bff;
+        color: #fff;
+        font-weight: bold;
+        cursor: default;
+    }
+</style>
 <h2>Cap List</h2>
 
 <a asp-action="Create" asp-controller="Cap" class="btn btn-primary">Add New Cap</a>
@@ -18,7 +47,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var cap in Model)
+    @foreach (var cap in Model.Caps)
     {
         <tr>
             <td>@cap.TextOnCap</td>
@@ -40,4 +69,14 @@
         </tr>
     }
     </tbody>
+    <div class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+        <a asp-action="Index"
+           asp-route-page="@i"
+           class="@(i == Model.CurrentPage ? "active" : "")">@($"{i} ")</a>
+        }
+    </div>
+
+
 </table>
