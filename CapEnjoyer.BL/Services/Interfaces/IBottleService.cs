@@ -14,4 +14,5 @@ public interface IBottleService
     List<SelectListItem> GetDrinkTypeOptions();
     public Task<List<SelectListItem>> GetBottleOptionsAsync();
 
+    public Task<IEnumerable<BottleDto>> GetBottlesbySearchFieldAsync(string searchField);
 }

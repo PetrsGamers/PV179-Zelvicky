@@ -1,5 +1,6 @@
 namespace CapEnjoyer.BL.Services;
 
+using Constants;
 using DAL;
 using DAL.Constants;
 using DAL.Entities;
@@ -233,6 +234,33 @@ public class CapService(CapEnjoyerDbContext context, IImageService imageService)
         cap.CapPicture = path;
 
         return cap.Adapt<CapDto>();
+    }
+
+    public async Task<IEnumerable<CapDto>> GetCapsBySearchFieldAsync(string searchField)
+    {
+        var caps = await context.Caps
+            .Include(c => c.TextColorLinks)
+            .Include(c => c.BackgroundColorLinks)
+            .Include(c => c.BottleLinks)
+            .Include(c => c.AlbumLinks)
+            .Where(c => EF.Functions.ILike(c.TextOnCap, $"%{searchField}%") && c.IsEditForId == null)
+            .Take(SearchConstants.NumberOfSearchResults)
+            .ToListAsync();
+        if (caps.Count < SearchConstants.NumberOfSearchResults)
+        {
+            var capsDescs = await context.Caps
+                .Include(c => c.TextColorLinks)
+                .Include(c => c.BackgroundColorLinks)
+                .Include(c => c.BottleLinks)
+                .Include(c => c.AlbumLinks)
+                .Where(c => EF.Functions.ILike(c.Description, $"%{searchField}%") && c.IsEditForId == null)
+                .Take(SearchConstants.NumberOfSearchResults - caps.Count)
+                .ToListAsync();
+
+            caps.AddRange(capsDescs.Where(capDesc => !caps.Contains(capDesc)));
+        }
+
+        return caps.Adapt<IEnumerable<CapDto>>();
     }
 
     public async Task<List<SelectListItem>> GetCapOptionsAsync()

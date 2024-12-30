@@ -11,5 +11,6 @@ public interface IProducerService
     Task DeleteProducerAsync(Guid id);
     Task<ProducerDto> CreateProducerAsync(ProducerInsertDto producerDto);
     Task<ProducerDto> UpdateProducerAsync(Guid id, ProducerInsertDto producerDto);
+    Task<IEnumerable<ProducerDto>> GetProducersBySearchFieldAsync(string searchField);
     Task<List<SelectListItem>> GetProducerOptionsAsync();
 }

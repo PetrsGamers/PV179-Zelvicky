@@ -21,6 +21,6 @@ public interface ICapService
     public Task DeleteCapAsync(Guid id);
     Task<List<SelectListItem>> GetCapOptionsAsync();
     public Task<List<CapDto>> GetCapsByIdsAsync(List<Guid> ids);
+    public Task<IEnumerable<CapDto>> GetCapsBySearchFieldAsync(string searchField);
     public Task<PaginatedResult<CapDto>> GetCapsPaginated(int page, int pageSize);
-
 }
