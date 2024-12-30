@@ -1,0 +1,63 @@
+@model SearchViewModel
+
+<h1>Search Results</h1>
+<h2>@Model.SearchField</h2>
+
+@if (Model.Bottles?.Any() == true || Model.Producers?.Any() == true || Model.Caps?.Any() == true)
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Category</th>
+            <th>Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (Model.Bottles?.Any() == true)
+        {
+            <tr>
+                <td rowspan="@Model.Bottles.Count()">Bottles</td>
+                <td><a asp-controller="Bottle" asp-action="Details" asp-route-id="@Model.Bottles.First().Id">@Model.Bottles.First().Name</a></td>
+            </tr>
+            @foreach (var bottle in Model.Bottles.Skip(1))
+            {
+                <tr>
+                <td><a asp-controller="Bottle" asp-action="Details" asp-route-id="@bottle.Id">@bottle.Name</a></td>
+                </tr>
+            }
+        }
+
+        @if (Model.Producers?.Any() == true)
+        {
+            <tr>
+                <td rowspan="@Model.Producers.Count()">Producers</td>
+                <td><a asp-controller="Producer" asp-action="Details" asp-route-id="@Model.Producers.First().Id">@Model.Producers.First().Name</a></td>
+            </tr>
+            @foreach (var producer in Model.Producers.Skip(1))
+            {
+                <tr>
+                    <td><a asp-controller="Producer" asp-action="Details" asp-route-id="@producer.Id">@producer.Name</a></td>
+                </tr>
+            }
+        }
+
+        @if (Model.Caps?.Any() == true)
+        {
+            <tr>
+                <td rowspan="@Model.Caps.Count()">Caps</td>
+                <td><a asp-controller="Cap" asp-action="Details" asp-route-id="@Model.Caps.First().Id">@Model.Caps.First().TextOnCap</a></td>
+            </tr>
+            @foreach (var cap in Model.Caps.Skip(1))
+            {
+                <tr>
+                    <td><a asp-controller="Cap" asp-action="Details" asp-route-id="@cap.Id">@cap.TextOnCap</a></td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No results found.</p>
+}

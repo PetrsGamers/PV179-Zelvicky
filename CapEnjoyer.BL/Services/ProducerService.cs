@@ -1,5 +1,6 @@
 namespace CapEnjoyer.BL.Services;
 
+using Constants;
 using DAL;
 using DAL.Entities;
 using DTOs;
@@ -10,6 +11,27 @@ using Microsoft.EntityFrameworkCore;
 
 public class ProducerService(CapEnjoyerDbContext context) : IProducerService
 {
+    public async Task<IEnumerable<ProducerDto>> GetProducersBySearchFieldAsync(string searchField)
+    {
+        var producers = await context.Producers
+            .Where(p => EF.Functions.ILike(p.Name, $"%{searchField}%") && p.IsEditForId == null).Take(SearchConstants.NumberOfSearchResults)
+            .ToListAsync();
+        if (producers.Count < SearchConstants.NumberOfSearchResults)
+        {
+            var producersCity = await context.Producers
+               .Where(p => EF.Functions.ILike(p.City, $"%{searchField}%") && p.IsEditForId == null).Take(SearchConstants.NumberOfSearchResults - producers.Count)
+               .ToListAsync();
+            foreach (var prodCity in producersCity)
+            {
+                if (!producers.Contains(prodCity))
+                {
+                    producers.Add(prodCity);
+                }
+            }
+        }
+        return producers.Adapt<IEnumerable<ProducerDto>>();
+    }
+
     public async Task<IEnumerable<ProducerDto>> GetAllProducersAsync()
     {
         var producers = await context.Producers

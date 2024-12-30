@@ -1,5 +1,6 @@
 namespace CapEnjoyer.BL.Services;
 
+using Constants;
 using DAL;
 using DAL.Constants;
 using DAL.Entities;
@@ -118,6 +119,29 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
 
         context.Bottles.Remove(bottle);
         await context.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<BottleDto>> GetBottlesbySearchFieldAsync(string searchField)
+    {
+        var bottles = await context.Bottles.Include(b => b.CapLinks)
+            .Where(b => EF.Functions.ILike(b.Name, $"%{searchField}%") && b.IsEditForId == null).Take(SearchConstants.NumberOfSearchResults)
+            .ToListAsync();
+        if (bottles.Count < SearchConstants.NumberOfSearchResults)
+        {
+            var bottlesDescs = await context.Bottles.Include(b => b.CapLinks)
+                .Where(b => EF.Functions.ILike(b.Description, $"%{searchField}%") && b.IsEditForId == null)
+                .Take(SearchConstants.NumberOfSearchResults - bottles.Count)
+                .ToListAsync();
+            foreach (var bottleDesc in bottlesDescs)
+            {
+                if (!bottles.Contains(bottleDesc))
+                {
+                    bottles.Add(bottleDesc);
+                }
+            }
+        }
+
+        return bottles.Adapt<IEnumerable<BottleDto>>();
     }
 
     public List<SelectListItem> GetDrinkTypeOptions() =>

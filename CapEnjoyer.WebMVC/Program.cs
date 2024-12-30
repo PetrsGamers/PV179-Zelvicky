@@ -20,6 +20,7 @@ builder.Services.AddDbContextFactory<CapEnjoyerDbContext>(
 
 
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBottleService, BottleService>();
 builder.Services.AddScoped<IAlbumService, AlbumService>();
@@ -31,6 +32,7 @@ builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
 builder.Services.AddScoped<IEditRequestService, EditRequestService>();
 builder.Services.AddScoped<IProducerService, ProducerService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddIdentity<LocalIdentityUser, IdentityRole>()
