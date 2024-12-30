@@ -5,7 +5,6 @@ using CapEnjoyer.BL.Services;
 using CapEnjoyer.BL.Services.Interfaces;
 using CapEnjoyer.DAL;
 using CapEnjoyer.DAL.Entities;
-using CapEnjoyer.Middleware;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
