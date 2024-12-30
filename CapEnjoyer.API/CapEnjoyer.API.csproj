@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CapEnjoyer.BL\CapEnjoyer.BL.csproj"/>
     <ProjectReference Include="..\CapEnjoyer.DAL\CapEnjoyer.DAL.csproj"/>
+    <ProjectReference Include="..\CapEnjoyer.Middleware\CapEnjoyer.Middleware.csproj" />
   </ItemGroup>
 
   <ItemGroup>

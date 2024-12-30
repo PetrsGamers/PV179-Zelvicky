@@ -5,6 +5,7 @@ using CapEnjoyer.BL.Services;
 using CapEnjoyer.BL.Services.Interfaces;
 using CapEnjoyer.DAL;
 using CapEnjoyer.DAL.Entities;
+using CapEnjoyer.Middleware;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -75,7 +76,12 @@ if (!app.Environment.IsDevelopment())
 app.ValidateConnection();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.Use(async (context, next) =>
+{
+    context.Request.Headers["X-App-Source"] = "MVC";
+    await next.Invoke();
+});
+app.UseMiddleware<LoggerMiddleware>();
 app.UseRouting();
 
 app.UseAuthorization();
