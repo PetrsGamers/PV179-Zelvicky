@@ -2,6 +2,7 @@ namespace Cap.Enjoyer.WebMVC.Controllers;
 
 using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services.Interfaces;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -13,49 +14,25 @@ public class BottleController(
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var bottles = await bottleService.GetAllBottles();
-        var viewModel = bottles.Select(b => new BottleListViewModel
-        {
-            Id = b.Id,
-            Name = b.Name,
-            Description = b.Description,
-            Voltage = b.Voltage,
-            BottlePicture = b.BottlePicture,
-            DrinkType = b.DrinkType,
-            Producer = b.ProducerId,
-            Caps = b.Caps ?? [],
-            IsEditFor = b.IsEditForId
-        });
+        var bottles = await bottleService.GetAllBottlesAsync();
+        var viewModel = bottles.Where(b => b.IsEditForId is null).Select(b => b.Adapt<BottleListViewModel>());
         return View(viewModel);
     }
 
     [HttpGet]
     public async Task<IActionResult> Details(Guid id)
     {
-        var bottle = await bottleService.GetBottleById(id);
+        var bottle = await bottleService.FindBottleWithDetailsByIdAsync(id);
 
-        var producer = await producerService.GetProducerByIdAsync(bottle.ProducerId);
-
-        var capIds = bottle.Caps ?? [];
-        var caps = await capService.GetCapsByIdsAsync(bottle.Caps ?? []);
-
-        var viewModel = new BottleDetailViewModel
+        if (bottle is null)
         {
-            Id = bottle.Id,
-            Name = bottle.Name,
-            Description = bottle.Description,
-            Voltage = bottle.Voltage,
-            BottlePicture = bottle.BottlePicture,
-            DrinkType = bottle.DrinkType,
-            Producer = bottle.ProducerId,
-            ProducerName = producer.Name,
-            CapDetails = caps,
-            IsEditFor = bottle.IsEditForId
-        };
+            return NotFound();
+        }
+
+        var viewModel = bottle.Adapt<BottleDetailViewModel>();
 
         return View(viewModel);
     }
-
 
     [HttpGet]
     public async Task<IActionResult> Create()
@@ -76,57 +53,31 @@ public class BottleController(
     {
         if (!ModelState.IsValid)
         {
-            var viewModel = new BottleCreateViewModel
-            {
-                Name = model.Name,
-                Description = model.Description,
-                Voltage = model.Voltage,
-                BottlePicture = model.BottlePicture,
-                DrinkType = model.DrinkType,
-                ProducerId = model.ProducerId,
-                CapIds = model.CapIds,
-                ProducersOptions = await producerService.GetProducerOptionsAsync(),
-                DrinkTypes = bottleService.GetDrinkTypeOptions(),
-                CapsOptions = await capService.GetCapOptionsAsync()
-            };
+            var viewModel = model.Adapt<BottleCreateViewModel>();
+            viewModel.ProducersOptions = await producerService.GetProducerOptionsAsync();
+            viewModel.DrinkTypes = bottleService.GetDrinkTypeOptions();
+            viewModel.CapsOptions = await capService.GetCapOptionsAsync();
 
             return View(viewModel);
         }
 
-        var bottleDto = new BottleInsertDto
-        {
-            Name = model.Name,
-            Description = model.Description,
-            Voltage = model.Voltage,
-            DrinkType = model.DrinkType,
-            ProducerId = model.ProducerId,
-            Caps = model.CapIds ?? [],
-            BottlePictureFile = model.BottlePicture
-        };
+        var bottleDto = model.Adapt<BottleInsertDto>();
 
-        await bottleService.CreateBottle(bottleDto);
+        await bottleService.CreateBottleAsync(bottleDto);
         return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
     public async Task<IActionResult> Edit(Guid id)
     {
-        var bottle = await bottleService.GetBottleById(id);
+        var bottle = await bottleService.GetBottleByIdAsync(id);
 
-        var model = new BottleCreateViewModel
-        {
-            Name = bottle.Name,
-            Description = bottle.Description,
-            Voltage = bottle.Voltage,
-            DrinkType = bottle.DrinkType,
-            ProducerId = bottle.ProducerId,
-            CapIds = bottle.Caps,
-            ProducersOptions = await producerService.GetProducerOptionsAsync(),
-            DrinkTypes = bottleService.GetDrinkTypeOptions(),
-            CapsOptions = await capService.GetCapOptionsAsync()
-        };
+        var viewModel = bottle.Adapt<BottleCreateViewModel>();
+        viewModel.ProducersOptions = await producerService.GetProducerOptionsAsync();
+        viewModel.DrinkTypes = bottleService.GetDrinkTypeOptions();
+        viewModel.CapsOptions = await capService.GetCapOptionsAsync();
 
-        return View(model);
+        return View(viewModel);
     }
 
 
@@ -135,35 +86,18 @@ public class BottleController(
     {
         if (!ModelState.IsValid)
         {
-            var viewModel = new BottleCreateViewModel
-            {
-                Name = model.Name,
-                Description = model.Description,
-                Voltage = model.Voltage,
-                BottlePicture = model.BottlePicture,
-                DrinkType = model.DrinkType,
-                ProducerId = model.ProducerId,
-                CapIds = model.CapIds,
-                ProducersOptions = await producerService.GetProducerOptionsAsync(),
-                DrinkTypes = bottleService.GetDrinkTypeOptions(),
-                CapsOptions = await capService.GetCapOptionsAsync()
-            };
+            var viewModel = model.Adapt<BottleCreateViewModel>();
+            viewModel.ProducersOptions = await producerService.GetProducerOptionsAsync();
+            viewModel.DrinkTypes = bottleService.GetDrinkTypeOptions();
+            viewModel.CapsOptions = await capService.GetCapOptionsAsync();
 
             return View(viewModel);
         }
 
-        var bottleDto = new BottleInsertDto
-        {
-            Name = model.Name,
-            Description = model.Description,
-            Voltage = model.Voltage,
-            DrinkType = model.DrinkType,
-            ProducerId = model.ProducerId,
-            Caps = model.CapIds ?? [],
-            IsEditForId = id
-        };
+        var bottleDto = model.Adapt<BottleInsertDto>();
+        bottleDto.IsEditForId = id;
 
-        await bottleService.CreateBottle(bottleDto);
+        await bottleService.CreateBottleAsync(bottleDto);
 
         return RedirectToAction(nameof(Index));
     }
@@ -174,7 +108,7 @@ public class BottleController(
     {
         try
         {
-            await bottleService.DeleteBottle(id);
+            await bottleService.DeleteBottleAsync(id);
         }
         catch (ArgumentException)
         {

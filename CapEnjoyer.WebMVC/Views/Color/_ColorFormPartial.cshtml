@@ -1,0 +1,12 @@
+@model ColorCreateViewModel
+
+<div>
+    <label>Name</label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+<div>
+    <label>Hex Value</label>
+    <input asp-for="HexCode" class="form-control" placeholder="#FFFFFF" />
+    <span asp-validation-for="HexCode" class="text-danger"></span>
+</div>

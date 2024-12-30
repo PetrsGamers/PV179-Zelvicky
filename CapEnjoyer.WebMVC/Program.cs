@@ -1,3 +1,4 @@
+using Cap.Enjoyer.WebMVC.Mappers;
 using CapEnjoyer.API.Helpers;
 using CapEnjoyer.BL.Mappers;
 using CapEnjoyer.BL.Services;
@@ -25,7 +26,7 @@ builder.Services.AddScoped<ICapService, CapService>();
 builder.Services.AddScoped<IColorService, ColorService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
-// builder.Services.AddScoped<IEditRequestService, EditRequestService>();
+builder.Services.AddScoped<IEditRequestService, EditRequestService>();
 builder.Services.AddScoped<IProducerService, ProducerService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 
@@ -45,6 +46,10 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 builder.Services.AddMapster();
 TypeAdapterConfig.GlobalSettings.ConfigureAlbumMapping();
+TypeAdapterConfig.GlobalSettings.ConfigureEditRequestMapping();
+TypeAdapterConfig.GlobalSettings.ConfigureCapMapping();
+TypeAdapterConfig.GlobalSettings.ConfigureBottleMapping();
+TypeAdapterConfig.GlobalSettings.ConfigureProducerMapping();
 
 builder.Services.ConfigureApplicationCookie(options => options.LoginPath = "/Login");
 var app = builder.Build();

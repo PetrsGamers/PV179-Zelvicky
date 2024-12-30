@@ -1,0 +1,30 @@
+@model EditRequestCapViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Edit Cap Request";
+}
+
+<h2>Edit Cap Request (@Model.RequestCount)</h2>
+
+<div style="display: flex; gap: 20px;">
+    <div style="flex: 1; border: 1px solid black; padding: 10px;">
+        <h3>Original Cap</h3>
+        <partial name="../Cap/_CapDetailsPartial" model="Model.OriginalCap" />
+    </div>
+
+    <div style="flex: 1; border: 1px solid black; padding: 10px;">
+        <h3>Edit Request Cap</h3>
+        <partial name="../Cap/_CapDetailsPartial" model="Model.EditRequestCap" />
+    </div>
+</div>
+
+<form method="post" asp-action="Cap">
+    <input type="hidden" name="currentEntityId" value="@Model.OriginalCap.Id" />
+    <input type="hidden" name="editRequestId" value="@Model.EditRequestCap.Id" />
+
+    <button type="submit" name="isEditConfirmed" value="false">Reject</button>
+    <button type="submit" name="isEditConfirmed" value="true">Confirm</button>
+</form>
+
+<a asp-action="Index" asp-controller="Cap">Back to List</a>

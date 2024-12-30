@@ -1,4 +1,4 @@
-@model IEnumerable<ColorViewModel>
+@model IEnumerable<ColorListViewModel>
 
 @{
     Layout = "_Layout";
@@ -22,7 +22,7 @@
     {
         <tr>
             <td>@color.Name</td>
-            <td style="background-color:@color.HexValue; color: white;">@color.HexValue</td>
+            <td style="background-color:@color.HexCode; color: white;">@color.HexCode</td>
             <td>
                 <a href="@Url.Action("Edit", "Color", new { id = color.Id })" class="btn btn-info btn-sm">
                     <i class="fas fa-edit"></i> Edit

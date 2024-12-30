@@ -2,6 +2,7 @@ namespace Cap.Enjoyer.WebMVC.Controllers;
 
 using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services.Interfaces;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -12,40 +13,21 @@ public class CapController(ICapService capService, IBottleService bottleService,
     public async Task<IActionResult> Index()
     {
         var caps = await capService.GetAllCapsFilteredAsync();
-        var viewModel = caps.Select(c => new CapListViewModel
-        {
-            Id = c.Id,
-            TextOnCap = c.TextOnCap,
-            Description = c.Description,
-            CapPicture = null,
-            TextColorsIds = c.TextColors,
-            BgColorsIds = c.BgColors,
-            BottlesIds = c.Bottles
-        });
+        var viewModel = caps.Where(c => c.IsEditForId is null).Select(c => c.Adapt<CapListViewModel>());
         return View(viewModel);
     }
 
     [HttpGet]
     public async Task<IActionResult> Details(Guid id)
     {
-        var cap = await capService.GetCapByIdAsync(id);
+        var cap = await capService.FindCapWithDetailsByIdAsync(id);
 
-        var textColors = await colorService.GetColorsByIdsAsync(cap.TextColors);
-        var bgColors = await colorService.GetColorsByIdsAsync(cap.BgColors);
-        var bottles = await bottleService.GetBottlesByIdsAsync(cap.Bottles);
-
-        var viewModel = new CapDetailViewModel
+        if (cap is null)
         {
-            Id = cap.Id,
-            TextOnCap = cap.TextOnCap,
-            Description = cap.Description,
-            CapPicture = cap.CapPicture,
-            TextColors = textColors,
-            BgColors = bgColors,
-            Bottles = bottles,
-            IsEditForId = cap.IsEditForId
-        };
+            return NotFound();
+        }
 
+        var viewModel = cap.Adapt<CapDetailViewModel>();
         return View(viewModel);
     }
 
@@ -66,31 +48,15 @@ public class CapController(ICapService capService, IBottleService bottleService,
     {
         if (!ModelState.IsValid)
         {
-            var viewModel = new CapCreateViewModel
-            {
-                TextOnCap = model.TextOnCap,
-                Description = model.Description,
-                CapPicture = model.CapPicture,
-                TextColorsIds = model.TextColorsIds,
-                BgColorsIds = model.BgColorsIds,
-                BottlesIds = model.BottlesIds,
-                BottlesOptions = await bottleService.GetBottleOptionsAsync(),
-                ColorsOptions = await colorService.GetColorOptionsAsync()
-            };
+            var viewModel = model.Adapt<CapCreateViewModel>();
+            viewModel.BottlesOptions = await bottleService.GetBottleOptionsAsync();
+            viewModel.ColorsOptions = await colorService.GetColorOptionsAsync();
+
             return View(viewModel);
         }
 
-        var capDto = new CapInsertDto
-        {
-            TextOnCap = model.TextOnCap,
-            Description = model.Description,
-            TextColors = model.TextColorsIds,
-            BgColors = model.BgColorsIds,
-            Bottles = model.BottlesIds ?? []
-        };
-
+        var capDto = model.Adapt<CapInsertDto>();
         await capService.CreateCapAsync(capDto);
-
         return RedirectToAction(nameof(Index));
     }
 
@@ -99,18 +65,10 @@ public class CapController(ICapService capService, IBottleService bottleService,
     {
         var cap = await capService.GetCapByIdAsync(id);
 
-        var model = new CapCreateViewModel
-        {
-            TextOnCap = cap.TextOnCap,
-            Description = cap.Description,
-            TextColorsIds = cap.TextColors,
-            BgColorsIds = cap.BgColors,
-            BottlesIds = cap.Bottles,
-            BottlesOptions = await bottleService.GetBottleOptionsAsync(),
-            ColorsOptions = await colorService.GetColorOptionsAsync()
-        };
-
-        return View(model);
+        var viewModel = cap.Adapt<CapCreateViewModel>();
+        viewModel.BottlesOptions = await bottleService.GetBottleOptionsAsync();
+        viewModel.ColorsOptions = await colorService.GetColorOptionsAsync();
+        return View(viewModel);
     }
 
     [HttpPost]
@@ -118,33 +76,16 @@ public class CapController(ICapService capService, IBottleService bottleService,
     {
         if (!ModelState.IsValid)
         {
-            var viewModel = new CapCreateViewModel
-            {
-                TextOnCap = model.TextOnCap,
-                Description = model.Description,
-                CapPicture = model.CapPicture,
-                TextColorsIds = model.TextColorsIds,
-                BgColorsIds = model.BgColorsIds,
-                BottlesIds = model.BottlesIds,
-                BottlesOptions = await bottleService.GetBottleOptionsAsync(),
-                ColorsOptions = await colorService.GetColorOptionsAsync()
-            };
+            var viewModel = model.Adapt<CapCreateViewModel>();
+            viewModel.BottlesOptions = await bottleService.GetBottleOptionsAsync();
+            viewModel.ColorsOptions = await colorService.GetColorOptionsAsync();
+
             return View(viewModel);
         }
 
-        var capDto = new CapInsertDto
-        {
-            TextOnCap = model.TextOnCap,
-            Description = model.Description,
-            CapPictureFile = model.CapPicture,
-            TextColors = model.TextColorsIds,
-            BgColors = model.BgColorsIds,
-            Bottles = model.BottlesIds ?? [],
-            IsEditFor = id
-        };
-
+        var capDto = model.Adapt<CapInsertDto>();
+        capDto.IsEditForId = id;
         await capService.CreateCapAsync(capDto);
-
         return RedirectToAction(nameof(Index));
     }
 

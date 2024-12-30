@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 public interface ICapService
 {
     public Task<CapDto> GetCapByIdAsync(Guid id);
+    public Task<CapWithDetailsDto?> FindCapWithDetailsByIdAsync(Guid id);
     public Task<CapDto> CreateCapAsync(CapInsertDto capInsertDto);
     public Task<IEnumerable<CapDto>> GetAllCapsByAlbumIdAsync(Guid albumId);
 
@@ -19,6 +20,5 @@ public interface ICapService
     public Task<CapDto> UpdateCapAsync(Guid id, CapInsertDto capInsertDto);
     public Task DeleteCapAsync(Guid id);
     Task<List<SelectListItem>> GetCapOptionsAsync();
-    public Task<List<CapDto>> GetCapsByIdsAsync(List<Guid> ids);
 
 }

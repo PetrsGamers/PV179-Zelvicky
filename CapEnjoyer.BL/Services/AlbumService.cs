@@ -71,7 +71,7 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumService
         existingAlbum.Description = album.Description;
         existingAlbum.Public = album.Public;
         existingAlbum.UserId = album.User;
-        if (album.Caps == null)
+        if (album.Caps is null)
         {
             existingAlbum.CapLinks = [];
         }

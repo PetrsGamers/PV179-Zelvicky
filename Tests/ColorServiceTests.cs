@@ -66,7 +66,7 @@ public class ColorServiceTests : IDisposable
     {
         var colorService = new ColorService(context);
 
-        var newColor = new ColorDto { Name = "Green", HexCode = "#00FF00" };
+        var newColor = new ColorInsertDto { Name = "Green", HexCode = "#00FF00" };
 
         var result = await colorService.CreateColorAsync(newColor);
 
@@ -107,7 +107,7 @@ public class ColorServiceTests : IDisposable
         context.Colors.Add(originalColor);
         await context.SaveChangesAsync();
 
-        var updatedColorDto = new ColorDto { Name = "Dark Orange", HexCode = "#FF8C00" };
+        var updatedColorDto = new ColorInsertDto { Name = "Dark Orange", HexCode = "#FF8C00" };
 
         var result = await colorService.UpdateColorAsync(colorId, updatedColorDto);
 

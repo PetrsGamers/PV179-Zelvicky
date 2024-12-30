@@ -19,6 +19,6 @@ public class BottleCreateReturnModel
     [Required(ErrorMessage = "Producer is required.")]
     public required Guid ProducerId { get; set; }
 
-    public IFormFile? BottlePicture { get; set; }
+    public IFormFile? BottlePictureFile { get; set; }
     public required List<Guid>? CapIds { get; set; }
 }

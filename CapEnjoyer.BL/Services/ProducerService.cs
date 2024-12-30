@@ -26,6 +26,15 @@ public class ProducerService(CapEnjoyerDbContext context) : IProducerService
         return producer.Adapt<ProducerDto>();
     }
 
+    public async Task<ProducerWithDetailsDto?> FindProducerWithDetailsByIdAsync(Guid id)
+    {
+        var producer = await context.Producers.Include(p => p.Country)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        return producer?.Adapt<ProducerWithDetailsDto>();
+    }
+
+
 
     public async Task DeleteProducerAsync(Guid id)
     {

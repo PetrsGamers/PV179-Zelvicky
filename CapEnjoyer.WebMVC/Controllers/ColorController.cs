@@ -2,6 +2,7 @@ namespace Cap.Enjoyer.WebMVC.Controllers;
 
 using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services.Interfaces;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -10,7 +11,7 @@ public class ColorController(IColorService colorService) : Controller
     public async Task<IActionResult> Index()
     {
         var colors = await colorService.GetColorsAsync();
-        var viewModel = colors.Select(c => new ColorViewModel { Id = c.Id, Name = c.Name, HexValue = c.HexCode });
+        var viewModel = colors.Select(c => c.Adapt<ColorListViewModel>());
         return View(viewModel);
     }
 
@@ -22,10 +23,11 @@ public class ColorController(IColorService colorService) : Controller
     {
         if (!ModelState.IsValid)
         {
-            return View(returnModel);
+            var viewModel = returnModel.Adapt<ColorCreateViewModel>();
+            return View(viewModel);
         }
 
-        var colorDto = new ColorDto { Name = returnModel.Name, HexCode = returnModel.HexValue };
+        var colorDto = returnModel.Adapt<ColorInsertDto>();
 
         await colorService.CreateColorAsync(colorDto);
         return RedirectToAction(nameof(Index));
@@ -35,26 +37,27 @@ public class ColorController(IColorService colorService) : Controller
     public async Task<IActionResult> Edit(Guid id)
     {
         var color = await colorService.GetColorByIdAsync(id);
-        if (color == null)
+        if (color is null)
         {
             return NotFound();
         }
 
-        var viewModel = new ColorViewModel { Id = color.Id, Name = color.Name, HexValue = color.HexCode };
+        var viewModel = color.Adapt<ColorCreateViewModel>();
         return View(viewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(ColorViewModel viewModel)
+    public async Task<IActionResult> Edit(Guid id, ColorCreateReturnModel returnModel)
     {
         if (!ModelState.IsValid)
         {
+            var viewModel = returnModel.Adapt<ColorCreateViewModel>();
             return View(viewModel);
         }
 
-        var colorDto = new ColorDto { Id = viewModel.Id, Name = viewModel.Name, HexCode = viewModel.HexValue };
+        var colorDto = returnModel.Adapt<ColorInsertDto>();
 
-        await colorService.UpdateColorAsync(viewModel.Id, colorDto);
+        await colorService.UpdateColorAsync(id, colorDto);
         return RedirectToAction(nameof(Index));
     }
 

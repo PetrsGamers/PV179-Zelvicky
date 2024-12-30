@@ -18,7 +18,7 @@ public class CountryController(ICountryService countryService) : ControllerBase
     public async Task<IActionResult> GetCountryById(Guid id)
     {
         var country = await countryService.GetCountryByIdAsync(id);
-        if (country == null)
+        if (country is null)
         {
             return NotFound($"Country with ID {id} not found.");
         }

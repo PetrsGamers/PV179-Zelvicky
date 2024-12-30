@@ -7,8 +7,8 @@ public class CapInsertDto
 
     public IFormFile? CapPictureFile { get; set; }
 
-    public List<Guid> TextColors { get; set; }
-    public List<Guid> BgColors { get; set; }
-    public List<Guid> Bottles { get; set; }
-    public Guid? IsEditFor { get; set; }
+    public List<Guid> TextColorIds { get; set; }
+    public List<Guid> BgColorIds { get; set; }
+    public List<Guid> BottleIds { get; set; }
+    public Guid? IsEditForId { get; set; }
 }
