@@ -3,16 +3,22 @@ namespace CapEnjoyer.API.Controllers;
 using BL.DTOs;
 using BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ColorController(IColorService colorService) : ControllerBase
+public class ColorController(IColorService colorService, IMemoryCache memoryCache) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllColors()
     {
-        var colors = await colorService.GetColorsAsync();
-        return Ok(colors);
+        const string cacheKey = "AllColors";
+        var cachedColors = await memoryCache.GetOrCreateAsync(cacheKey, async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+            return await colorService.GetColorsAsync();
+        });
+        return Ok(cachedColors);
     }
 
 

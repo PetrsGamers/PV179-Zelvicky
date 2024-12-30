@@ -4,15 +4,23 @@ using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services.Interfaces;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Models;
 
-public class ColorController(IColorService colorService) : Controller
+public class ColorController(IColorService colorService, IMemoryCache memoryCache) : Controller
 {
     public async Task<IActionResult> Index()
     {
-        var colors = await colorService.GetColorsAsync();
-        var viewModel = colors.Select(c => c.Adapt<ColorListViewModel>());
-        return View(viewModel);
+        const string cacheKey = "AllColors";
+        var cachedColors = await memoryCache.GetOrCreateAsync(cacheKey, async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+
+            var colorDtos = await colorService.GetColorsAsync();
+            return colorDtos.Select(c => c.Adapt<ColorListViewModel>());
+        });
+
+        return View(cachedColors);
     }
 
     [HttpGet]
@@ -30,6 +38,7 @@ public class ColorController(IColorService colorService) : Controller
         var colorDto = returnModel.Adapt<ColorInsertDto>();
 
         await colorService.CreateColorAsync(colorDto);
+        memoryCache.Remove("AllColors");
         return RedirectToAction(nameof(Index));
     }
 
@@ -55,9 +64,11 @@ public class ColorController(IColorService colorService) : Controller
             return View(viewModel);
         }
 
+
         var colorDto = returnModel.Adapt<ColorInsertDto>();
 
         await colorService.UpdateColorAsync(id, colorDto);
+        memoryCache.Remove("AllColors");
         return RedirectToAction(nameof(Index));
     }
 
@@ -73,6 +84,7 @@ public class ColorController(IColorService colorService) : Controller
             return NotFound();
         }
 
+        memoryCache.Remove("AllColors");
         return RedirectToAction(nameof(Index));
     }
 }

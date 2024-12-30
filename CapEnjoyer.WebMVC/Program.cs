@@ -18,7 +18,7 @@ var postgresOptionValidator = new PostgresOptionValidator { ConnectionString = c
 builder.Services.AddDbContextFactory<CapEnjoyerDbContext>(
     options => options.UseNpgsql(postgresOptionValidator.ConnectionString));
 
-
+builder.Services.AddMemoryCache();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IUserService, UserService>();

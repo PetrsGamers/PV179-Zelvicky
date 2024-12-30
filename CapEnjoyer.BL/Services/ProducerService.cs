@@ -35,6 +35,7 @@ public class ProducerService(CapEnjoyerDbContext context) : IProducerService
     public async Task<IEnumerable<ProducerDto>> GetAllProducersAsync()
     {
         var producers = await context.Producers
+            .OrderBy(p => p.Name)
             .ToListAsync();
 
         return producers.Adapt<IEnumerable<ProducerDto>>();
