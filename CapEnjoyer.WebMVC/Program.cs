@@ -9,6 +9,7 @@ using CapEnjoyer.Middleware;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +78,12 @@ app.Use(async (context, next) =>
     await next.Invoke();
 });
 app.UseMiddleware<LoggerMiddleware>();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "../SharedImages")),
+    RequestPath = "/images"
+});
+
 app.UseRouting();
 
 app.UseAuthorization();

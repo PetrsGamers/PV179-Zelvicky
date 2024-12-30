@@ -7,6 +7,7 @@ using CapEnjoyer.DAL;
 using CapEnjoyer.Middleware;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -78,5 +79,9 @@ app.UseMiddleware<AuthenticationMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "../SharedImages")),
+    RequestPath = "/images"
+});
 app.Run();
