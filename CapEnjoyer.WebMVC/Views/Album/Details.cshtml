@@ -1,0 +1,46 @@
+@model AlbumDetailViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Album Details";
+}
+
+<h2>Album Details</h2>
+
+<div>
+    <h4>@Model.Name</h4>
+    <p>Description: @Model.Description</p>
+    <p>Owner: @Model.Username</p>
+    <p>Public: <input type="checkbox" disabled @(Model.Public ? "checked" : "") /></p>
+    @if(Model.Caps.Count > 0)
+    {
+        <b>List of Caps</b>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var cap in Model.Caps)
+            {
+                <tr>
+                    <td>@cap.TextOnCap</td>
+                    <td>@cap.Description</td>
+                    <td>
+                        <a href="@Url.Action("Details", "Cap", new { id = cap.Id })">Details</a> |
+                        <a href="@Url.Action("Edit", "Cap", new { id = cap.Id })">Edit</a> |
+                        <a href="@Url.Action("DeleteCap", "Album", new { capId = cap.Id, albumId = @Model.Id })">Delete</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+</div>
+
+<a asp-action="Index" asp-controller="Album">Back to List</a>
+

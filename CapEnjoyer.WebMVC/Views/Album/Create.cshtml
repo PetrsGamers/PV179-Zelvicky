@@ -1,0 +1,15 @@
+@model AlbumCreateViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Create Album";
+}
+
+<h2 style="text-align: center; color: #333;">Create Album</h2>
+<form asp-action="Create" method="post" enctype="multipart/form-data" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+   @await Html.PartialAsync("_AlbumFormPartial", Model)
+    <button type="submit" style="width: 100%; padding: 10px; background-color: #007bff; color: #fff; border: none; border-radius: 4px; font-size: 16px; cursor: pointer;">Create</button>
+
+</form>
+<a asp-action="Index" asp-controller="Album" class="btn btn-secondary">Back to List</a>
+

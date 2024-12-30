@@ -1,0 +1,22 @@
+@model AlbumCreateViewModel
+
+    <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px;">Name</label>
+        <input asp-for="Name" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px;">Description</label>
+        <textarea asp-for="Description" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px;">Public</label>
+        <input asp-for="Public" type="checkbox" />
+        <span asp-validation-for="Public" class="text-danger"></span>
+    </div>
+    <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px;">Caps</label>
+        <select multiple="multiple" asp-for="SelectedCapIds" asp-items="@(new MultiSelectList(Model.Caps, "Id", "TextOnCap"))" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></select>
+        <span asp-validation-for="SelectedCapIds" class="text-danger"></span>
+    </div>

@@ -58,6 +58,8 @@ public static class MapsterExtensions
             .Map(dest => dest.TextColors, src => src.TextColorLinks.Select(tcl => tcl.TextColor.Adapt<ColorDto>()).ToList())
             .Map(dest => dest.BgColors, src => src.BackgroundColorLinks.Select(bcl => bcl.BackgroundColor.Adapt<ColorDto>()).ToList());
 
+
+
         TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
     }
 }

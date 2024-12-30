@@ -33,7 +33,7 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumService
             throw new ArgumentException("Name and Description are required.");
         }
 
-        var user = await context.Users.FindAsync(album.User) ?? throw new ArgumentException("User not found.");
+        var user = await context.Users.FindAsync(album.UserId) ?? throw new ArgumentException("User not found.");
 
         var newId = Guid.NewGuid();
         var newAlbum = new Album
@@ -46,10 +46,10 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumService
             User = user
         };
         var capLinks = new List<CapToAlbum>();
-        if (album.Caps != null)
+        if (album.CapsIds != null)
         {
             capLinks = await context.Caps
-                .Where(c => album.Caps.Contains(c.Id))
+                .Where(c => album.CapsIds.Contains(c.Id))
                 .Select(c => new CapToAlbum { AlbumId = newAlbum.Id, CapId = c.Id, Cap = c, Album = newAlbum })
                 .ToListAsync();
         }
@@ -70,15 +70,15 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumService
         existingAlbum.Name = album.Name;
         existingAlbum.Description = album.Description;
         existingAlbum.Public = album.Public;
-        existingAlbum.UserId = album.User;
-        if (album.Caps is null)
+        existingAlbum.UserId = album.UserId;
+        if (album.CapsIds is null)
         {
             existingAlbum.CapLinks = [];
         }
         else
         {
             existingAlbum.CapLinks = await context.Caps
-                .Where(c => album.Caps.Contains(c.Id))
+                .Where(c => album.CapsIds.Contains(c.Id))
                 .Select(c => new CapToAlbum { AlbumId = id, CapId = c.Id, Cap = c, Album = existingAlbum })
                 .ToListAsync();
         }
@@ -117,4 +117,6 @@ public class AlbumService(CapEnjoyerDbContext context) : IAlbumService
         context.CapToAlbums.Remove(capLink);
         await context.SaveChangesAsync();
     }
+
+
 }
