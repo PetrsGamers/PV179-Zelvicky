@@ -4,6 +4,7 @@ using CapEnjoyer.BL.Mappers;
 using CapEnjoyer.BL.Services;
 using CapEnjoyer.BL.Services.Interfaces;
 using CapEnjoyer.DAL;
+using CapEnjoyer.Middleware;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -62,7 +63,11 @@ app.ValidateConnection();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
+app.Use(async (context, next) =>
+{
+    context.Request.Headers["X-App-Source"] = "API";
+    await next.Invoke();
+});
 app.UseMiddleware<LoggerMiddleware>();
 app.UseMiddleware<ErrorLoggingMiddleware>();
 app.UseMiddleware<AuthenticationMiddleware>();
