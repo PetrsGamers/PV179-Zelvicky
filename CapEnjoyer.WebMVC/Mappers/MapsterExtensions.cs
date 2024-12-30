@@ -27,4 +27,12 @@ public static class MapsterExtensions
 
         TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
     }
+    public static void ConfigureAlbumMVCMapping(this TypeAdapterConfig config)
+    {
+
+        config.NewConfig<AlbumCreateReturnModel, AlbumInsertDto>()
+            .Map(dest => dest.CapsIds, src => src.SelectedCapIds);
+
+        TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
+    }
 }

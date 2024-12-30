@@ -1,0 +1,49 @@
+@using CapEnjoyer.DAL.Entities
+@model AlbumListViewModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Album List";
+}
+
+<h2>Albums List</h2>
+
+<p>
+@if (Model.LoggedUser != null)
+{
+    <a class="btn btn-primary" href="@Url.Action("Create", "Album")">Create New Album</a>
+}
+</p>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Owner</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var album in Model.Albums)
+    {
+        <tr>
+            <td>@album.Name</td>
+            <td>@album.Description</td>
+            <td>@album.Username</td>
+            <td>
+                <a href="@Url.Action("Details", "Album", new { id = album.Id })">Details</a>
+                @if (Model.LoggedUser is not null && Model.LoggedUser == album.UserId)
+                {
+                    <span>|
+                    <a href="@Url.Action("Edit", "Album", new { id = album.Id })">Edit</a>
+                    |
+                    <a href="@Url.Action("Delete", "Album", new { id = album.Id })">Delete</a>
+                    </span>
+
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

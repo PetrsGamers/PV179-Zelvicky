@@ -8,7 +8,6 @@ using CapEnjoyer.DAL.Entities;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -36,7 +35,17 @@ builder.Services.AddRazorPages();
 builder.Services.AddIdentity<LocalIdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<CapEnjoyerDbContext>()
     .AddDefaultTokenProviders();
-
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IBottleService, BottleService>();
+builder.Services.AddScoped<IAlbumService, AlbumService>();
+builder.Services.AddScoped<ICapService, CapService>();
+builder.Services.AddScoped<IColorService, ColorService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<IMiddlewareLoggingService, MiddlewareLoggingService>();
+builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
+builder.Services.AddScoped<IEditRequestService, EditRequestService>();
+builder.Services.AddScoped<IProducerService, ProducerService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequireDigit = false;
@@ -48,6 +57,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 builder.Services.AddMapster();
 TypeAdapterConfig.GlobalSettings.ConfigureAlbumMapping();
+TypeAdapterConfig.GlobalSettings.ConfigureAlbumMVCMapping();
+TypeAdapterConfig.GlobalSettings.EnableImmutableMapping();
 TypeAdapterConfig.GlobalSettings.ConfigureEditRequestMapping();
 TypeAdapterConfig.GlobalSettings.ConfigureCapMapping();
 TypeAdapterConfig.GlobalSettings.ConfigureBottleMapping();

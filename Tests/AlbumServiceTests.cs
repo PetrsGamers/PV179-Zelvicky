@@ -129,7 +129,7 @@ public class AlbumServiceTests : IDisposable
         context.Users.Add(user);
 
         var albumDto =
-            new AlbumInsertDto { Name = "Album1", Description = "Description1", Public = true, User = userId };
+            new AlbumInsertDto { Name = "Album1", Description = "Description1", Public = true, UserId = userId };
         var createdAlbum = await albumService.CreateAlbum(albumDto);
         await context.SaveChangesAsync();
 
