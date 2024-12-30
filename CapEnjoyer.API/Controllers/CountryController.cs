@@ -2,16 +2,22 @@ namespace CapEnjoyer.API.Controllers;
 
 using BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CountryController(ICountryService countryService) : ControllerBase
+public class CountryController(ICountryService countryService, IMemoryCache memoryCache) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllCountries()
     {
-        var countries = await countryService.GetCountriesAsync();
-        return Ok(countries);
+        const string cacheKey = "AllCountries";
+        var cachedCountries = await memoryCache.GetOrCreateAsync(cacheKey, async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+            return await countryService.GetCountriesAsync();
+        });
+        return Ok(cachedCountries);
     }
 
     [HttpGet("{id:guid}")]

@@ -20,6 +20,7 @@ builder.Services.AddDbContextFactory<CapEnjoyerDbContext>(
     options => options.UseNpgsql(postgresOptionValidator.ConnectionString));
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBottleService, BottleService>();
 builder.Services.AddScoped<IAlbumService, AlbumService>();

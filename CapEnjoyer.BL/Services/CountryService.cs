@@ -12,6 +12,7 @@ public class CountryService(CapEnjoyerDbContext context) : ICountryService
     public async Task<List<CountryDto>> GetCountriesAsync()
     {
         var countries = await context.Countries
+            .OrderBy(c => c.Name)
             .Select(c => c.Adapt<CountryDto>())
             .ToListAsync();
 
