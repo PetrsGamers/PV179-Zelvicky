@@ -3,6 +3,7 @@ namespace Cap.Enjoyer.WebMVC.Controllers;
 using CapEnjoyer.BL.DTOs;
 using CapEnjoyer.BL.Services.Interfaces;
 using CapEnjoyer.DAL.Entities;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -21,20 +22,8 @@ public class CouponController(
             return RedirectToAction("Login", "Account");
         }
 
-
         var coupons = await couponService.GetCouponsByBuyerIdAsync(signInUser.UserId);
-
-        var viewModel = coupons.Select(c => new CouponViewModel
-        {
-            Id = c.Id,
-            Code = c.Code,
-            IsUsed = c.IsUsed,
-            ValidFrom = c.ValidFrom,
-            ValidTo = c.ValidUntil,
-            ActivateeName = c.ActivateeUsername,
-            BuyerName = c.BuyerUsername,
-            BoughtAt = c.GeneratedAt
-        });
+        var viewModel = coupons.Select(c => c.Adapt<CouponViewModel>());
         return View(viewModel);
     }
 
@@ -93,12 +82,10 @@ public class CouponController(
         var coupon = await couponService.ActivateCouponAsync(model.Code, signInUser.UserId);
         if (coupon == null)
         {
-            Console.WriteLine("Coupon not found or already used");
             TempData["ErrorMessage"] = "Coupon not found, already used or you have an active coupon already";
             return RedirectToAction("Activate");
         }
 
-        Console.WriteLine("Coupon activated");
         TempData["SuccessMessage"] = "Coupon activated";
         return RedirectToAction("Index");
     }

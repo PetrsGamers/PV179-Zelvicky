@@ -13,81 +13,24 @@ public class CouponService(CapEnjoyerDbContext context) : ICouponService
     {
         var coupons = await context.Coupons
             .Where(c => !onlyActive || (c.ValidFrom <= DateTime.Now && c.ValidUntil >= DateTime.Now))
-            .Select(c => c.Adapt<CouponDto>())
+            .Include(c => c.Activatee)
+            .Include(c => c.Buyer)
             .ToListAsync();
 
-
-        var activateeIds = coupons
-            .Where(c => c.ActivateeId.HasValue)
-            .Select(c => c.ActivateeId.Value)
-            .Distinct()
-            .ToList();
-
-        var buyerIds = coupons
-            .Select(c => c.BuyerId)
-            .Distinct()
-            .ToList();
-
-        var activateeNames = await context.Users
-            .Where(u => activateeIds.Contains(u.Id))
-            .ToDictionaryAsync(u => u.Id, u => u.Username);
-
-        var buyerNames = await context.Users
-            .Where(u => buyerIds.Contains(u.Id))
-            .ToDictionaryAsync(u => u.Id, u => u.Username);
-
-        var couponDtos = coupons.Select(c => new CouponDto
-        {
-            Id = c.Id,
-            Code = c.Code,
-            IsUsed = c.IsUsed,
-            ValidFrom = c.ValidFrom,
-            ValidUntil = c.ValidUntil,
-            BuyerUsername = buyerNames.GetValueOrDefault(c.BuyerId),
-            ActivateeUsername = c.ActivateeId.HasValue &&
-                                activateeNames.TryGetValue(c.ActivateeId.Value,
-                                    out var name)
-                ? name
-                : null,
-            BuyerId = c.BuyerId,
-            GeneratedAt = c.GeneratedAt
-        }).ToList();
-
+        var couponDtos = coupons.Select(c => c.Adapt<CouponDto>()).ToList();
         return couponDtos;
     }
 
 
     public async Task<List<CouponDto>> GetCouponsByBuyerIdAsync(Guid userId)
     {
-        var coupons = await context.Coupons
+        var couponsWithActivateesAndBuyers = await context.Coupons
             .Where(c => c.BuyerId == userId)
+            .Include(c => c.Activatee)
+            .Include(c => c.Buyer)
             .ToListAsync();
 
-        var activateeIds = coupons
-            .Where(c => c.ActivateeId.HasValue)
-            .Select(c => c.ActivateeId.Value)
-            .Distinct()
-            .ToList();
-
-        var activateeNames = await context.Users
-            .Where(u => activateeIds.Contains(u.Id))
-            .ToDictionaryAsync(u => u.Id, u => u.Username);
-
-        var couponDtos = coupons.Select(c => new CouponDto
-        {
-            Id = c.Id,
-            Code = c.Code,
-            IsUsed = c.IsUsed,
-            ValidFrom = c.ValidFrom,
-            ValidUntil = c.ValidUntil,
-            ActivateeUsername = c.ActivateeId.HasValue &&
-                                activateeNames.TryGetValue(c.ActivateeId.Value,
-                                    out var name)
-                ? name
-                : null,
-            BuyerId = c.BuyerId
-        }).ToList();
-
+        var couponDtos = couponsWithActivateesAndBuyers.Select(c => c.Adapt<CouponDto>()).ToList();
         return couponDtos;
     }
 

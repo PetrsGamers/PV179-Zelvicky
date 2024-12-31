@@ -8,9 +8,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
-public class AdminController(UserManager<LocalIdentityUser> userManager, IUserService userService,
-    ICouponService couponService)
-    : Controller
+public class AdminController(
+    UserManager<LocalIdentityUser> userManager,
+    IUserService userService,
+    ICouponService couponService) : Controller
 {
     [HttpGet]
     public async Task<IActionResult> ResetUserPassword()
