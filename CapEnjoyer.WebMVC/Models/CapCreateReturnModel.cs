@@ -12,7 +12,7 @@ public class CapCreateReturnModel
     [Required(ErrorMessage = "Description is required.")]
     public required string Description { get; set; }
 
-    public IFormFile? CapPicture { get; set; }
+    public IFormFile? CapPictureFile { get; set; }
 
     public List<Guid>? TextColorIds { get; set; } = [];
 

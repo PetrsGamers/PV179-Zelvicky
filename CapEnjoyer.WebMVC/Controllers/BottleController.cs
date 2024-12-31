@@ -9,6 +9,7 @@ using Models;
 public class BottleController(
     IBottleService bottleService,
     IProducerService producerService,
+    IImageService imageService,
     ICapService capService) : Controller
 {
     [HttpGet]
@@ -62,8 +63,12 @@ public class BottleController(
         }
 
         var bottleDto = model.Adapt<BottleInsertDto>();
+        var bottle = await bottleService.CreateBottleAsync(bottleDto);
+        if (model.BottlePictureFile is not null)
+        {
+            await imageService.UploadImageForBottleAsync(bottle.Id, model.BottlePictureFile);
+        }
 
-        await bottleService.CreateBottleAsync(bottleDto);
         return RedirectToAction(nameof(Index));
     }
 

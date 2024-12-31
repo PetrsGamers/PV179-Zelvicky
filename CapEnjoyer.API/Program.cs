@@ -1,5 +1,6 @@
 using CapEnjoyer.API.Helpers;
 using CapEnjoyer.API.Middleware;
+using CapEnjoyer.BL.Constants;
 using CapEnjoyer.BL.Mappers;
 using CapEnjoyer.BL.Services;
 using CapEnjoyer.BL.Services.Interfaces;
@@ -81,7 +82,8 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "../SharedImages")),
+    FileProvider =
+        new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), ImageConstants.SharedPath)),
     RequestPath = "/images"
 });
 app.Run();

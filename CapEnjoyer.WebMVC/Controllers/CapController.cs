@@ -6,7 +6,11 @@ using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
-public class CapController(ICapService capService, IBottleService bottleService, IColorService colorService)
+public class CapController(
+    ICapService capService,
+    IBottleService bottleService,
+    IColorService colorService,
+    IImageService imageService)
     : Controller
 {
     [HttpGet]
@@ -63,7 +67,12 @@ public class CapController(ICapService capService, IBottleService bottleService,
         }
 
         var capDto = model.Adapt<CapInsertDto>();
-        await capService.CreateCapAsync(capDto);
+        var cap = await capService.CreateCapAsync(capDto);
+        if (model.CapPictureFile != null)
+        {
+            await imageService.UploadImageForCapAsync(cap.Id, model.CapPictureFile);
+        }
+
         return RedirectToAction(nameof(Index));
     }
 

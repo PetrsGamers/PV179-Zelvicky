@@ -1,10 +1,12 @@
 using Cap.Enjoyer.WebMVC.Mappers;
 using CapEnjoyer.API.Helpers;
+using CapEnjoyer.BL.Constants;
 using CapEnjoyer.BL.Mappers;
 using CapEnjoyer.BL.Services;
 using CapEnjoyer.BL.Services.Interfaces;
 using CapEnjoyer.DAL;
 using CapEnjoyer.DAL.Entities;
+using CapEnjoyer.Middleware;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -70,19 +72,20 @@ if (!app.Environment.IsDevelopment())
 
 app.ValidateConnection();
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseStaticFiles(); // this sets up the wwwroot folder as the default static content folder
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider =
+        new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), ImageConstants.SharedPath)),
+    RequestPath = "/images"
+});
+
 app.Use(async (context, next) =>
 {
     context.Request.Headers["X-App-Source"] = "MVC";
     await next.Invoke();
 });
 app.UseMiddleware<LoggerMiddleware>();
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "../SharedImages")),
-    RequestPath = "/images"
-});
-
 app.UseRouting();
 
 app.UseAuthorization();

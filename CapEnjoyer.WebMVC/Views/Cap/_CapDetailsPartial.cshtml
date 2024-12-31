@@ -6,8 +6,9 @@
 
     <p>Text Colors:</p>
     <ul>
-        @if (@Model.TextColors != null){
-        @foreach (var color in Model.TextColors)
+        @if (Model.TextColors != null)
+        {
+            @foreach (var color in Model.TextColors)
             {
                 <li style="background-color:@color.HexCode; color:white">
                     @color.Name (@color.HexCode)
@@ -18,19 +19,20 @@
 
     <p>Background Colors:</p>
     <ul>
-        @if (@Model.BgColors != null){
-        @foreach (var color in Model.BgColors)
+        @if (Model.BgColors != null)
         {
-            <li style="background-color:@color.HexCode; color:white">
-                @color.Name (@color.HexCode)
-            </li>
-        }
+            @foreach (var color in Model.BgColors)
+            {
+                <li style="background-color:@color.HexCode; color:white">
+                    @color.Name (@color.HexCode)
+                </li>
+            }
         }
     </ul>
 
     <p>Bottles:</p>
     <ul>
-        @if (@Model.Bottles != null)
+        @if (Model.Bottles != null)
         {
             @foreach (var bottle in Model.Bottles)
             {
@@ -43,5 +45,5 @@
         }
     </ul>
 
-    <img src="@Model.CapPicture" alt="@Model.TextOnCap"/>
+    <img src="/images/@Model.CapPicture" alt="@Model.TextOnCap" class="img-thumbnail"/>
 </div>

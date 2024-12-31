@@ -8,7 +8,7 @@ public class CapCreateViewModel
 
     public string? Description { get; set; }
 
-    public IFormFile? CapPicture { get; set; }
+    public IFormFile? CapPictureFile { get; set; }
 
     public List<Guid>? TextColorIds { get; set; } = [];
 

@@ -148,10 +148,7 @@ public class CapService(CapEnjoyerDbContext context, IImageService imageService)
             .Where(bc => capInsertDto.BgColorIds.Contains(bc.Id))
             .Select(bc => new CapToBackgroundColor
             {
-                BackgroundColor = bc,
-                Cap = oldCap,
-                BackgroundColorId = bc.Id,
-                CapId = oldCap.Id
+                BackgroundColor = bc, Cap = oldCap, BackgroundColorId = bc.Id, CapId = oldCap.Id
             })
             .ToListAsync();
 
@@ -170,9 +167,9 @@ public class CapService(CapEnjoyerDbContext context, IImageService imageService)
         });
 
         await context.SaveChangesAsync();
-        if (capInsertDto.CapPictureFile != null)
+        if (capInsertDto.CapPicture != null)
         {
-            var path = await imageService.UploadImageForCapAsync(oldCap.Id, capInsertDto.CapPictureFile);
+            var path = await imageService.UploadImageForCapAsync(oldCap.Id, capInsertDto.CapPicture);
             oldCap.CapPicture = path;
         }
 
@@ -203,10 +200,7 @@ public class CapService(CapEnjoyerDbContext context, IImageService imageService)
             .Where(bc => capInsertDto.BgColorIds.Contains(bc.Id))
             .Select(bc => new CapToBackgroundColor
             {
-                BackgroundColor = bc,
-                Cap = cap,
-                BackgroundColorId = bc.Id,
-                CapId = cap.Id
+                BackgroundColor = bc, Cap = cap, BackgroundColorId = bc.Id, CapId = cap.Id
             })
             .ToListAsync();
 
@@ -225,12 +219,12 @@ public class CapService(CapEnjoyerDbContext context, IImageService imageService)
         });
 
         await context.SaveChangesAsync();
-        if (capInsertDto.CapPictureFile is null)
+        if (capInsertDto.CapPicture is null)
         {
             return cap.Adapt<CapDto>();
         }
 
-        var path = await imageService.UploadImageForCapAsync(cap.Id, capInsertDto.CapPictureFile);
+        var path = await imageService.UploadImageForCapAsync(cap.Id, capInsertDto.CapPicture);
         cap.CapPicture = path;
 
         return cap.Adapt<CapDto>();
@@ -301,5 +295,4 @@ public class CapService(CapEnjoyerDbContext context, IImageService imageService)
 
         return new PaginatedResult<CapDto> { Items = caps.Adapt<IEnumerable<CapDto>>(), TotalCount = totalCount };
     }
-
 }

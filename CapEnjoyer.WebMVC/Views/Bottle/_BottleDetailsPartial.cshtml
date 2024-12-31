@@ -13,7 +13,7 @@
     </p>
     <p>Caps:</p>
     <ul>
-        @if (@Model.CapDetails != null)
+        @if (Model.CapDetails != null)
         {
             @foreach (var cap in Model.CapDetails)
             {
@@ -23,5 +23,6 @@
             }
         }
     </ul>
-    <img src="@Model.BottlePicture" alt="@Model.Name picture" />
+
+    <img src="/images/@Model.BottlePicture" alt="@Model.Name picture" class="img-thumbnail"/>
 </div>

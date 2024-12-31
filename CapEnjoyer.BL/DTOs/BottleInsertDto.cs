@@ -7,7 +7,7 @@ public class BottleInsertDto
 
     public double Voltage { get; set; }
 
-    public IFormFile? BottlePictureFile { get; set; }
+    public IFormFile? BottlePicture { get; set; }
     public string DrinkType { get; set; }
     public Guid ProducerId { get; set; }
     public List<Guid>? CapIds { get; set; }

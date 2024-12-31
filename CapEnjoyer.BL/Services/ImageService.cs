@@ -30,7 +30,7 @@ public class ImageService(CapEnjoyerDbContext context) : IImageService
         var cap = await context.Caps.FirstOrDefaultAsync(c => c.Id == capId) ??
                   throw new ArgumentException($"Cap with ID {capId} not found.");
 
-        var sharedPath = Path.Combine("..", "SharedImages");
+        var sharedPath = ImageConstants.SharedPath;
 
         Directory.CreateDirectory(sharedPath); // Ensure the directory exists
 
@@ -86,7 +86,7 @@ public class ImageService(CapEnjoyerDbContext context) : IImageService
         var bottle = await context.Bottles.FirstOrDefaultAsync(b => b.Id == bottleId) ??
                      throw new ArgumentException($"Bottle with ID {bottleId} not found.");
 
-        var sharedPath = Path.Combine("..", "SharedImages");
+        var sharedPath = ImageConstants.SharedPath;
 
         Directory.CreateDirectory(sharedPath); // Ensure the directory exists
 

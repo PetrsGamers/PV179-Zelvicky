@@ -5,7 +5,7 @@ public class CapInsertDto
     public string TextOnCap { get; set; }
     public string Description { get; set; }
 
-    public IFormFile? CapPictureFile { get; set; }
+    public IFormFile? CapPicture { get; set; }
 
     public List<Guid> TextColorIds { get; set; }
     public List<Guid> BgColorIds { get; set; }
