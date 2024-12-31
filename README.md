@@ -1,5 +1,12 @@
 # PV179 - Beer cap collector
 
+# Tým
++ [David Novák](https://gitlab.fi.muni.cz/xnovak20)
++ [Tadeáš Kozub](https://gitlab.fi.muni.cz/xkozub1)
++ [Petr Hýbl](https://gitlab.fi.muni.cz/xhybl)
+
+
+
 ## Overview
 Tento projekt je databází pro sběratele pivních víček, která slouží k tomu, aby si sběratel mohl ukládat své exponáty do virtuálního alba a získal lepší přehled o své sbírce. Umožňuje nejen základní správu sbírky, ale také pokročilé funkce, které usnadní rozhodování při pořizování nových přírůstků.
 
@@ -44,7 +51,7 @@ dotnet build
 dotnet run
 ```
 
-Je potřeba po setupu potřeba vytvořit .env souboru z .evn.example a doplnit do něj potřebné proměnné.
+Je potřeba po setupu potřeba vytvořit .env souboru z .env.example a doplnit do něj potřebné proměnné.
 
 
 Používej formatter před každým commitem. Jinak neprojde CR.
@@ -61,6 +68,7 @@ Používej formatter před každým commitem. Jinak neprojde CR.
 ![Use case diagram](use_case.png) 
 
 ## Aktualizace Milestone3
+
 + Admin může měnit hesla uživatelů
 + Přidána možnost hledat ve víčkách,lahvích a výrobcích
 + Vytvořeno celá WEB aplikace, ve které pro všechny entity je možné CRUD operace, nebo jenom zadávání požadavku na změny pro admina
@@ -69,3 +77,21 @@ Používej formatter před každým commitem. Jinak neprojde CR.
 + Přidání možnost kupónů pro prémiové uživatele + svítící username
 + Přidáno stránkování pro víčka
 
+
+# Použité technologie
+
++ C# 12.0
++ .NET 8.0
++ ASP.NET Core s REST API, MVC a Razor Pages
++ Entity Framework Core
++ PostgreSQL databáze
++ Docker - pro spuštění databáze
++ Bogus - seeding
++ Swagger - dokumentace API
++ Identity Manager - správa uživatelů
++ Mapster - mapování entit
+
+# CI/CD
+
++ Gitlab CI/CD v `.gitlab-ci.yml`, který spouští build, linting a testy
++ Custom gitlab runner na MUNI FI Stratos (runner `ted`)
