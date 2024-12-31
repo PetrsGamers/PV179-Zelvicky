@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using CapEnjoyer.BL.Services
+@using CapEnjoyer.DAL.Constants
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -57,6 +59,8 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Coupon" asp-action="Index">Coupons</a>
                     </li>
+                    @if (User.Identity != null && User.IsInRole("Admin"))
+                    {
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="EditRequest" asp-action="Cap">Cap
                             Edits</a>
@@ -69,6 +73,8 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="EditRequest" asp-action="Producer">Producer
                             Edits</a>
                     </li>
+                    }
+
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">

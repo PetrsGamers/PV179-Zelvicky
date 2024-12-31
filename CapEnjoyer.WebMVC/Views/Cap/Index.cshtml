@@ -55,16 +55,21 @@
             <td>
                 <a href="@Url.Action("Details", "Cap", new { id = cap.Id })" class="btn btn-info btn-sm">
                     <i class="fas fa-info"></i> Details
-                </a> |
-                <a href="@Url.Action("Edit", "Cap", new { id = cap.Id })" class="btn btn-info btn-sm">
-                    <i class="fas fa-edit"></i> Edit
-                </a> |
-                <form action="@Url.Action("Delete", "Cap", new { id = cap.Id })" method="post" style="display:inline;">
-                    <button type="submit" class="btn btn-danger btn-sm"
-                            onclick="return confirm('Are you sure you want to delete this cap?')">
-                        <i class="fas fa-trash-alt"></i> Delete
-                    </button>
-                </form>
+                </a>
+                |
+                        <a href="@Url.Action("Edit", "Cap", new { id = cap.Id })" class="btn btn-info btn-sm">
+                            <i class="fas fa-edit"></i> Edit
+                        </a> |
+                @if (User.IsInRole("Admin"))
+                {
+
+                        <form action="@Url.Action("Delete", "Cap", new { id = cap.Id })" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure you want to delete this cap?')">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </button>
+                        </form>
+                }
             </td>
         </tr>
     }

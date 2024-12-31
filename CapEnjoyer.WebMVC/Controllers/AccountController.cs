@@ -31,6 +31,11 @@ public class AccountController(
                 }
             };
             var result = await userManager.CreateAsync(user, model.Password);
+            //this is a temporary solution, will be resolved in M4
+            if (model.Email.Contains("admin@admin.cz"))
+            {
+                await userManager.AddToRoleAsync(user, "Admin");
+            }
 
             if (!result.Succeeded)
             {
