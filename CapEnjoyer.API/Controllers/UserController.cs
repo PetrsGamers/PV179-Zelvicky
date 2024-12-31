@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(IUserService userService) : ControllerBase
+public class UserController(IUserService userService, ICouponService couponService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetUsers()
@@ -41,5 +41,12 @@ public class UserController(IUserService userService) : ControllerBase
     {
         await userService.DeleteUser(id);
         return Ok();
+    }
+
+    [HttpGet("{userId:guid}/coupons")]
+    public async Task<IActionResult> GetUserCoupons(Guid userId)
+    {
+        var coupons = await couponService.GetCouponsByBuyerIdAsync(userId);
+        return Ok(coupons);
     }
 }
