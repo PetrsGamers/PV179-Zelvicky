@@ -60,4 +60,12 @@ Používej formatter před každým commitem. Jinak neprojde CR.
 
 ![Use case diagram](use_case.png) 
 
+## Aktualizace Milestone3
++ Admin může měnit hesla uživatelů
++ Přidána možnost hledat ve víčkách,lahvích a výrobcích
++ Vytvořeno celá WEB aplikace, ve které pro všechny entity je možné CRUD operace, nebo jenom zadávání požadavku na změny pro admina
++ Přidáno cachování
++ Přidáno logování pro API v MVC
++ Přidání možnost kupónů pro prémiové uživatele + svítící username
++ Přidáno stránkování pro víčka
 
