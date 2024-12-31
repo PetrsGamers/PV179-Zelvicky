@@ -55,4 +55,21 @@ public class UserService(CapEnjoyerDbContext context) : IUserService
         context.Users.Remove(user);
         await context.SaveChangesAsync();
     }
+
+    public async Task<string?> GetUsernameById(Guid id)
+    {
+        var user = await context.Users.FindAsync(id) ?? null;
+
+        return user?.Username;
+    }
+
+    public async Task<bool> IsPremiumUserAsync(string username)
+    {
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Username == username) ?? throw new ArgumentException("User not found.");
+
+        var activeValidCoupon = await context.Coupons.FirstOrDefaultAsync(
+            c => c.ActivateeId == user.Id && c.ValidFrom < DateTime.Now.ToUniversalTime() &&
+                 DateTime.Now.ToUniversalTime() < c.ValidUntil);
+        return activeValidCoupon != null;
+    }
 }

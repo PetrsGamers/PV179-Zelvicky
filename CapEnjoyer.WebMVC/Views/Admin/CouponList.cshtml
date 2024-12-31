@@ -1,0 +1,30 @@
+﻿@model IEnumerable<CouponViewModel>
+
+<h2>All existing coupons</h2>
+
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Code</th>
+        <th>Is Used</th>
+        <th>Bought at</th>
+        <th>Valid Until</th>
+        <th>User Who Activated</th>
+        <th>Buyer</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var coupon in Model)
+    {
+        <tr>
+            <td>@coupon.Code</td>
+            <td>@coupon.IsUsed</td>
+            <td>@coupon.GeneratedAt</td>
+            <td>@coupon.ValidUntil</td>
+            <td>@coupon.ActivateeUsername</td>
+            <td>@coupon.BuyerUsername</td>
+        </tr>
+    }
+    </tbody>
+</table>

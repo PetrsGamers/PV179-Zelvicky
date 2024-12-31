@@ -9,4 +9,6 @@ public class User
     public required string Email { get; set; }
     public List<Album> Albums { get; set; } = [];
     public required Role Role { get; set; }
+    public List<Coupon> Coupons { get; set; } = [];
+    public List<Coupon> ActivatedCoupons { get; set; } = [];
 }

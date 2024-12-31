@@ -4,7 +4,11 @@
     Layout = "_Layout";
     ViewData["Title"] = "Leaderboard";
 }
-
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
 <h2>Leaderboard</h2>
 
 <table class="table">
@@ -20,7 +24,18 @@
     {
         <tr>
             <td>@entry.Rank</td>
-            <td>@entry.Username</td>
+            @if (entry.IsPremium)
+            {
+                <td>
+                    <span data-toggle="tooltip" title="Premium User" data-placement="bottom">
+                        <strong class="text-warning">@entry.Username</strong> ⭐
+                    </span>
+                </td>
+            }
+            else
+            {
+                <td>@entry.Username</td>
+            }
             <td>@entry.DistinctCapCount</td>
         </tr>
     }

@@ -3,12 +3,15 @@ namespace Cap.Enjoyer.WebMVC.Controllers;
 using CapEnjoyer.BL.Services.Interfaces;
 using CapEnjoyer.DAL.Constants;
 using CapEnjoyer.DAL.Entities;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
-public class AdminController(UserManager<LocalIdentityUser> userManager, IUserService userService)
-    : Controller
+public class AdminController(
+    UserManager<LocalIdentityUser> userManager,
+    IUserService userService,
+    ICouponService couponService) : Controller
 {
     [HttpGet]
     public async Task<IActionResult> ResetUserPassword()
@@ -61,5 +64,20 @@ public class AdminController(UserManager<LocalIdentityUser> userManager, IUserSe
 
         return this.View(model);
 
+    }
+
+    public async Task<IActionResult> CouponList()
+    {
+        var signInUser = await userManager.GetUserAsync(User);
+        if (signInUser == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+
+        var coupons = await couponService.GetCouponsAsync();
+
+        var viewModel = coupons.Select(c => c.Adapt<CouponViewModel>());
+        return View(viewModel);
     }
 }

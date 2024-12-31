@@ -33,6 +33,7 @@ builder.Services.AddScoped<IEditRequestService, EditRequestService>();
 builder.Services.AddScoped<IProducerService, ProducerService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer",
