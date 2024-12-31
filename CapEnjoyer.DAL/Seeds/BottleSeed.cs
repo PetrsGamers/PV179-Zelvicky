@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 public static class BottleSeed
 {
     private const string BottleSeedString = "default_bottle_seed";
-    private const string DefaultBottlePicture = "default_picture_url.jpg";
+    private const string DefaultBottlePicture = "20241231_214559_bottle.png";
     private static readonly CompositeFormat DescriptionTemplate = CompositeFormat.Parse("A {0} for various beverages.");
 
 
