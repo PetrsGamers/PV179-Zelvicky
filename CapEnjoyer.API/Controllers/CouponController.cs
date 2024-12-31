@@ -1,4 +1,4 @@
-﻿namespace CapEnjoyer.API.Controllers;
+namespace CapEnjoyer.API.Controllers;
 
 using BL.DTOs;
 using BL.Services.Interfaces;

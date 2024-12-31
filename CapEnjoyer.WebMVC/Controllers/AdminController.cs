@@ -67,17 +67,17 @@ public class AdminController(
     }
 
     public async Task<IActionResult> CouponList()
-         {
-             var signInUser = await userManager.GetUserAsync(User);
-             if (signInUser == null)
-             {
-                 return RedirectToAction("Login", "Account");
-             }
+    {
+        var signInUser = await userManager.GetUserAsync(User);
+        if (signInUser == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
 
 
-             var coupons = await couponService.GetCouponsAsync();
+        var coupons = await couponService.GetCouponsAsync();
 
-             var viewModel = coupons.Select(c => c.Adapt<CouponViewModel>());
-             return View(viewModel);
-         }
+        var viewModel = coupons.Select(c => c.Adapt<CouponViewModel>());
+        return View(viewModel);
+    }
 }
