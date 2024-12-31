@@ -68,9 +68,9 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
 
         await context.Bottles.AddAsync(newBottle);
         await context.SaveChangesAsync();
-        if (bottle.BottlePictureFile != null)
+        if (bottle.BottlePicture != null)
         {
-            var path = await imageService.UploadImageForBottleAsync(newBottle.Id, bottle.BottlePictureFile);
+            var path = await imageService.UploadImageForBottleAsync(newBottle.Id, bottle.BottlePicture);
             newBottle.BottlePicture = path;
         }
 
@@ -103,9 +103,9 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
 
         context.Bottles.Update(existingBottle);
         await context.SaveChangesAsync();
-        if (bottle.BottlePictureFile != null)
+        if (bottle.BottlePicture != null)
         {
-            var path = await imageService.UploadImageForBottleAsync(id, bottle.BottlePictureFile);
+            var path = await imageService.UploadImageForBottleAsync(id, bottle.BottlePicture);
             existingBottle.BottlePicture = path;
         }
 
@@ -124,7 +124,8 @@ public class BottleService(CapEnjoyerDbContext context, IImageService imageServi
     public async Task<IEnumerable<BottleDto>> GetBottlesbySearchFieldAsync(string searchField)
     {
         var bottles = await context.Bottles.Include(b => b.CapLinks)
-            .Where(b => EF.Functions.ILike(b.Name, $"%{searchField}%") && b.IsEditForId == null).Take(SearchConstants.NumberOfSearchResults)
+            .Where(b => EF.Functions.ILike(b.Name, $"%{searchField}%") && b.IsEditForId == null)
+            .Take(SearchConstants.NumberOfSearchResults)
             .ToListAsync();
         if (bottles.Count < SearchConstants.NumberOfSearchResults)
         {

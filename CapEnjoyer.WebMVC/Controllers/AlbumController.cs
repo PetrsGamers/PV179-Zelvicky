@@ -28,6 +28,7 @@ public class AlbumController(
         };
         viewModel.Albums.ForEach(vm => vm.Username = users.FirstOrDefault(u => u.Id == vm.UserId)?.Username);
         return View(viewModel);
+
     }
 
     [HttpGet]
@@ -94,8 +95,6 @@ public class AlbumController(
 
         var caps = await capService.GetAllCapsFilteredAsync();
         var viewmodel = album.Adapt<AlbumCreateViewModel>();
-        viewmodel.Caps = caps.Where(c => c.IsEditForId == null)
-            .Select(c => new CapDto { Id = c.Id, TextOnCap = c.TextOnCap }).ToList();
         viewmodel.SelectedCapIds = album.Caps;
         return View(viewmodel);
     }
@@ -138,7 +137,6 @@ public class AlbumController(
 
         return View(cachedViewModel);
     }
-
     public async Task<IActionResult> DeleteCap(Guid albumId, Guid capId)
     {
         var album = await albumService.GetAlbumById(albumId);
@@ -146,10 +144,8 @@ public class AlbumController(
         {
             await albumService.RemoveCapFromAlbum(albumId, capId);
         }
-
         return RedirectToAction("Details", new { id = albumId });
     }
-
     public async Task<IActionResult> Delete(Guid id)
     {
         var signInUser = await userManager.GetUserAsync(User);
@@ -157,7 +153,6 @@ public class AlbumController(
         {
             return RedirectToAction("Login", "Account");
         }
-
         await albumService.DeleteAlbum(id);
         memoryCache.Remove($"AlbumDetails_{id}");
         return RedirectToAction("Index");

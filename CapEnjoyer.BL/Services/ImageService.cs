@@ -6,6 +6,7 @@ using DAL.Constants;
 using DAL.Entities;
 using Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 public class ImageService(CapEnjoyerDbContext context) : IImageService
 {
@@ -26,21 +27,32 @@ public class ImageService(CapEnjoyerDbContext context) : IImageService
             throw new ArgumentException("Invalid file type.");
         }
 
-        var baseDirectory = Directory.GetCurrentDirectory();
-        var uploadsFolder = Path.Combine(baseDirectory, ImageConstants.CapImageFolder);
-        Directory.CreateDirectory(uploadsFolder); // Ensure the folder exists
+        var cap = await context.Caps.FirstOrDefaultAsync(c => c.Id == capId) ??
+                  throw new ArgumentException($"Cap with ID {capId} not found.");
 
-        var fileName = $"{Guid.NewGuid()}_cap_{image.FileName}";
-        var filePath = Path.Combine(uploadsFolder, fileName);
+        var sharedPath = ImageConstants.SharedPath;
+
+        Directory.CreateDirectory(sharedPath); // Ensure the directory exists
+
+        var extension = Path.GetExtension(image.FileName);
+        var fileName = $"{DateTime.Now:yyyyMMdd_HHmmss}_cap{extension}";
+        var filePath = Path.Combine(sharedPath, fileName);
+
+        if (!cap.CapPicture.IsNullOrEmpty())
+        {
+            var oldFilePath = Path.Combine(sharedPath, cap.CapPicture);
+            if (File.Exists(oldFilePath))
+            {
+                File.Delete(oldFilePath);
+            }
+        }
 
         await using (var stream = new FileStream(filePath, FileMode.Create))
         {
             await image.CopyToAsync(stream);
         }
 
-        var cap = await context.Caps.FirstOrDefaultAsync(c => c.Id == capId) ??
-                  throw new ArgumentException($"Cap with ID {capId} not found.");
-        cap.CapPicture = filePath;
+        cap.CapPicture = fileName;
 
         context.Caps.Update(cap);
         await context.AuditLogs.AddAsync(new AuditLog
@@ -51,7 +63,7 @@ public class ImageService(CapEnjoyerDbContext context) : IImageService
             CapId = capId
         });
         await context.SaveChangesAsync();
-        return filePath;
+        return fileName;
     }
 
     public async Task<string> UploadImageForBottleAsync(Guid bottleId, IFormFile image)
@@ -71,24 +83,35 @@ public class ImageService(CapEnjoyerDbContext context) : IImageService
             throw new ArgumentException("Invalid file type.");
         }
 
-        var baseDirectory = Directory.GetCurrentDirectory();
-        var uploadsFolder = Path.Combine(baseDirectory, ImageConstants.BottleImageFolder);
-        Directory.CreateDirectory(uploadsFolder); // Ensure the folder exists
+        var bottle = await context.Bottles.FirstOrDefaultAsync(b => b.Id == bottleId) ??
+                     throw new ArgumentException($"Bottle with ID {bottleId} not found.");
 
-        var fileName = $"{Guid.NewGuid()}_bottle_{image.FileName}";
-        var filePath = Path.Combine(uploadsFolder, fileName);
+        var sharedPath = ImageConstants.SharedPath;
+
+        Directory.CreateDirectory(sharedPath); // Ensure the directory exists
+
+        var extension = Path.GetExtension(image.FileName);
+        var fileName = $"{DateTime.Now:yyyyMMdd_HHmmss}_bottle{extension}";
+        var filePath = Path.Combine(sharedPath, fileName);
+
+        if (!bottle.BottlePicture.IsNullOrEmpty())
+        {
+            var oldFilePath = Path.Combine(sharedPath, bottle.BottlePicture);
+            if (File.Exists(oldFilePath))
+            {
+                File.Delete(oldFilePath);
+            }
+        }
 
         await using (var stream = new FileStream(filePath, FileMode.Create))
         {
             await image.CopyToAsync(stream);
         }
 
-        var bottle = await context.Bottles.FirstOrDefaultAsync(b => b.Id == bottleId) ??
-                     throw new ArgumentException($"Bottle with ID {bottleId} not found.");
-        bottle.BottlePicture = filePath;
+        bottle.BottlePicture = fileName;
 
         context.Bottles.Update(bottle);
         await context.SaveChangesAsync();
-        return filePath;
+        return fileName;
     }
 }
