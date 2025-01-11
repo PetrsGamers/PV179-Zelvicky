@@ -1,0 +1,26 @@
+# nixpacks.toml
+
+[phases]
+# Phase to restore dependencies
+restore = { run = "dotnet restore" }
+
+# Phase to build the project
+build = { run = "dotnet build --configuration Release" }
+
+# Phase to publish the application
+publish = { run = "dotnet publish CapEnjoyer.WebMVC -c Release -o out" }
+
+# Phase to start the application
+start = { run = "dotnet out/CapEnjoyer.WebMVC.dll" }
+
+[variables]
+# Add environment variables if needed
+ASPNETCORE_ENVIRONMENT = "Production"
+
+[dependencies]
+# Specify the runtime version for .NET 8
+runtime = ["dotnet-sdk-8.0"]
+
+[static]
+# Specify paths for static assets if any
+public = "wwwroot"
